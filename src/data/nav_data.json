@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Home",
+    "path": "/",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "2",
+    "name": "Customers",
+    "path": "/customers",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "3",
+    "name": "Cashires",
+    "path": "/cashires",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "4",
+    "name": "Branches",
+    "path": "/branches",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "5",
+    "name": "Offers",
+    "path": "/offers",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "6",
+    "name": "Campaignes",
+    "path": "/campaignes",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "7",
+    "name": "Partnerships",
+    "path": "/partnerships",
+    "icon": "home_icon.png"
+  },
+  {
+    "id": "8",
+    "name": "Settings",
+    "path": "/settings",
+    "icon": "home_icon.png"
+  }
+]

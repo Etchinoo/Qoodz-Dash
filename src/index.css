@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "GilroyRegular";
+  src: url(./assets/fonts/Gilroy-Regular.ttf);
+}
+
+@font-face {
+  font-family: "GilroyExtraBold";
+  src: url(./assets/fonts/Gilroy-ExtraBold.ttf);
+}
+
+@font-face {
+  font-family: "GilroyMedium";
+  src: url(./assets/fonts/Gilroy-Medium.ttf);
+}
+
+@font-face {
+  font-family: "GilroyBold";
+  src: url(./assets/fonts/Gilroy-Bold.ttf);
+}
+
+/* @import url('https://gistcdn.githack.com/mfd/09b70eb47474836f25a21660282ce0fd/raw/e06a670afcb2b861ed2ac4a1ef752d062ef6b46b/Gilroy.css'); */
+
+@font-face {
+  font-family: "GilroySemiBold";
+  src: url(./assets/fonts/Gilroy-SemiBold.ttf);
+}
+

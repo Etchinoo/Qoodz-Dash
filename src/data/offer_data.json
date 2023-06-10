@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "name": "Buy 1 Get 1 Free",
+    "offerType": "Gift",
+    "percentage": "0",
+    "originalPrice": "200",
+    "discountedValue": "180",
+    "date": "2019-01-01",
+    "expiryDate": "2019-01-31",
+    "status": true
+  },
+  {
+    "id": "2",
+    "name": "40% Off",
+    "offerType": "Discount",
+    "percentage": "20",
+    "originalPrice": "200",
+    "discountedValue": "180",
+    "date": "2019-01-01",
+    "expiryDate": "2019-01-31",
+    "status": false
+  }
+]

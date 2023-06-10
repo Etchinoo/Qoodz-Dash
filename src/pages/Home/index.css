@@ -1,0 +1,14 @@
+.chartContainer {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 8px;
+}
+
+.charthead {
+  display: flex;
+  justify-content: space-between;
+  font-family: "GilroyRegular";
+  font-size: 18px;
+  line-height: 28px;
+  color: #282A37;
+}   

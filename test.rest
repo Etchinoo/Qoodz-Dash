@@ -1,0 +1,43 @@
+###
+POST  https://qoodz-api.herokuapp.com/api/auth/signin
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+
+{
+  "phoneNumber": "+201100000002",
+  "password": "test123123"
+}
+
+###
+GET https://qoodz-api.herokuapp.com/api/users/profile
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInBob25lTnVtYmVyIjoiKzIwMTEwMDAwMDAwMiIsInR5cGUiOiJvd25lciIsImlhdCI6MTY4MTU0MDU2MSwiZXhwIjoxNjgxNTQ0MTYxfQ.fk5EkHlypOCXkZ3CTAyvNl7S6rDlUIBva42BsI1mOg0
+
+###
+PUT https://qoodz-api.herokuapp.com/api/users/profile
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInBob25lTnVtYmVyIjoiKzIwMTEwMDAwMDAwMiIsInR5cGUiOiJvd25lciIsImlhdCI6MTY4MTU0MDU2MSwiZXhwIjoxNjgxNTQ0MTYxfQ.fk5EkHlypOCXkZ3CTAyvNl7S6rDlUIBva42BsI1mOg0
+
+###
+GET https://qoodz-api.herokuapp.com/api/partners/3/customers?endDate=2023-03-30&searchAttribute=name&searchValue=Sa&limit=10&page=0
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInBob25lTnVtYmVyIjoiKzIwMTEwMDAwMDAwMiIsInR5cGUiOiJvd25lciIsImlhdCI6MTY4MTU0MDU2MSwiZXhwIjoxNjgxNTQ0MTYxfQ.fk5EkHlypOCXkZ3CTAyvNl7S6rDlUIBva42BsI1mOg0
+
+###
+PATCH https://qoodz-api.herokuapp.com/api/users/
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInBob25lTnVtYmVyIjoiKzIwMTEwMDAwMDAwMiIsInR5cGUiOiJvd25lciIsImlhdCI6MTY4MTU0MDU2MSwiZXhwIjoxNjgxNTQ0MTYxfQ.fk5EkHlypOCXkZ3CTAyvNl7S6rDlUIBva42BsI1mOg0
+
+{
+    "fullName": "Mohamed Ibrhiem"
+}
+
+###
+GET https://qoodz-api.herokuapp.com/api/branches/11/redeems
+Content-Type: application/json
+apiKey: 63cad87c3207fce093f8c08388e5a805
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInBob25lTnVtYmVyIjoiKzIwMTEwMDAwMDAwMiIsInR5cGUiOiJvd25lciIsImlhdCI6MTY4MTU0MDU2MSwiZXhwIjoxNjgxNTQ0MTYxfQ.fk5EkHlypOCXkZ3CTAyvNl7S6rDlUIBva42BsI1mOg0

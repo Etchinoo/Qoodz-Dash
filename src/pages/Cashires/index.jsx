@@ -22,6 +22,7 @@ const Cashires = () => {
   const [cahiers, setCashirs] = useState([]);
 
   const GetCashires = () => {
+    console.log(">>>> test ")
     axios
       .get(`https://qoodz-api.herokuapp.com/api/partners/cashiers/all`, {
         headers: {

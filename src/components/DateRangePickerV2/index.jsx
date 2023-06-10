@@ -45,7 +45,8 @@ const DateRangePickerV2 = ({
   });
 
   useEffect(() => {
-    if (setselectedDate) setselectedDate({ fromDate, toDate });
+    if (fromDate && toDate && setselectedDate)
+      setselectedDate({ fromDate, toDate });
   }, [fromDate, toDate]);
 
   const DSF = (date) => {

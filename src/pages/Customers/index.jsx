@@ -103,14 +103,12 @@ const Customers = () => {
   useEffect(() => {
     GetLocations();
     GetCustomers().then((res) => {
-      console.log(">>>> res ", res);
       setData(res);
     });
   }, []);
 
   useEffect(() => {
     GetCustomers().then((res) => {
-      console.log(">>>> res 11", res);
       setData(res);
     });
   }, [searchKeyword, selectedDate, selectedCity, selectedGender]);

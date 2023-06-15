@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { Link, useLocation, useMatch, useResolvedPath } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { Tooltip } from "antd";
 
 const NavItem = ({ to, name, open }) => {
   const resolvedPath = useResolvedPath(to);
@@ -19,13 +20,26 @@ const NavItem = ({ to, name, open }) => {
 
   return (
     <Container active={isActive ? true : false} as={Link} to={to} open={open}>
-      <NavIcon
-        viewBox="0 0 23 23"
-        fill={isActive ? "#282A37" : "#808191"}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {matchTable[name]}
-      </NavIcon>
+      {open ? (
+        <NavIcon
+          viewBox="0 0 23 23"
+          fill={isActive ? "#fff" : "#808191"}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {matchTable[name]}
+        </NavIcon>
+      ) : (
+        <Tooltip placement="right" title={name} className="tooltip">
+          <NavIcon
+            viewBox="0 0 23 23"
+            fill={isActive ? "#fff" : "#808191"}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {matchTable[name]}
+          </NavIcon>
+        </Tooltip>
+      )}
+
       <NavLabel open={open ? true : false} active={isActive ? true : false}>
         {name}
       </NavLabel>
@@ -49,8 +63,12 @@ const Container = styled.li`
   ${({ active }) =>
     active
       ? css`
-          border-left: 5px solid #00bea7;
-          border-radius: 0px 27px 10px 0px;
+          background: #282a37;
+          border-radius: 15px;
+          color: #ffffff;
+          font-family: "GilroyExtraBold";
+          font-size: 18px;
+          line-height: 32px;
         `
       : css`
           border-left: none;
@@ -73,7 +91,7 @@ const NavIcon = styled.svg`
 const NavLabel = styled.div`
   font-size: 16px;
   ${({ open }) => (open ? `display: block;` : `display: none;`)}
-  color: ${(p) => (p.active ? "#282A37" : "#808191")};
+  color: ${(p) => (p.active ? "#ffffff" : "#808191")};
   padding: 0;
   font-family: "GilroyExtraBold";
 `;

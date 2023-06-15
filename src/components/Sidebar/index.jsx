@@ -50,7 +50,7 @@ const Container = styled.div`
   height: 100vh;
   /* min-height: 1700px; */
   /* max-width: 250px; */
-  width: ${({ open }) => (open ? "250px" : "92px")};
+  width: ${({ open }) => (open ? "330px" : "92px")};
 `;
 const SidebarHeader = styled.div`
   display: flex;

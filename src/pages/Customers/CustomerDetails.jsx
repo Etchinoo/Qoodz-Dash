@@ -43,7 +43,6 @@ const CustomerDetails = () => {
   const dispatch = useDispatch();
   const { setToken, setUser } = bindActionCreators(authActions, dispatch);
   const { token } = useSelector((state) => state.auth);
-  
 
   const setActiveTab = (tab) => {
     const index = TabsData.findIndex((t) => t.key === tab);
@@ -306,7 +305,21 @@ const redeemssColumns = [
 ];
 export function CustomerDetailsCard({ data, switchTabs }) {
   const [SidebarState, setSidebarState] = useAtom(SidebarStateAtom);
-  console.log(">>> data  ",data)
+
+  const getAge = (dateString) => {
+    if (dateString) {
+      var today = new Date();
+      var birthDate = new Date(dateString);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+  };
+
+  console.log(">>> data  ", data);
   return (
     <RootWrapperCustomerDetailsCard open={SidebarState}>
       <Col gap="32px">
@@ -389,7 +402,9 @@ export function CustomerDetailsCard({ data, switchTabs }) {
                   fill="#2D264B"
                 />
               </Vector>
-              <PhoneNumber>{data[0]?.age} - {data[0]?.gender}</PhoneNumber>
+              <PhoneNumber>
+                {getAge(data[0]?.dob)} - {data[0]?.gender}
+              </PhoneNumber>
             </Row>
           </Col>
         </Col>
@@ -399,7 +414,7 @@ export function CustomerDetailsCard({ data, switchTabs }) {
 }
 
 const RootWrapperCustomerDetailsCard = styled.div`
-width: ${(props) => (props.open ? `24%;` : "100%")};
+  width: ${(props) => (props.open ? `24%;` : "100%")};
   display: flex;
   flex-direction: column;
   gap: 25px;

@@ -10,7 +10,12 @@ import { useEffect, useState } from "react";
 import EditCashierForm from "./EditCashierForm";
 import { NewBtn } from "./FormComponents.styles";
 import axios from "axios";
-
+import { useAtom } from "jotai";
+import {
+  homeBranchSelctorAtom,
+  userAtom,
+  userTokenAtom,
+} from "../../store/Atoms";
 import { useDispatch, useSelector } from "react-redux";
 import {bindActionCreators} from 'redux'
 import moment from "moment";
@@ -28,11 +33,12 @@ const Cashires = () => {
     fromDate: moment().date(-90).format("YYYY-MM-DD"),
     toDate: moment().format("YYYY-MM-DD"),
   });
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
   const [newOpen, setNewOpen] = useState(false);
   const [EditOpen, setEditOpen] = useState(false);
   const [cahiers, setCashirs] = useState([]);
-
-  const { parteners } = useSelector((state) => state.home);
+  const [analyticsData, setAnalyticsData] = useState({});
   const [locations, setLocations] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
@@ -56,15 +62,12 @@ const Cashires = () => {
       ],
     },
   ]);
-  const dispatch = useDispatch();
-  const { setToken,setUser } = bindActionCreators(authActions, dispatch);
-  const {token}= useSelector(
-    (state) => state.auth
-  );
+
   useEffect(() => {
     GetLocations();
     GetCashires();
     GetBranches();
+    getPartanerAnalytics();
   }, [selectedDate, selectedBranch, searchKeyword, selectedCategory]);
 
   const GetCashires = () => {
@@ -154,6 +157,27 @@ const Cashires = () => {
         }
       });
   };
+  const getPartanerAnalytics = () => {
+    axios
+      .get(
+        `https://qoodz-api.herokuapp.com/api/partners?startDate=${selectedDate.fromDate}&endDate=${selectedDate.toDate}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token.accessToken}`,
+          },
+        }
+      )
+      .then((res) => setAnalyticsData(res.data))
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
   useEffect(() => {
     const Filter = Filters.map((p) =>
       p.name === "branch" ? { ...p, opt: branches } : p
@@ -186,7 +210,7 @@ const Cashires = () => {
           <AddNewCashierForm branches={branches} GetCashires={GetCashires} />
         </ModalContainer>
       )}
-      <StatbarV2 devider={true} analyticsData={parteners?.data} />
+      <StatbarV2 devider={true} analyticsData={analyticsData?.data}/>
       {cahiers && (
         <DataTableV2
           data={cahiers}

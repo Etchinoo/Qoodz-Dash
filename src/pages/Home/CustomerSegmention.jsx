@@ -9,87 +9,106 @@ import { useEffect } from "react";
 
 const CustomerSegmention = ({ analyticsData }) => {
   const [open, setOpen] = useState(true);
-
+  const [chartDate, setChartData] = useState(null); 
   useEffect(() => {
+    if (analyticsData?.analytics?.age_ranges.length > 0)
+      setChartData([...analyticsData?.analytics?.age_ranges].reverse());
   }, [analyticsData]);
+  console.log(">>>> analyticsData ", analyticsData);
   return (
-    <Container>
-      <Row>
-        <Col>
-          <Title>Customer Segment</Title>
-          <SubTitle>
-            Your most active segment are Males ages from 18 to 24
-          </SubTitle>
-        </Col>
-        <OpenBtn active={open} onClick={() => setOpen(!open)}>
-          <span>{!open ? "See More" : "See Less"}</span>
-          {open ? <FaAngleUp /> : <FaAngleDown />}
-        </OpenBtn>
-      </Row>
-      {open && (
-        <Col>
-          <BarContainer>
-            <HorzBarChart age_ranges={analyticsData?.analytics?.age_ranges} />
-          </BarContainer>
+    chartDate && (
+      <Container>
+        <Row>
+          <Col>
+            <Title>Customer Segment</Title>
+            <SubTitle>
+              Your most active segment are Males ages from 18 to 24
+            </SubTitle>
+          </Col>
+          <OpenBtn active={open} onClick={() => setOpen(!open)}>
+            <span>{!open ? "See More" : "See Less"}</span>
+            {open ? <FaAngleUp /> : <FaAngleDown />}
+          </OpenBtn>
+        </Row>
+        {open && (
+          <Col>
+            <BarContainer>
+              <HorzBarChart age_ranges={chartDate} />
+            </BarContainer>
 
-          <HorzDevider />
-          <DoughnutContainer>
-            <StatTitle>Gender Split</StatTitle>
-            <DounughtChartContainer>
-              <Row
-                gap={"3rem"}
-                style={{
-                  justifyContent: "flex-start",
-                  background: "#fff",
-                  padding: 8,
-                }}
-              >
-                <DounughtChart />
-                <StatArea>
-                  <StatContainer>
-                    <Row gap={"16px"}>
-                      <StatBlock color={"#9747FF"} />
-                      <StatTitle>
-                        {analyticsData?.analytics?.male_to_female[0].gender}
-                      </StatTitle>
-                    </Row>
-                    <StatValue>
-                      {analyticsData?.analytics?.male_to_female[0].count} (
-                      {Math.round((analyticsData?.analytics?.male_to_female[0].count *100) /
-                        (+analyticsData?.analytics?.male_to_female[0].count +
-                          +analyticsData?.analytics?.male_to_female[1].count))}
-                      %)
-                    </StatValue>
-                    <Col>
-                      <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                      <TransactionValue>200</TransactionValue>
-                    </Col>
-                  </StatContainer>
-                  <VertDevider />
-                  <StatContainer>
-                    <Row gap={"16px"}>
-                      <StatBlock color={"#AEDDEB"} />
-                      <StatTitle>{analyticsData?.analytics?.male_to_female[1].gender}</StatTitle>
-                    </Row>
-                    <StatValue>   {analyticsData?.analytics?.male_to_female[1].count} (
-                      {Math.round((analyticsData?.analytics?.male_to_female[1].count *
-                        100) /
-                        (+analyticsData?.analytics?.male_to_female[0].count +
-                          +analyticsData?.analytics?.male_to_female[1].count))}
-                      %)</StatValue>
-                    <Col>
-                      <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                      <TransactionValue>200</TransactionValue>
-                    </Col>
-                  </StatContainer>
-                </StatArea>
-              </Row>
-            </DounughtChartContainer>
-          </DoughnutContainer>
-        </Col>
-      )}
-      <HorzDevider />
-    </Container>
+            <HorzDevider />
+            <DoughnutContainer>
+              <StatTitle>Gender Split</StatTitle>
+              <DounughtChartContainer>
+                <Row
+                  gap={"3rem"}
+                  style={{
+                    justifyContent: "flex-start",
+                    background: "#fff",
+                    padding: 8,
+                  }}
+                >
+                  <DounughtChart />
+                  <StatArea>
+                    <StatContainer>
+                      <Row gap={"16px"}>
+                        <StatBlock color={"#9747FF"} />
+                        <StatTitle>
+                          {analyticsData?.analytics?.male_to_female[0].gender}
+                        </StatTitle>
+                      </Row>
+                      <StatValue>
+                        {analyticsData?.analytics?.male_to_female[0].count} (
+                        {Math.round(
+                          (analyticsData?.analytics?.male_to_female[0].count *
+                            100) /
+                            (+analyticsData?.analytics?.male_to_female[0]
+                              .count +
+                              +analyticsData?.analytics?.male_to_female[1]
+                                .count)
+                        )}
+                        %)
+                      </StatValue>
+                      <Col>
+                        <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
+                        <TransactionValue>200</TransactionValue>
+                      </Col>
+                    </StatContainer>
+                    <VertDevider />
+                    <StatContainer>
+                      <Row gap={"16px"}>
+                        <StatBlock color={"#AEDDEB"} />
+                        <StatTitle>
+                          {analyticsData?.analytics?.male_to_female[1].gender}
+                        </StatTitle>
+                      </Row>
+                      <StatValue>
+                        {" "}
+                        {analyticsData?.analytics?.male_to_female[1].count} (
+                        {Math.round(
+                          (analyticsData?.analytics?.male_to_female[1].count *
+                            100) /
+                            (+analyticsData?.analytics?.male_to_female[0]
+                              .count +
+                              +analyticsData?.analytics?.male_to_female[1]
+                                .count)
+                        )}
+                        %)
+                      </StatValue>
+                      <Col>
+                        <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
+                        <TransactionValue>200</TransactionValue>
+                      </Col>
+                    </StatContainer>
+                  </StatArea>
+                </Row>
+              </DounughtChartContainer>
+            </DoughnutContainer>
+          </Col>
+        )}
+        <HorzDevider />
+      </Container>
+    )
   );
 };
 

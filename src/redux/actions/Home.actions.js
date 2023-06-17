@@ -12,12 +12,6 @@ let dispatchActionHandler = (type, data, dispatch) => {
 function getParteners(data, setToken, setUser) {
   return async (dispatch) => {
     let result = await HomeService.getParteners(data);
-    if (result?.response?.status == 401) {
-      dispatchActionHandler(homeConstants.GET_PARTENERS, null, dispatch);
-    }
-    else{
-      dispatchActionHandler(homeConstants.GET_PARTENERS, result, dispatch);
-    }
-   
+    dispatchActionHandler(homeConstants.GET_PARTENERS, result, dispatch);
   };
 }

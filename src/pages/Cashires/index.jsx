@@ -3,12 +3,19 @@ import DataTableV2 from "../../components/DataTableV2";
 import { Col, Header, Row } from "../../components/Shared";
 import data from "../../data/customer_data.json";
 import Statbar from "../../components/Statbar";
+import StatbarV2 from "../../components/StatbarV2";
 import ModalContainer from "../../components/Modal";
 import AddNewCashierForm from "./AddNewCashierForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditCashierForm from "./EditCashierForm";
 import { NewBtn } from "./FormComponents.styles";
+import axios from "axios";
 
+import { useDispatch, useSelector } from "react-redux";
+import {bindActionCreators} from 'redux'
+import moment from "moment";
+import "./index.css";
+import { authActions } from "../../redux/actions/Auth.actions";
 const headerOptions = {
   title: "Cashires",
   type: "master",
@@ -17,20 +24,71 @@ const headerOptions = {
 };
 
 const Cashires = () => {
+  const [selectedDate, setSelectedDate] = useState({
+    fromDate: moment().date(-90).format("YYYY-MM-DD"),
+    toDate: moment().format("YYYY-MM-DD"),
+  });
   const [newOpen, setNewOpen] = useState(false);
   const [EditOpen, setEditOpen] = useState(false);
   const [cahiers, setCashirs] = useState([]);
 
+  const { parteners } = useSelector((state) => state.home);
+  const [locations, setLocations] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [selectedRow, setSelectedRow] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [Filters, setFilters] = useState([
+    {
+      name: "date",
+      label: "Date",
+      type: "date",
+    },
+
+    {
+      name: "branch",
+      label: "Branch",
+      type: "Select",
+      opt: [
+        { value: "dubai", label: "Dubai" },
+        { value: "cairo", label: "Cairo" },
+      ],
+    },
+  ]);
+  const dispatch = useDispatch();
+  const { setToken,setUser } = bindActionCreators(authActions, dispatch);
+  const {token}= useSelector(
+    (state) => state.auth
+  );
+  useEffect(() => {
+    GetLocations();
+    GetCashires();
+    GetBranches();
+  }, [selectedDate, selectedBranch, searchKeyword, selectedCategory]);
+
   const GetCashires = () => {
-    console.log(">>>> test ")
     axios
-      .get(`https://qoodz-api.herokuapp.com/api/partners/cashiers/all`, {
-        headers: {
-          "Content-Type": "application/json",
-          apiKey: "63cad87c3207fce093f8c08388e5a805",
-          Authorization: `Bearer ${token.accessToken}`,
-        },
-      })
+      .get(
+        `https://qoodz-api.herokuapp.com/api/partners/cashiers/all?${
+          "startDate=" +
+          selectedDate.fromDate +
+          "&endDate=" +
+          selectedDate.toDate
+        } ${
+          selectedCategory && searchKeyword
+            ? `&searchAttribute=${selectedCategory.value}&searchValue=` +
+              searchKeyword
+            : ""
+        }${selectedBranch ? "&branch=" + selectedBranch.value : ""}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
       .then((res) => setCashirs(res.data))
       .catch((error) => {
         console.log("error: ", error.response.status);
@@ -40,55 +98,116 @@ const Cashires = () => {
         }
       });
   };
+  const GetLocations = async () => {
+    axios
+      .get("https://qoodz-api.herokuapp.com/api/locations", {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) =>
+        setLocations(
+          res.data.map((ele) => {
+            return { value: ele.id, label: ele.name };
+          })
+        )
+      )
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+  const GetBranches = async () => {
+    axios
+      .get(
+        `https://qoodz-api.herokuapp.com/api/branches?${
+          "startDate=" +
+          selectedDate.fromDate +
+          "&endDate=" +
+          selectedDate.toDate
+        }`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) =>
+        setBranches(
+          res.data.map((ele) => {
+            return { value: ele.id, label: ele.name };
+          })
+        )
+      )
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+  useEffect(() => {
+    const Filter = Filters.map((p) =>
+      p.name === "branch" ? { ...p, opt: branches } : p
+    );
+    setFilters(Filter);
+  }, [locations]);
 
   const actionHandler = (action) => {
-    if (action.key === "edit") setEditOpen(true);
+    if (action.key === "edit") {
+      setSelectedRow(action.row);
+      setEditOpen(true);
+    }
   };
 
   return (
     <Layout header={headerOptions} addNew={() => setNewOpen(true)}>
       {EditOpen && (
         <ModalContainer setOpen={setEditOpen}>
-          <EditCashierForm id={"1"} onCancel={setEditOpen} />
+          <EditCashierForm
+            id={"1"}
+            onCancel={setEditOpen}
+            selectedRow={selectedRow}
+            branches={branches}
+            GetCashires={GetCashires}
+          />
         </ModalContainer>
       )}
       {newOpen && (
         <ModalContainer setOpen={setNewOpen}>
-          <AddNewCashierForm />
+          <AddNewCashierForm branches={branches} GetCashires={GetCashires} />
         </ModalContainer>
       )}
-      <Statbar />
-      <DataTableV2
-        data={data}
-        columns={columns}
-        filters={Filters}
-        key={"cashires"}
-        searchPlaceholder={"Search by phone number"}
-        // download
-        actionHandler={actionHandler}
-      />
+      <StatbarV2 devider={true} analyticsData={parteners?.data} />
+      {cahiers && (
+        <DataTableV2
+          data={cahiers}
+          columns={columns}
+          filters={Filters}
+          key={"cashires"}
+          searchPlaceholder={"Search"}
+          download
+          actionHandler={actionHandler}
+          setSelectedDate={setSelectedDate}
+          searchCategories={searchCategories}
+          setSelectedCategory={setSelectedCategory}
+          setSearchKeyword={setSearchKeyword}
+          setSelectedBranch={setSelectedBranch}
+        />
+      )}
     </Layout>
   );
 };
 
 export default Cashires;
-
-const Filters = [
-  {
-    name: "date",
-    label: "Date",
-    type: "date",
-  },
-  {
-    name: "branch",
-    label: "Branch",
-    type: "Select",
-    opt: [
-      { value: "dubai", label: "Dubai" },
-      { value: "cairo", label: "Cairo" },
-    ],
-  },
-];
 
 const columns = [
   {
@@ -99,20 +218,20 @@ const columns = [
   },
   {
     name: "Name",
-    key: "firstName",
+    key: "fullName",
     visability: true,
     type: "string",
     // link: true,
   },
   {
     name: "Phone",
-    key: "phone",
+    key: "phoneNumber",
     visability: true,
     type: "string",
   },
   {
     name: "Branch",
-    key: "city",
+    key: "branch",
     visability: true,
     type: "string",
   },
@@ -141,4 +260,9 @@ const columns = [
     visability: true,
     type: "action",
   },
+];
+
+const searchCategories = [
+  { label: "Name", value: "fullName" },
+  { label: "Phone", value: "phoneNumber" },
 ];

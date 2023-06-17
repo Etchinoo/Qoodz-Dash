@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsChevronLeft } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import Layout from "../../components/Layout";
 import ModalContainer from "../../components/Modal";

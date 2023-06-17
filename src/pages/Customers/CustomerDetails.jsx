@@ -7,10 +7,13 @@ import userImage from "../../assets/userImage.png";
 import { BsChevronLeft } from "react-icons/bs";
 import { Col, Header, Row } from "../../components/Shared";
 import _data from "../../data/customer_data.json";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { userAtom, userTokenAtom } from "../../store/Atoms";
+import { authActions } from "../../redux/actions/Auth.actions";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAtom } from "jotai";
+import { SidebarStateAtom } from "../../store/Atoms";
 
 const TabsData = [
   {
@@ -33,12 +36,14 @@ const headerOptions = {
 const CustomerDetails = () => {
   const { id } = useParams();
   const [active, setActive] = useState(TabsData[0]);
-  const [token, setToken] = useAtom(userTokenAtom);
-  const [user, setUser] = useAtom(userAtom);
-  const [data, setData] = useState();
+
   const [tabData, setTabData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const dispatch = useDispatch();
+  const { setToken, setUser } = bindActionCreators(authActions, dispatch);
+  const { token } = useSelector((state) => state.auth);
+  
 
   const setActiveTab = (tab) => {
     const index = TabsData.findIndex((t) => t.key === tab);
@@ -53,7 +58,7 @@ const CustomerDetails = () => {
           headers: {
             "Content-Type": "application/json",
             apiKey: "63cad87c3207fce093f8c08388e5a805",
-            Authorization: `Bearer ${token.accessToken}`,
+            Authorization: `Bearer ${token?.accessToken}`,
           },
         }
       );
@@ -77,12 +82,25 @@ const CustomerDetails = () => {
   const GetTabsData = () => {
     axios
       .get(
-        `https://qoodz-api.herokuapp.com/api/partners/3/customers/${parseInt(id)}/${active.key}?${ searchKeyword? "searchAttribute=name&searchValue=" + searchKeyword: ""}${selectedDate?"startDate=" +selectedDate.fromDate +"&endDate=" +selectedDate.toDate: ""}`,
+        `https://qoodz-api.herokuapp.com/api/partners/3/customers/${parseInt(
+          id
+        )}/${active.key}?${
+          searchKeyword
+            ? "searchAttribute=name&searchValue=" + searchKeyword
+            : ""
+        }${
+          selectedDate
+            ? "startDate=" +
+              selectedDate.fromDate +
+              "&endDate=" +
+              selectedDate.toDate
+            : ""
+        }`,
         {
           headers: {
             "Content-Type": "application/json",
             apiKey: "63cad87c3207fce093f8c08388e5a805",
-            Authorization: `Bearer ${token.accessToken}`,
+            Authorization: `Bearer ${token?.accessToken}`,
           },
         }
       )
@@ -287,12 +305,14 @@ const redeemssColumns = [
   },
 ];
 export function CustomerDetailsCard({ data, switchTabs }) {
+  const [SidebarState, setSidebarState] = useAtom(SidebarStateAtom);
+  console.log(">>> data  ",data)
   return (
-    <RootWrapperCustomerDetailsCard>
+    <RootWrapperCustomerDetailsCard open={SidebarState}>
       <Col gap="32px">
         <Row gap="260px">
           <CustomerImage src={userImage} alt="image of CustomerImage" />
-          <Vector width="17" height="18" xmlns="http://www.w3.org/2000/svg">
+          {/* <Vector width="17" height="18" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M5.25618 1.34788C5.55038 1.05629 5.5525 0.581424 5.26091 0.287227C4.96933 -0.00697012 4.49446 -0.00908889 4.20026 0.282495L2.75912 1.71083C2.22294 2.24222 1.77576 2.68541 1.45691 3.08243C1.12249 3.49885 0.868114 3.9365 0.800152 4.46969C0.717224 5.1203 1.25678 5.56519 1.77965 5.56519H15.5283C15.9425 5.56519 16.2783 5.2294 16.2783 4.81519C16.2783 4.40097 15.9425 4.06519 15.5283 4.06519H2.59201C2.60309 4.05097 2.61457 4.03647 2.62645 4.02167C2.88555 3.69905 3.2709 3.31552 3.8458 2.74572L5.25618 1.34788Z"
               fill="#2D264B"
@@ -301,7 +321,7 @@ export function CustomerDetailsCard({ data, switchTabs }) {
               d="M1.52832 12.0652C1.11411 12.0652 0.77832 12.401 0.77832 12.8152C0.77832 13.2294 1.11411 13.5652 1.52832 13.5652H14.6649C14.6538 13.5794 14.6423 13.5939 14.6304 13.6087C14.3713 13.9313 13.986 14.3149 13.4111 14.8846L12.0007 16.2825C11.7065 16.5741 11.7044 17.0489 11.996 17.3431C12.2876 17.6373 12.7624 17.6395 13.0566 17.3479L14.4978 15.9195C15.0339 15.3882 15.4811 14.945 15.8 14.5479C16.1344 14.1315 16.3888 13.6939 16.4567 13.1607C16.4597 13.1374 16.4624 13.1142 16.4647 13.0909C16.5259 12.488 16.0303 12.0652 15.5283 12.0652H1.52832Z"
               fill="#2D264B"
             />
-          </Vector>
+          </Vector> */}
         </Row>
 
         <Col gap="7px">
@@ -353,6 +373,24 @@ export function CustomerDetailsCard({ data, switchTabs }) {
               </Vector>
               <PhoneNumber>{data[0]?.phoneNumber}</PhoneNumber>
             </Row>
+
+            <Row gap="17px">
+              <Vector xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M16.7312 0.490979C15.5355 -0.0042845 14.3748 0.30483 13.5492 1.03439C12.7428 1.74701 12.25 2.85543 12.25 4.03307V4.99881C12.25 7.8983 14.6005 10.2488 17.5 10.2488H18.4657C19.6434 10.2488 20.7518 9.75605 21.4644 8.94961C22.194 8.12402 22.5031 6.96331 22.0078 5.76764C21.5178 4.58472 20.7997 3.50988 19.8943 2.60451C18.9889 1.69914 17.9141 0.980962 16.7312 0.490979ZM13.75 4.03307C13.75 3.2588 14.0777 2.56914 14.5425 2.15841C14.9881 1.76461 15.5495 1.62509 16.1571 1.8768C17.1581 2.2914 18.0676 2.89909 18.8336 3.66517C19.5997 4.43126 20.2074 5.34073 20.622 6.34167C20.8737 6.94934 20.7342 7.51071 20.3404 7.95635C19.9297 8.42116 19.24 8.74881 18.4657 8.74881H17.5C15.4289 8.74881 13.75 7.06987 13.75 4.99881V4.03307Z"
+                  fill="#2D264B"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M10.75 5.49881C10.75 4.03945 9.5133 2.61296 7.85109 2.98856C6.69088 3.25073 5.58234 3.72437 4.58319 4.39198C2.97982 5.46332 1.73013 6.98606 0.992179 8.76764C0.254225 10.5492 0.061142 12.5096 0.437348 14.4009C0.813554 16.2922 1.74215 18.0295 3.10571 19.3931C4.46928 20.7567 6.20656 21.6853 8.09787 22.0615C9.98919 22.4377 11.9496 22.2446 13.7312 21.5066C15.5127 20.7687 17.0355 19.519 18.1068 17.9156C18.7744 16.9165 19.2481 15.8079 19.5102 14.6477C19.8858 12.9855 18.4594 11.7488 17 11.7488H15C12.6528 11.7488 10.75 9.84602 10.75 7.49881V5.49881ZM8.1817 4.45167C8.67431 4.34036 9.25 4.74902 9.25 5.49881V7.49881C9.25 10.6744 11.8244 13.2488 15 13.2488H17C17.7498 13.2488 18.1584 13.8245 18.0471 14.3171C17.8253 15.2989 17.4245 16.2368 16.8596 17.0823C15.9531 18.439 14.6646 19.4964 13.1571 20.1208C11.6497 20.7452 9.99085 20.9086 8.39051 20.5903C6.79017 20.272 5.32016 19.4862 4.16637 18.3324C3.01259 17.1787 2.22685 15.7086 1.90853 14.1083C1.5902 12.508 1.75358 10.8492 2.378 9.34167C3.00242 7.83418 4.05984 6.5457 5.41655 5.63918C6.26198 5.07428 7.19996 4.67351 8.1817 4.45167Z"
+                  fill="#2D264B"
+                />
+              </Vector>
+              <PhoneNumber>{data[0]?.age} - {data[0]?.gender}</PhoneNumber>
+            </Row>
           </Col>
         </Col>
       </Col>
@@ -361,6 +399,7 @@ export function CustomerDetailsCard({ data, switchTabs }) {
 }
 
 const RootWrapperCustomerDetailsCard = styled.div`
+width: ${(props) => (props.open ? `24%;` : "100%")};
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -368,7 +407,7 @@ const RootWrapperCustomerDetailsCard = styled.div`
   border-radius: 25px;
   background-color: white;
   box-sizing: border-box;
-  padding: 50px 32px;
+  padding: 50px ${(props) => (props.open ? `10px` : "32px")};
   height: 100%;
 `;
 

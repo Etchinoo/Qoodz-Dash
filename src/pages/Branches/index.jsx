@@ -42,7 +42,7 @@ const Branches = () => {
           headers: {
             "Content-Type": "application/json",
             apiKey: "63cad87c3207fce093f8c08388e5a805",
-            Authorization: `Bearer ${token.accessToken}`,
+            Authorization: `Bearer ${token?.accessToken}`,
           },
         }
       );

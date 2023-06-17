@@ -24,12 +24,7 @@ const data = [
   { name: "NOV", male: 600 },
 ];
 
-const barChartData = [
-  { name: "Dubai", x: 30 },
-  { name: "Agman", x: 12 },
-  { name: "Abo Dhabi", x: 15 },
-  { name: "Dubai", x: 35 },
-];
+
 const barChart2Data = [
   { name: "EG", x: 30 },
   { name: "SA", x: 12 },
@@ -43,11 +38,12 @@ export default function Charts({ analyticsData }) {
     value: 1,
   });
   useEffect(() => {}, []);
+  console.log(">>>> data ",analyticsData?.analytics?.scans_dominating_areas)
   return (
     <Row gap="19px" width="95%">
       <Col>
         <ScansContainer>
-          <div height={400} className={"chartContainer"}>
+          <div height={300} className={"chartContainer"}>
             <div className="charthead">
               <Select
                 styles={{
@@ -67,19 +63,33 @@ export default function Charts({ analyticsData }) {
                 ]}
                 onChange={(e) => setSelectedOptions(e)}
               />
-              <span>Dominating areas</span>
+              <SubTitle>Dominating areas</SubTitle>
             </div>
             <BarChart
               width={300}
-              height={400}
+              height={300}
               data={
                 selectedOption.value == 1
                   ? analyticsData?.analytics?.scans_dominating_areas
                   : analyticsData?.analytics?.redeems_dominating_areas
               }
             >
-              <XAxis dataKey="area" axisLine={false} />
-              <YAxis width={20} axisLine={false} />
+              <XAxis
+                dataKey="area"
+                axisLine={false}
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
+              <YAxis
+                width={35}
+                axisLine={false}
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
               <Bar dataKey="counts" stackId="a" fill="#9747FF" barSize={25} />
             </BarChart>
           </div>
@@ -88,14 +98,28 @@ export default function Charts({ analyticsData }) {
 
       <Col>
         <NationalitiesChart>
-          <div height={400} className={"chartContainer"}>
+          <div height={300} className={"chartContainer"}>
             <div className="charthead">
               <div></div>
-              <span>Nationalities</span>
+              <SubTitle>Nationalities</SubTitle>
             </div>
-            <BarChart width={300} height={400} data={barChart2Data}>
-              <XAxis dataKey="name" axisLine={false} />
-              <YAxis width={20} axisLine={false} />
+            <BarChart width={300} height={300} data={barChart2Data}>
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
+              <YAxis
+                width={20}
+                axisLine={false}
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
               {/* <Tooltip />
               <Legend /> */}
               <Bar dataKey="x" stackId="a" fill="#F6F4AB" barSize={25} />
@@ -106,16 +130,32 @@ export default function Charts({ analyticsData }) {
 
       <Col>
         <BrandChart>
-          <div height={400} className={"chartContainer"}>
+          <div height={300} className={"chartContainer"}>
             <div className="charthead">
               <div></div>
-              <span>Brand Performance</span>
+              <SubTitle>Brand Performance</SubTitle>
             </div>
-            <LineChart width={300} height={400} data={data}>
+            <LineChart width={300} height={300} data={data}>
               <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
               <Line type="linear" dataKey="male" stroke="#14AE5C" />
-              <XAxis dataKey="name" axisLine={false} />
-              <YAxis width={30} axisLine={false} type="number" />
+              <XAxis
+                dataKey="name"
+                type="category"
+                axisLine={false}
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
+              <YAxis
+                width={35}
+                axisLine={false}
+                type="number"
+                style={{
+                  fontFamily: "GilroyRegular",
+                  color: "#282A37",
+                }}
+              />
             </LineChart>
           </div>
         </BrandChart>
@@ -127,17 +167,25 @@ export default function Charts({ analyticsData }) {
 const ScansContainer = styled.div`
   background: rgba(178, 178, 255, 0.32);
   border-radius: 25px;
-  padding: 26px 25px;
+  padding: 20px 20px;
 `;
 
 const NationalitiesChart = styled.div`
   background: #f9f7c9;
   border-radius: 25px;
-  padding: 26px 25px;
+  padding: 20px 20px;
 `;
 
 const BrandChart = styled.div`
   background: rgba(20, 174, 92, 0.32);
   border-radius: 25px;
-  padding: 26px 25px;
+  padding: 20px 20px;
+`;
+
+const SubTitle = styled.div`
+  font-family: "GilroyRegular";
+  font-size: 20px;
+  line-height: 28px;
+  text-align: right;
+  color: #282a37;
 `;

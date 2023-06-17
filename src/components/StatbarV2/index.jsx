@@ -22,7 +22,6 @@ export default function StatbarV2({
   devider = false,
   analyticsData,
 }) {
-  const [token, setToken] = useAtom(userTokenAtom);
   const [Data, setData] = useState([
     {
       id: "1",
@@ -112,6 +111,7 @@ const Container = styled.div`
   box-sizing: border-box;
   padding: 28px 2rem;
   gap: 1rem;
+  height: 108px;
 `;
 
 const StatCard = styled.div`

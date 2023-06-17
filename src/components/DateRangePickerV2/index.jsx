@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import moment from "moment";
 import {
   FaCalendar,
   FaCalendarAlt,
@@ -34,8 +35,10 @@ const DateRangePickerV2 = ({
   setselectedDate,
 }) => {
   const [open, setOpen] = useState(false);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState(
+    moment().date(-90).format("YYYY-MM-DD")
+  );
+  const [toDate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [displayValue, setDisplayValue] = useState("From - To");
 
   //a function to close the date picker when clicked outside using useRef hook
@@ -45,8 +48,11 @@ const DateRangePickerV2 = ({
   });
 
   useEffect(() => {
-    if (fromDate && toDate && setselectedDate)
+    setDisplayValue(`${DSF(fromDate)} - ${DSF(toDate)}`);
+    if (fromDate && toDate && setselectedDate){
       setselectedDate({ fromDate, toDate });
+    }
+     
   }, [fromDate, toDate]);
 
   const DSF = (date) => {
@@ -76,8 +82,13 @@ const DateRangePickerV2 = ({
         setOpen(false);
         break;
       case "clear":
-        setFromDate("");
-        setToDate("");
+        setDisplay(
+          moment().date(-90).format("YYYY-MM-DD"),
+          moment().format("YYYY-MM-DD")
+        );
+        setFromDate(moment().date(-90).format("YYYY-MM-DD"));
+        setToDate(moment().format("YYYY-MM-DD"));
+        setOpen(false);
         break;
       default:
         break;
@@ -140,7 +151,7 @@ const Container = styled.div`
   border-radius: 15px;
   background: #f7f7fc;
   box-sizing: border-box;
-  padding: 18px 24px;
+  padding: 18px 18px;
   height: 100%;
   position: relative;
   color: #939baf;
@@ -170,7 +181,7 @@ const OptionsContainer = styled.div`
   background-color: rgb(247, 247, 252);
   box-sizing: border-box;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
-  padding: 18px 24px;
+  padding: 18px 18px;
   z-index: 1;
 `;
 

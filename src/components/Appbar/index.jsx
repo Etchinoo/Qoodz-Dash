@@ -14,21 +14,26 @@ import Notifcations from "../Notifcations";
 import { SSelect } from "../../pages/Cashires/FormComponents.styles";
 import { userAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
-
+import { authActions } from "../../redux/actions/Auth.actions";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 const Appbar = ({ width, filterOptions }) => {
-  const [user, setUser] = useAtom(userAtom);
+  const dispatch = useDispatch();
+  const { setUser } = bindActionCreators(authActions, dispatch);
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <Container width={width}>
       <GreetingCard>
         <GreetingHeader>
-          <H4>{user.fullName}</H4>
+          <H4>{user?.fullName}</H4>
           <Icon onClick={() => setUser(null)} src={icon} alt="" />
         </GreetingHeader>
         <P>Welcome back! Start your journey</P>
       </GreetingCard>
       <ActionCard>
         <Notifcations />
-        {filterOptions&&filterOptions.lenght > 0 ? (
+        {filterOptions && filterOptions.lenght > 0 ? (
           <SSelect
             style={{ maxWidth: "200px" }}
             className="select-filter"

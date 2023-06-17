@@ -7,6 +7,9 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useEffect, useState } from "react";
+import { authActions } from "../../redux/actions/Auth.actions";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const headerOptions = {
   title: "Customers",
@@ -14,8 +17,8 @@ const headerOptions = {
 };
 
 const Customers = () => {
-  const [token, setToken] = useAtom(userTokenAtom);
-  const [user, setUser] = useAtom(userAtom);
+ 
+ 
   const [data, setData] = useState();
   const [locations, setLocations] = useState([]);
   const [selectedDate, setSelectedDate] = useState({
@@ -25,6 +28,7 @@ const Customers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [Filters, setFilters] = useState([
     {
       name: "date",
@@ -51,11 +55,29 @@ const Customers = () => {
       ],
     },
   ]);
+  const dispatch = useDispatch();
+  const { setToken,setUser } = bindActionCreators(authActions, dispatch);
+  const {token}= useSelector(
+    (state) => state.auth
+  );
+
 
   const GetCustomers = async () => {
     try {
       const res = await axios.get(
-        `https://qoodz-api.herokuapp.com/api/partners/3/customers?${"startDate=" +selectedDate.fromDate +"&endDate=" +selectedDate.toDate}${searchKeyword? "&searchAttribute=name&searchValue=" + searchKeyword:''}${selectedGender? "&gender=" + selectedGender.value:''}${selectedCity ? "&location=" + selectedCity.value:''}`,
+        `https://qoodz-api.herokuapp.com/api/partners/3/customers?${
+          "startDate=" +
+          selectedDate.fromDate +
+          "&endDate=" +
+          selectedDate.toDate
+        }${
+          selectedCategory && searchKeyword
+            ? `&searchAttribute=${selectedCategory.value}&searchValue=` +
+              searchKeyword
+            : ""
+        }${selectedGender ? "&gender=" + selectedGender.value : ""}${
+          selectedCity ? "&location=" + selectedCity.value : ""
+        }`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -75,12 +97,13 @@ const Customers = () => {
   };
 
   const GetLocations = async () => {
+    console.log(">>>> token ",token)
     axios
       .get("https://qoodz-api.herokuapp.com/api/locations", {
         headers: {
           "Content-Type": "application/json",
           apiKey: "63cad87c3207fce093f8c08388e5a805",
-          Authorization: `Bearer ${token.accessToken}`,
+          Authorization: `Bearer ${token?.accessToken}`,
         },
       })
       .then((res) =>
@@ -111,7 +134,13 @@ const Customers = () => {
     GetCustomers().then((res) => {
       setData(res);
     });
-  }, [searchKeyword, selectedDate, selectedCity, selectedGender]);
+  }, [
+    searchKeyword,
+    selectedDate,
+    selectedCity,
+    selectedGender,
+    selectedCategory,
+  ]);
 
   useEffect(() => {
     const Filter = Filters.map((p) =>
@@ -135,6 +164,8 @@ const Customers = () => {
         setSelectedCity={setSelectedCity}
         setSelectedGender={setSelectedGender}
         hasChild={true}
+        searchCategories={searchCategories}
+        setSelectedCategory={setSelectedCategory}
       />
     </Layout>
   );
@@ -213,4 +244,11 @@ const columns = [
     visability: true,
     type: "date",
   },
+];
+
+const searchCategories = [
+  { label: "Name", value: "name" },
+  { label: "Phone", value: "phoneNumber" },
+  { label: "Nationality", value: "nationality" },
+  { label: "Email", value: "email" },
 ];

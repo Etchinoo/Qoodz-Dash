@@ -189,14 +189,14 @@ export const SPhoneInput = styled(PhoneInput)`
 `;
 
 export const SSelect = styled(Select)`
-  width: 100%;
+  width: 90%;
   &.select-filter {
-    width: 100%;
+    width: 90%;
     .filter-opt__control {
       border-radius: 15px;
-      padding: 1rem 1rem;
+      padding: .5rem ;
       font-size: 24px;
-      width: 100%;
+      width: 90%;
       border: solid 1px rgba(115, 112, 113, 0.37);
       color: #939baf;
       border: none;

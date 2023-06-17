@@ -40,6 +40,7 @@ export const TH = styled.th`
   color: #939baf;
   padding: .8rem .8rem;
   width: fit-content;
+  text-align: center;
 `;
 export const TBody = styled.tbody`
   font-family: GilroyMedium;
@@ -53,7 +54,7 @@ export const TD = styled.td`
 export const SFilterBar = styled.div`
   display: grid;
   gap: 0.5rem;
-  grid-template-columns:  ${props => props.details ? "auto 1fr" : " 1fr 1fr 1fr 1fr 1fr"};;
+  grid-template-columns:  ${props => props.details ? "auto 1fr 1fr" : " 1fr 1fr 1fr 1fr 1fr"};;
 `;
 
 
@@ -104,7 +105,7 @@ export const CustomSelect = styled(Select)`
     .filter-opt__control {
       border-radius: 12px;
       background: #f7f7fc;
-      padding: 12px 24px;
+      padding: 12px 12px;
       font-size: 18px;
       border: none;
     }

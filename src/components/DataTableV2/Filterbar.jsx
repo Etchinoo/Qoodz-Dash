@@ -24,7 +24,10 @@ const Filterbar = ({
   setSelectedDate,
   setSelectedCity,
   setSelectedGender,
+  setSelectedBranch,
   details,
+  searchCategories,
+  setSelectedCategory,
 }) => {
   const [open, setOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -32,7 +35,6 @@ const Filterbar = ({
   const onChange = (e) => {
     console.log("onChange: ", e);
   };
-
   const handleSelectChange = (e, filter) => {
     if (filter.name == "city" && setSelectedCity) {
       setSelectedCity(e);
@@ -40,6 +42,12 @@ const Filterbar = ({
     if (filter.name == "gender" && setSelectedGender) {
       setSelectedGender(e);
     }
+    if (filter.name == "branch" && setSelectedBranch) {
+      setSelectedBranch(e);
+    }
+  };
+  const handleSearchCatgoryChange = (e) => {
+    setSelectedCategory(e);
   };
 
   return (
@@ -67,6 +75,7 @@ const Filterbar = ({
               placeholder={searchPlaceholder}
             />
           </SearchBar>
+
           {download ? (
             <>
               <DownloadButton
@@ -98,6 +107,18 @@ const Filterbar = ({
               )}
             </div>
           ))}
+          <div>
+            <CustomSelect
+              className="select-filter"
+              classNamePrefix="filter-opt"
+              placeholder="Search category"
+              isClearable={true}
+              isSearchable={true}
+              options={searchCategories}
+              onChange={(e) => handleSearchCatgoryChange(e)}
+            />
+          </div>
+
           <SearchBar>
             <div
               style={{
@@ -114,16 +135,17 @@ const Filterbar = ({
               placeholder={searchPlaceholder}
             />
           </SearchBar>
-          {download ? (
+
+          {/* {download ? (
             <>
               <DownloadButton
-                size={28}
+                size={24}
                 onClick={() => {
                   setOpen(true);
                 }}
               />
             </>
-          ) : null}
+          ) : null} */}
         </>
       )}
     </SFilterBar>

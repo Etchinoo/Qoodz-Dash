@@ -10,5 +10,21 @@
   font-family: "GilroyRegular";
   font-size: 18px;
   line-height: 28px;
-  color: #282A37;
-}   
+  color: #282a37;
+}
+
+.recharts-cartesian-axis-tick-line {
+  visibility: hidden !important;
+}
+
+.recharts-layer.recharts-cartesian-axis-tick line {
+  visibility: hidden;
+}
+
+.recharts-text .recharts-cartesian-axis-tick-value .recharts-cartesian-axis-ticks .recharts-layer .recharts-cartesian-axis .recharts-xAxis xAxis{
+  font-family: "GilroyRegular";
+  font-size: 18px !important;
+  line-height: 28px !important;
+  color: #282a37;
+}
+

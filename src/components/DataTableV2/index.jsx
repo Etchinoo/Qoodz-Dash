@@ -38,8 +38,11 @@ const DataTableV2 = ({
   setSearchKeyword,
   setSelectedCity,
   setSelectedGender,
+  setSelectedBranch,
   details,
   hasChild,
+  searchCategories,
+  setSelectedCategory,
 }) => {
   const [sorted, setSorted] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,6 +70,9 @@ const DataTableV2 = ({
         setSelectedDate={setSelectedDate}
         setSelectedGender={setSelectedGender}
         setSelectedCity={setSelectedCity}
+        searchCategories={searchCategories}
+        setSelectedCategory={setSelectedCategory}
+        setSelectedBranch={setSelectedBranch}
       />
       {data ? (
         <>
@@ -103,7 +109,7 @@ const DataTableV2 = ({
                             <BiEdit
                               style={{ cursor: "pointer" }}
                               onClick={() =>
-                                actionHandler({ key: column.key, id: row.id })
+                                actionHandler({ key: column.key, id: row.id,row:row })
                               }
                             />
                           </>

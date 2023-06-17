@@ -104,21 +104,20 @@ function Dropdown({ show }) {
         headers: {
           "Content-Type": "application/json",
           apiKey: "63cad87c3207fce093f8c08388e5a805",
-          Authorization: `Bearer ${token.accessToken}`,
+          Authorization: `Bearer ${token?.accessToken}`,
         },
       })
       .then((res) => setunSeenNotification(res.data))
       .catch((error) => {
         console.log("error: ", error.response.status);
         if (error.response.status === 401) {
-          setToken(null);
-          setUser(null);
+          // setToken(null);
         }
       });
   };
 
   useEffect(() => {
-    getUnseenNotification();
+    // getUnseenNotification();
   }, []);
 
   return (

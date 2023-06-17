@@ -20,6 +20,9 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../../store/Atoms";
 import { useNavigate } from "react-router-dom";
+import { authActions } from "../../../redux/actions/Auth.actions";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = async (data) => {
   try {
@@ -33,7 +36,6 @@ const Login = async (data) => {
         },
       }
     );
-    // console.log("response: ", response);
     return response.data;
   } catch (error) {
     console.log("error: ", error);
@@ -44,10 +46,11 @@ const Signin = () => {
   const size = useWindowSize();
   const [phone, setPhone] = useState("+201100000002");
   const [password, setPassword] = useState("test123123");
-  const [user, setUser] = useAtom(userAtom);
+  const dispatch = useDispatch();
   const [userToken, setUserToken] = useAtom(userTokenAtom);
-
   const nav = useNavigate();
+  const { setToken, setUser } = bindActionCreators(authActions, dispatch);
+  const { user } = useSelector((state) => state.auth);
 
   const login = async () => {
     console.log("login");
@@ -58,7 +61,11 @@ const Signin = () => {
     const res = await Login(JSON.stringify(data));
     if (res) {
       setUser(res.user);
-      setUserToken(res.tokens);
+      //setUserToken(res.tokens);
+      setToken(res.tokens);
+      localStorage.setItem("token", JSON.stringify(res.tokens));
+      localStorage.setItem("user", JSON.stringify(res.user));
+
       nav("/");
     }
   };

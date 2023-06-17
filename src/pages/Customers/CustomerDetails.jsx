@@ -40,6 +40,8 @@ const CustomerDetails = () => {
   const [tabData, setTabData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const dispatch = useDispatch();
   const { setToken, setUser } = bindActionCreators(authActions, dispatch);
   const { token } = useSelector((state) => state.auth);
@@ -84,8 +86,9 @@ const CustomerDetails = () => {
         `https://qoodz-api.herokuapp.com/api/partners/3/customers/${parseInt(
           id
         )}/${active.key}?${
-          searchKeyword
-            ? "searchAttribute=name&searchValue=" + searchKeyword
+          selectedCategory && searchKeyword
+            ? `&searchAttribute=${selectedCategory.value}&searchValue=` +
+              searchKeyword
             : ""
         }${
           selectedDate
@@ -146,6 +149,8 @@ const CustomerDetails = () => {
                   hasChild={false}
                   setSelectedDate={setSelectedDate}
                   setSearchKeyword={setSearchKeyword}
+                  searchCategories={searchCategories}
+                  setSelectedCategory={setSelectedCategory}
                   // download
                 />
               </>
@@ -195,7 +200,10 @@ const Filters = [
     type: "date",
   },
 ];
-
+const searchCategories = [
+  { label: "Name", value: "name" },
+  { label: "Phone", value: "phoneNumber" },
+];
 const scansColumns = [
   {
     name: "ID",

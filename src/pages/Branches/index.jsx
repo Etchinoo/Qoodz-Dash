@@ -23,9 +23,13 @@ const headerOptions = {
 const Branches = () => {
   const [newOpen, setNewOpen] = useState(false);
   const [EditOpen, setEditOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const actionHandler = (action) => {
-    if (action.key === "edit") setEditOpen(true);
+    if (action.key === "edit") {
+      setEditOpen(true);
+      setSelectedRow(action.row);
+    }
   };
 
   const [token, setToken] = useAtom(userTokenAtom);
@@ -39,7 +43,7 @@ const Branches = () => {
     fromDate: moment().date(-90).format("YYYY-MM-DD"),
     toDate: moment().format("YYYY-MM-DD"),
   });
-  const [locations,setLocations]=useState([])
+  const [locations, setLocations] = useState([]);
   const [analyticsData, setAnalyticsData] = useState({});
   const [Filters, setFilters] = useState([
     {
@@ -122,7 +126,7 @@ const Branches = () => {
     getPartanerAnalytics();
     GetBranches();
     GetLocations();
-  }, [selectedBranch,selectedCategory,selectedDate,searchKeyword]);
+  }, [selectedBranch, selectedCategory, selectedDate, searchKeyword]);
 
   const GetLocations = async () => {
     axios
@@ -155,16 +159,22 @@ const Branches = () => {
     );
     setFilters(Filter);
   }, [branches]);
+
   return (
     <Layout header={headerOptions} addNew={() => setNewOpen(true)}>
       {EditOpen && (
         <ModalContainer setOpen={setEditOpen}>
-          <EditBranchForm id={"1"} onCancel={setEditOpen} locations={locations} />
+          <EditBranchForm
+            id={"1"}
+            onCancel={setEditOpen}
+            locations={locations}
+            selectedRow={selectedRow}
+          />
         </ModalContainer>
       )}
       {newOpen && (
         <ModalContainer setOpen={setNewOpen}>
-          <AddNewBranchForm locations={locations}/>
+          <AddNewBranchForm locations={locations} />
         </ModalContainer>
       )}
       <StatbarV2 devider={true} analyticsData={analyticsData} />

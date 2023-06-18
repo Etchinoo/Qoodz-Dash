@@ -35,7 +35,7 @@ export default function AddNewBranchForm({ locations }) {
       phoneNumber: phone,
       name: name,
       location: location.value,
-      area: location.value,
+      area: area.value,
     };
     axios
       .post(`${APIsConstants.BASE_URL}/branches`, data, {

@@ -125,7 +125,7 @@ export default function AddNewBranchForm({ locations }) {
             />
           </InputGrp>
         </Row>{" "}
-        {/* <InputGrp>
+        <InputGrp>
           <Label>Branch Location</Label>
           <SSelect
             className="select-filter"
@@ -150,13 +150,13 @@ export default function AddNewBranchForm({ locations }) {
               onChange={(e) => setArea(e)}
             />
           </InputGrp>
-        )} */}
-        <PrimaryBtn
+        )}
+        {/* <PrimaryBtn
           disabled={!(name && phone && location && area)}
           onClick={() => onSubmit()}
         >
           Request Branch
-        </PrimaryBtn>
+        </PrimaryBtn> */}
       </Form>
     );
 }

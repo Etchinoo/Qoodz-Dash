@@ -97,7 +97,6 @@ const Customers = () => {
   };
 
   const GetLocations = async () => {
-    console.log(">>>> token ",token)
     axios
       .get("https://qoodz-api.herokuapp.com/api/locations", {
         headers: {

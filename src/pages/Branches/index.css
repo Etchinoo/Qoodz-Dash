@@ -1,0 +1,34 @@
+.phoneInputWrapper {
+  padding: 12px 12px;
+  width: 100%;
+  font-family: GilroyRegular, sans-serif;
+  font-size: 16px;
+  border: solid 1px rgba(115, 112, 113, 0.37);
+  border-radius: 15px;
+}
+
+.react-tel-input {
+  font-size: 0.9rem !important;
+}
+
+.react-tel-input .form-control {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  position: relative;
+  height: 2.8rem;
+  letter-spacing: 0.01rem;
+  border: solid 1px rgba(115, 112, 113, 0.37);
+  border-radius: 15px;
+  width: 100% !important;
+  font-size: 0.9rem !important;
+}
+
+.react-tel-input .flag-dropdown {
+  border-radius: 15px;
+  background-color: unset;
+  border: unset !important;
+}
+
+.filter-opt{
+  padding: 2px 3px !important;
+}

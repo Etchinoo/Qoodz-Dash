@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import styled from "styled-components";
-import "react-phone-number-input/style.css";
 import { Col, Row } from "../../components/Shared";
 
 import {
@@ -11,9 +9,10 @@ import {
   InputGrp,
   Label,
   Title,
+  PrimaryBtn,
+  SSelect
 } from "../Cashires/FormComponents.styles";
 import SuccessModal from "../../components/Shared/SuccessModal";
-import { PrimaryBtn, SSelect } from "../Cashires/FormComponents.styles";
 import axios from "axios";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
@@ -23,8 +22,8 @@ export default function AddNewBranchForm({ locations }) {
   const [stage, setStage] = useState(1);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
-  const [area, setArea] = useState("");
+  const [location, setLocation] = useState(null);
+  const [area, setArea] = useState(null);
   const [areas, setAreas] = useState([]);
 
   const [token, setToken] = useAtom(userTokenAtom);
@@ -34,8 +33,8 @@ export default function AddNewBranchForm({ locations }) {
     let data = {
       phoneNumber: phone,
       name: name,
-      location: location.value,
-      area: area.value,
+      location: location?.value,
+      area: area?.value,
     };
     axios
       .post(`${APIsConstants.BASE_URL}/branches`, data, {

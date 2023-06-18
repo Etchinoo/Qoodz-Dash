@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import axios from "axios";
 import StatbarV2 from "../../components/StatbarV2";
+import "./index.css";
 
 const headerOptions = {
   title: "Branches",

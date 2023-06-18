@@ -7,10 +7,10 @@ import {
   Form,
   Input,
   InputGrp,
+  SSelect,
   Label,
   Title,
   PrimaryBtn,
-  SSelect,
 } from "../Cashires/FormComponents.styles";
 import SuccessModal from "../../components/Shared/SuccessModal";
 import axios from "axios";
@@ -20,16 +20,14 @@ import { APIsConstants } from "../../constants/API.constants";
 
 export default function AddNewBranchForm({ locations }) {
   const [stage, setStage] = useState(1);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [location, setLocation] = useState(null);
-  const [area, setArea] = useState(null);
   const [areas, setAreas] = useState([]);
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
 
-  const CreateBranch = () => {
+  const CreateBranch = (name, phone, location, area) => {
+    console.log(">>>> phone ",phone)
     let data = {
       phoneNumber: phone,
       name: name,
@@ -68,13 +66,13 @@ export default function AddNewBranchForm({ locations }) {
           },
         }
       )
-      .then((res) =>
+      .then((res) => {
         setAreas(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
-      )
+        );
+      })
       .catch((error) => {
         console.log("error: ", error.response.status);
         if (error.response.status === 401) {
@@ -89,42 +87,63 @@ export default function AddNewBranchForm({ locations }) {
     }
   }, [location]);
 
-  const onSubmit = () => {
-    CreateBranch();
+  const onSubmit = (name, phone, location, area) => {
+    CreateBranch(name, phone, location, area);
   };
 
   if (stage === 2)
     return <SuccessModal mainText={"Branch Successfully Added!"} />;
   if (stage === 1)
     return (
-      <Form>
-        <Title>Request a new Branch</Title>
-        <Row gap={"2rem"}>
-          <InputGrp>
-            <Label>Branch Name</Label>
-            <Input
-              type={"text"}
-              placeholder="John Doe"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </InputGrp>
-          <InputGrp>
-            <Label>Branch Phone Number</Label>
-            <PhoneInput
-              containerClass=""
-              inputProps={{
-                name: null,
-                required: true,
-              }}
-              specialLabel={null}
-              inputClass="phoneInputWrapper"
-              country="eg"
-              onChange={(data) => setPhone(data)}
-              value={phone}
-            />
-          </InputGrp>
-        </Row>
-        <Row gap="19px">
+      <AddNewBranch
+        areas={areas}
+        locations={locations}
+        onSubmit={onSubmit}
+        location={location}
+        setLocation={setLocation}
+      />
+    );
+}
+
+export function AddNewBranch({
+  areas,
+  locations,
+  onSubmit,
+  location,
+  setLocation,
+}) {
+  const [name, setName] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [area, setArea] = useState(null);
+  return (
+    <Form>
+      <Title>Request a new Branch</Title>
+      <Row gap={"2rem"}>
+        <InputGrp>
+          <Label>Branch Name</Label>
+          <Input
+            type={"text"}
+            placeholder="John Doe"
+            onChange={(e) => setName(e.target.value)}
+          />
+        </InputGrp>
+        <InputGrp>
+          <Label>Branch Phone Number</Label>
+          <PhoneInput
+            containerClass=""
+            inputProps={{
+              name: null,
+              required: true,
+            }}
+            specialLabel={null}
+            inputClass="phoneInputWrapper"
+            country="eg"
+            onChange={(data) => setPhone(data)}
+            value={phone}
+          />
+        </InputGrp>
+      </Row>
+      <Row gap="19px">
         <InputGrp>
           <Label>Branch Location</Label>
           <SSelect
@@ -151,13 +170,13 @@ export default function AddNewBranchForm({ locations }) {
             />
           </InputGrp>
         )}
-        </Row>
-        <PrimaryBtn
-          disabled={!(name && phone && location && area)}
-          onClick={() => onSubmit()}
-        >
-          Request Branch
-        </PrimaryBtn>
-      </Form>
-    );
+      </Row>
+      <PrimaryBtn
+        disabled={!(name && phone && location && area)}
+        onClick={() => onSubmit(name, phone, location, area)}
+      >
+        Request Branch
+      </PrimaryBtn>
+    </Form>
+  );
 }

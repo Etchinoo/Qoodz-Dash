@@ -22,15 +22,15 @@ import axios from "axios";
 
 export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   const [stage, setStage] = useState(1);
-  const [name, setName] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [area, setArea] = useState(null);
-  const [areas, setAreas] = useState([]);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [area, setArea] = useState("");
+  const [areas, setAreas] = useState(null);
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
-  console.log(">>>> locations ", locations);
+ 
 
   const GetAreas = async () => {
     axios
@@ -68,7 +68,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   useEffect(() => {
     if (selectedRow) {
       setName(selectedRow.name);
-      setPhone(selectedRow.phoneNumber);
+      selectedRow.phoneNumber & setPhone(selectedRow.phoneNumber);
       setArea({ label: selectedRow.area.name, value: selectedRow.area.id });
       setLocation({
         label: selectedRow.location.name,

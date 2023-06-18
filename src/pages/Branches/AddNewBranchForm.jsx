@@ -21,10 +21,10 @@ import { APIsConstants } from "../../constants/API.constants";
 
 export default function AddNewBranchForm({ locations }) {
   const [stage, setStage] = useState(1);
-  const [name, setName] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [area, setArea] = useState(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [area, setArea] = useState("");
   const [areas, setAreas] = useState([]);
 
   const [token, setToken] = useAtom(userTokenAtom);

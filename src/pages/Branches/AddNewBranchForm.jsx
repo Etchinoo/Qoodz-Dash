@@ -10,7 +10,7 @@ import {
   Label,
   Title,
   PrimaryBtn,
-  SSelect
+  SSelect,
 } from "../Cashires/FormComponents.styles";
 import SuccessModal from "../../components/Shared/SuccessModal";
 import axios from "axios";
@@ -97,6 +97,67 @@ export default function AddNewBranchForm({ locations }) {
     return <SuccessModal mainText={"Branch Successfully Added!"} />;
   if (stage === 1)
     return (
-    <div>Hello</div>
+      <Form>
+        <Title>Request a new Branch</Title>
+        <Row gap={"2rem"}>
+          <InputGrp>
+            <Label>Branch Name</Label>
+            <Input
+              type={"text"}
+              placeholder="John Doe"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </InputGrp>
+          <InputGrp>
+            <Label>Branch Phone Number</Label>
+            <PhoneInput
+              containerClass=""
+              inputProps={{
+                name: null,
+                required: true,
+              }}
+              specialLabel={null}
+              inputClass="phoneInputWrapper"
+              country="eg"
+              onChange={(data) => setPhone(data)}
+              value={phone}
+            />
+          </InputGrp>
+        </Row>
+        <Row gap="19px">
+        <InputGrp>
+          <Label>Branch Location</Label>
+          <SSelect
+            className="select-filter"
+            classNamePrefix="filter-opt"
+            isClearable={true}
+            isSearchable={true}
+            placeholder="Select Location"
+            options={locations}
+            onChange={(e) => setLocation(e)}
+          />
+        </InputGrp>
+        {location && (
+          <InputGrp>
+            <Label>Branch Area</Label>
+            <SSelect
+              className="select-filter"
+              classNamePrefix="filter-opt"
+              isClearable={true}
+              isSearchable={true}
+              placeholder="Select Area"
+              options={areas}
+              onChange={(e) => setArea(e)}
+            />
+          </InputGrp>
+        )}
+        </Row>
+        <PrimaryBtn
+          disabled={!(name && phone && location && area)}
+          onClick={() => onSubmit()}
+        >
+          Request Branch
+        </PrimaryBtn>
+      </Form>
     );
 }

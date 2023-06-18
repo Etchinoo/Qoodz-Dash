@@ -12,7 +12,7 @@ const CustomerSegmention = ({ analyticsData }) => {
   const [chartDate, setChartData] = useState(null); 
   useEffect(() => {
     if (analyticsData?.analytics?.age_ranges.length > 0)
-      setChartData([...analyticsData?.analytics?.age_ranges].reverse());
+      setChartData([...analyticsData?.analytics?.age_ranges]);
   }, [analyticsData]);
   console.log(">>>> analyticsData ", analyticsData);
   return (

@@ -7,17 +7,17 @@ import {
   Form,
   Input,
   InputGrp,
-  SSelect,
+
   Label,
   Title,
   PrimaryBtn,
 } from "./FormComponents.styles";
 import SuccessModal from "../../components/Shared/SuccessModal";
 import axios from "axios";
-import { userAtom, userTokenAtom } from "../../store/Atoms";
+
 import { useAtom } from "jotai";
+import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { APIsConstants } from "../../constants/API.constants";
-import { Suspense } from "react";
 
 export default function AddNewBranchForm({ locations }) {
   const [stage, setStage] = useState(1);
@@ -149,7 +149,7 @@ export function AddNewBranch({
       <Row gap="19px">
         <InputGrp>
           <Label>Branch Location</Label>
-          <SSelect
+          {/* <SSelect
             className="select-filter"
             classNamePrefix="filter-opt"
             isClearable={true}
@@ -157,12 +157,12 @@ export function AddNewBranch({
             placeholder="Select Location"
             options={locations}
             onChange={(e) => setLocation(e)}
-          />
+          /> */}
         </InputGrp>
         {location && (
           <InputGrp>
             <Label>Branch Area</Label>
-            <SSelect
+            {/* <SSelect
               className="select-filter"
               classNamePrefix="filter-opt"
               isClearable={true}
@@ -170,7 +170,7 @@ export function AddNewBranch({
               placeholder="Select Area"
               options={areas}
               onChange={(e) => setArea(e)}
-            />
+            /> */}
           </InputGrp>
         )}
       </Row>

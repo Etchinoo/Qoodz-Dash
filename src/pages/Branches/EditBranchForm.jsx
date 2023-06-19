@@ -111,7 +111,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
           <InputGrp>
             <Label>Phone Number</Label>
             <PhoneInput
-              containerClass=""
+               
            
               inputClass="phoneInputWrapper"
               country="eg"

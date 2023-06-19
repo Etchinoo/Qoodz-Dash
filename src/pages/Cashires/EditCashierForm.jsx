@@ -133,7 +133,7 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
           <InputGrp>
             <Label>Cashier Phone Number</Label>
             <PhoneInput
-              containerClass=""
+               
         
               inputClass="phoneInputWrapper"
               country="eg"

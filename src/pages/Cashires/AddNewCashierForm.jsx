@@ -86,7 +86,7 @@ export function AddNewCashier({ onSubmit, branches }) {
           <Label>Cashier Phone Number</Label>
 
           <PhoneInput
-            containerClass=""
+             
          
             inputClass="phoneInputWrapper"
             country="eg"

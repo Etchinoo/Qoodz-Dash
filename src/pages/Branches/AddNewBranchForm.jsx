@@ -93,10 +93,10 @@ export default function AddNewBranchForm({ locations }) {
   };
 
   if (stage === 2)
-    return <SuccessModal mainText={"Branch Successfully Added!"} />;
+    return <div>Hello</div>;
   if (stage === 1)
     return (
-      <Suspense>
+    
         <AddNewBranch
           areas={areas}
           locations={locations}
@@ -104,7 +104,7 @@ export default function AddNewBranchForm({ locations }) {
           location={location}
           setLocation={setLocation}
         />
-      </Suspense>
+    
     );
 }
 

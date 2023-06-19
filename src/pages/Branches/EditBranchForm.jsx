@@ -112,11 +112,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
             <Label>Phone Number</Label>
             <PhoneInput
               containerClass=""
-              inputProps={{
-                name: null,
-                required: true,
-              }}
-              specialLabel={null}
+           
               inputClass="phoneInputWrapper"
               country="eg"
               onChange={(data) => setPhone(data)}

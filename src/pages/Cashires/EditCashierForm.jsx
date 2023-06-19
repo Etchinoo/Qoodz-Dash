@@ -134,11 +134,7 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
             <Label>Cashier Phone Number</Label>
             <PhoneInput
               containerClass=""
-              inputProps={{
-                name: null,
-                required: true,
-              }}
-              specialLabel={null}
+        
               inputClass="phoneInputWrapper"
               country="eg"
               onChange={(data) => setPhone(data)}

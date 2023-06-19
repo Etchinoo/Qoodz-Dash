@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 import { Col, Row } from "../../components/Shared";
 import {
   Form,
@@ -87,11 +87,7 @@ export function AddNewCashier({ onSubmit, branches }) {
 
           <PhoneInput
             containerClass=""
-            inputProps={{
-              name: null,
-              required: true,
-            }}
-            specialLabel={null}
+         
             inputClass="phoneInputWrapper"
             country="eg"
             onChange={(data) => setPhone(data)}

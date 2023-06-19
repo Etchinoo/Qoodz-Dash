@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+
 import { Row } from "../../components/Shared";
 import {
   DeleteBtn,
@@ -30,7 +29,6 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
- 
 
   const GetAreas = async () => {
     axios
@@ -110,12 +108,9 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
           </InputGrp>
           <InputGrp>
             <Label>Phone Number</Label>
-            <PhoneInput
-               
-           
-              inputClass="phoneInputWrapper"
-              country="eg"
-              onChange={(data) => setPhone(data)}
+            <Input
+              
+              onChange={(e) => setPhone(e.target.value)}
               value={phone}
             />
           </InputGrp>

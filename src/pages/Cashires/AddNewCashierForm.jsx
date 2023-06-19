@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+
 import { Col, Row } from "../../components/Shared";
 import {
   Form,
@@ -18,7 +17,7 @@ import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
 
-export default function AddNewCashierForm({ branches,GetCashires }) {
+export default function AddNewCashierForm({ branches, GetCashires }) {
   const [stage, setStage] = useState(1);
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
@@ -59,7 +58,7 @@ export default function AddNewCashierForm({ branches,GetCashires }) {
   if (stage === 2)
     return <SuccessModal mainText={"Cashier Successfully Added!"} />;
   if (stage === 1)
-    return <AddNewCashier onSubmit={onSubmit} branches={branches}  />;
+    return <AddNewCashier onSubmit={onSubmit} branches={branches} />;
 }
 
 export function AddNewCashier({ onSubmit, branches }) {
@@ -85,14 +84,7 @@ export function AddNewCashier({ onSubmit, branches }) {
         <InputGrp>
           <Label>Cashier Phone Number</Label>
 
-          <PhoneInput
-             
-         
-            inputClass="phoneInputWrapper"
-            country="eg"
-            onChange={(data) => setPhone(data)}
-            value={phone}
-          />
+          <Input onChange={(e) => setPhone(e.target.value)} value={phone} />
         </InputGrp>
       </Row>
       <Row gap="19px">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+
 import { Col, Row } from "../../components/Shared";
 import {
   DeleteBtn,
@@ -132,14 +131,7 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
           </InputGrp>
           <InputGrp>
             <Label>Cashier Phone Number</Label>
-            <PhoneInput
-               
-        
-              inputClass="phoneInputWrapper"
-              country="eg"
-              onChange={(data) => setPhone(data)}
-              value={phone}
-            />
+            <Input onChange={(e) => setPhone(e.target.value)} value={phone} />
           </InputGrp>
         </Row>
         <Row gap="19px">

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+
 import { Col, Row } from "../../components/Shared";
 
 import {
@@ -130,14 +129,7 @@ export function AddNewBranch({
         </InputGrp>
         <InputGrp>
           <Label>Branch Phone Number</Label>
-          <PhoneInput
-             
-     
-            inputClass="phoneInputWrapper"
-            country="eg"
-            onChange={(data) => setPhone(data)}
-            value={phone}
-          />
+          <Input onChange={(e) => setPhone(e.target.value)} value={phone} />
         </InputGrp>
       </Row>
       <Row gap="19px">

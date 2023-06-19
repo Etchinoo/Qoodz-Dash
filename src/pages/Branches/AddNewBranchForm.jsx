@@ -202,14 +202,14 @@ export function AddNewBranch({
   box-sizing: border-box;
 `;
 
-export const Label = styled.span`
+ const Label = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 16px;
   font-family: GilroyRegular, sans-serif;
 `;
 
-export const Input = styled.input`
+ const Input = styled.input`
   padding: 12px 12px;
   width: 100%;
   font-family: GilroyRegular, sans-serif;
@@ -218,7 +218,7 @@ export const Input = styled.input`
   border-radius: 15px;
 `;
 
-export const BranchSelect = styled.div`
+ const BranchSelect = styled.div`
   width: 802px;
   height: 69px;
   border: solid 1px rgba(115, 112, 113, 0.37);

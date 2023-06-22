@@ -9,10 +9,9 @@ import { Col, Header, Row } from "../../components/Shared";
 import _data from "../../data/customer_data.json";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { authActions } from "../../redux/actions/Auth.actions";
-import { bindActionCreators } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useAtom } from "jotai";
+import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { SidebarStateAtom } from "../../store/Atoms";
 
 const TabsData = [
@@ -42,9 +41,8 @@ const CustomerDetails = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const dispatch = useDispatch();
-  const { setToken, setUser } = bindActionCreators(authActions, dispatch);
-  const { token } = useSelector((state) => state.auth);
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
 
   const setActiveTab = (tab) => {
     const index = TabsData.findIndex((t) => t.key === tab);
@@ -327,7 +325,6 @@ export function CustomerDetailsCard({ data, switchTabs }) {
     }
   };
 
-  console.log(">>> data  ", data);
   return (
     <RootWrapperCustomerDetailsCard open={SidebarState}>
       <Col gap="32px">

@@ -45,6 +45,9 @@ const Filterbar = ({
     if (filter.name == "branch" && setSelectedBranch) {
       setSelectedBranch(e);
     }
+    if (filter.name == "daterange" && setSelectedDate) {
+      setSelectedDate(e.value);
+    }
   };
   const handleSearchCatgoryChange = (e) => {
     setSelectedCategory(e);

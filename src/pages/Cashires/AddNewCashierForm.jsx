@@ -16,6 +16,7 @@ import axios from "axios";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
+import { isPhoneNumber } from "../../Validations";
 
 export default function AddNewCashierForm({ branches, GetCashires }) {
   const [stage, setStage] = useState(1);
@@ -127,7 +128,8 @@ export function AddNewCashier({ onSubmit, branches }) {
             password &&
             confirmPassword &&
             password == confirmPassword &&
-            branch
+            branch &&
+            isPhoneNumber(phone)
           )
         }
         onClick={() => onSubmit(name, phone, password, branch, setError)}

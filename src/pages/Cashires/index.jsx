@@ -16,11 +16,9 @@ import {
   userAtom,
   userTokenAtom,
 } from "../../store/Atoms";
-import { useDispatch, useSelector } from "react-redux";
-import {bindActionCreators} from 'redux'
+
 import moment from "moment";
 import "./index.css";
-import { authActions } from "../../redux/actions/Auth.actions";
 const headerOptions = {
   title: "Cashires",
   type: "master",

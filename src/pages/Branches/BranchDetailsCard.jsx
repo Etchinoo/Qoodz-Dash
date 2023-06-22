@@ -4,9 +4,9 @@ import userImage from "../../assets/userImage.png";
 import OfferImage2 from "../../assets/OfferImage 2.png";
 import { Col, Header, Row } from "../../components/Shared";
 
-const BranchDetailsCard = () => {
+const BranchDetailsCard = ({SidebarState,data}) => {
   return (
-    <RootWrapperBranchDetailsCard>
+    <RootWrapperBranchDetailsCard open={SidebarState}>
       <Col gap="46px">
         <Row gap="260px">
           <CustomerImage src={OfferImage2} alt="image of CustomerImage" />
@@ -22,8 +22,8 @@ const BranchDetailsCard = () => {
           </Vector>
         </Row>
         <Col gap="7px">
-          <Name>KFC - 15 May branch</Name>
-          <Branch>ECairo, Egypt, 5 May branch</Branch>
+          <Name>{data[0].branch.name} - {data[0].branch.area.name}</Name>
+          <Branch>{data[0].location.name}, {data[0].branch.area.name}</Branch>
         </Col>
       </Col>
       <Col gap="18px">
@@ -35,7 +35,7 @@ const BranchDetailsCard = () => {
                 d="M17.2135 0.123728C16.0714 -1.45286e-05 14.6318 -8.0335e-06 12.7952 1.32337e-07L10.7048 1.32337e-07C8.86821 -8.0335e-06 7.42861 -1.45286e-05 6.28648 0.123728C5.12094 0.250006 4.17656 0.512324 3.37023 1.09815C2.88209 1.45281 2.45281 1.88209 2.09815 2.37024C1.94354 2.58304 1.81012 2.80734 1.69538 3.04546C1.32515 3.81379 1.16014 4.70506 1.07976 5.76904C0.999995 6.82487 0.999997 8.12076 1 9.72096L1 9.75C1 10.1642 1.33579 10.5 1.75 10.5C2.16421 10.5 2.5 10.1642 2.5 9.75C2.5 8.11482 2.50049 6.87493 2.5755 5.88204C2.60746 5.45891 2.6523 5.09361 2.71271 4.77337L4.18919 6.24985C5.82145 7.88213 7.10062 9.16132 8.23288 10.0252C9.39181 10.9094 10.4845 11.4289 11.75 11.4289C13.0155 11.4289 14.1082 10.9094 15.2671 10.0252C16.3994 9.16132 17.6785 7.88216 19.3108 6.2499L20.7873 4.77337C20.8477 5.09361 20.8925 5.45891 20.9245 5.88204C20.9995 6.87493 21 8.11482 21 9.75C21 11.6416 20.999 13 20.885 14.052C20.7725 15.0899 20.5574 15.7401 20.1883 16.2481C19.9262 16.6089 19.6089 16.9262 19.2481 17.1883C18.7401 17.5574 18.0899 17.7725 17.052 17.885C16 17.999 14.6416 18 12.75 18L10.75 18C10.3358 18 10 18.3358 10 18.75C10 19.1642 10.3358 19.5 10.75 19.5L12.7953 19.5C14.6318 19.5 16.0714 19.5 17.2135 19.3763C18.3791 19.25 19.3234 18.9877 20.1298 18.4018C20.6179 18.0472 21.0472 17.6179 21.4018 17.1298C21.9877 16.3234 22.25 15.3791 22.3763 14.2135C22.5 13.0714 22.5 11.6318 22.5 9.79535L22.5 9.72101C22.5 8.12079 22.5 6.82488 22.4202 5.76904C22.3399 4.70506 22.1748 3.81379 21.8046 3.04546C21.6899 2.80734 21.5565 2.58304 21.4018 2.37024C21.0472 1.88209 20.6179 1.45281 20.1298 1.09815C19.3234 0.512324 18.3791 0.250006 17.2135 0.123728ZM5.20926 5.1486L3.31205 3.25139C3.57412 2.89081 3.89128 2.57369 4.25191 2.31168C4.75992 1.94259 5.41013 1.72745 6.44804 1.615C7.49999 1.50103 8.85843 1.5 10.75 1.5L12.75 1.5C14.6416 1.5 16 1.50103 17.052 1.615C18.0899 1.72745 18.7401 1.94259 19.2481 2.31168C19.6087 2.57369 19.9259 2.89081 20.1879 3.25139L18.2907 5.1486C16.6091 6.83026 15.4001 8.03703 14.3572 8.83267C13.3317 9.6151 12.5556 9.92893 11.75 9.92893C10.9444 9.92893 10.1683 9.6151 9.14275 8.83267C8.09994 8.03703 6.89092 6.83026 5.20926 5.1486Z"
               />
             </Vector>
-            <Email>support@KFC.com</Email>
+            <Email>{data[0].branch.email}</Email>
           </Row>
           <Row gap="17px">
             <Vector xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@ const BranchDetailsCard = () => {
                 d="M5.86183 0.72505C4.80974 -0.241683 3.19259 -0.241683 2.1405 0.72505C2.09741 0.764641 2.05142 0.810649 1.99169 0.870391L1.09419 1.76788C0.191081 2.671 -0.188038 3.97292 0.0890243 5.2197C1.66099 12.2936 7.18553 17.8181 14.2594 19.3901C15.5062 19.6671 16.8081 19.288 17.7112 18.3849L18.6086 17.4875C18.6684 17.4277 18.7144 17.3817 18.754 17.3386C19.7208 16.2865 19.7208 14.6693 18.754 13.6173C18.7144 13.5741 18.6684 13.5281 18.6086 13.4684L17.1394 11.9991C16.1193 10.979 14.5787 10.6872 13.2563 11.2637C12.4992 11.5937 11.6172 11.4267 11.0332 10.8427L8.63639 8.44589C8.05239 7.86188 7.88536 6.97994 8.21538 6.22283C8.79184 4.90037 8.50009 3.35984 7.47999 2.33974L6.01066 0.870406C5.95093 0.810657 5.90492 0.764645 5.86183 0.72505ZM3.15541 1.82957C3.63363 1.39014 4.3687 1.39014 4.84692 1.82957C4.86343 1.84474 4.88507 1.86613 4.96114 1.9422L6.41933 3.4004C7.00333 3.9844 7.17036 4.86635 6.84034 5.62345C6.26388 6.94592 6.55563 8.48644 7.57573 9.50655L9.97254 11.9034C10.9926 12.9235 12.5332 13.2152 13.8556 12.6387C14.6127 12.3087 15.4947 12.4758 16.0787 13.0598L17.5369 14.518C17.6129 14.594 17.6343 14.6157 17.6495 14.6322C18.0889 15.1104 18.0889 15.8455 17.6495 16.3237C17.6343 16.3402 17.6129 16.3618 17.5369 16.4379L16.6505 17.3242C16.1101 17.8647 15.3309 18.0916 14.5848 17.9258C8.07946 16.4802 2.99893 11.3996 1.5533 4.8943C1.3875 4.14816 1.61438 3.36902 2.15485 2.82855L3.0412 1.9422C3.11726 1.86614 3.1389 1.84474 3.15541 1.82957Z"
               />
             </Vector>
-            <PhoneNumber>+2022221444</PhoneNumber>
+            <PhoneNumber>{data[0].branch.phoneNumber}</PhoneNumber>
           </Row>
         </Col>
       </Col>
@@ -55,6 +55,7 @@ const BranchDetailsCard = () => {
 export default BranchDetailsCard;
 
 const RootWrapperBranchDetailsCard = styled.div`
+  width: ${(props) => (props.open ? `24%;` : "100%")};
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -62,7 +63,7 @@ const RootWrapperBranchDetailsCard = styled.div`
   border-radius: 25px;
   background-color: white;
   box-sizing: border-box;
-  padding: 50px 32px;
+  padding: 50px ${(props) => (props.open ? `10px` : "32px")};
   height: 100%;
 `;
 
@@ -73,6 +74,7 @@ const CustomerImage = styled.img`
 `;
 
 const Vector = styled.svg`
+  /* padding: 1rem; */
   width: ${(props) => (props.width ? `${props.width}px` : "24px;")};
   height: 22px;
 `;
@@ -87,6 +89,15 @@ const Name = styled.span`
   text-align: left;
 `;
 
+const Email = styled.span`
+  color: rgb(40, 42, 55);
+  text-overflow: ellipsis;
+  font-size: 20px;
+  font-family: GilroyRegular, sans-serif;
+  font-weight: initial;
+  line-height: 28px;
+  text-align: left;
+`;
 const Branch = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
@@ -96,19 +107,6 @@ const Branch = styled.span`
   line-height: 28px;
   text-align: left;
 `;
-
-
-
-const Email = styled.span`
-  color: rgb(40, 42, 55);
-  text-overflow: ellipsis;
-  font-size: 24px;
-  font-family: GilroyRegular, sans-serif;
-  font-weight: initial;
-  line-height: 28px;
-  text-align: left;
-`;
-
 const PhoneNumber = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;

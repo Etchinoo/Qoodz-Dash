@@ -18,6 +18,7 @@ import axios from "axios";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
+import { isPhoneNumber } from "../../Validations";
 
 export default function EditCashierForm({ onCancel, selectedRow, branches }) {
   const [stage, setStage] = useState(1);
@@ -167,7 +168,12 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
         </InputGrp>
         {error && <Error>{error}</Error>}
         <Col style={{ width: "100%" }} gap={"0.8rem"}>
-          <PrimaryBtn onClick={() => onSubmit(name, phone, password, branch)}>
+          <PrimaryBtn
+            onClick={() => onSubmit(name, phone, password, branch)}
+            disabled={
+              !(name && phone && password && branch && isPhoneNumber(phone))
+            }
+          >
             Save
           </PrimaryBtn>
           <DeleteBtn onClick={() => setStage(3)}>Delete Cachier</DeleteBtn>

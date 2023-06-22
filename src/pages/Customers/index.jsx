@@ -7,9 +7,8 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useEffect, useState } from "react";
-import { authActions } from "../../redux/actions/Auth.actions";
-import { bindActionCreators } from "redux";
 import { useDispatch, useSelector } from "react-redux";
+
 
 const headerOptions = {
   title: "Customers",
@@ -56,10 +55,8 @@ const Customers = () => {
     },
   ]);
   const dispatch = useDispatch();
-  const { setToken,setUser } = bindActionCreators(authActions, dispatch);
-  const {token}= useSelector(
-    (state) => state.auth
-  );
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
 
 
   const GetCustomers = async () => {

@@ -186,6 +186,7 @@ const Branches = () => {
         filters={Filters}
         qkey={"branches"}
         download
+        hasChild={true}
         actionHandler={actionHandler}
         searchCategories={searchCategories}
         setSelectedCategory={setSelectedCategory}

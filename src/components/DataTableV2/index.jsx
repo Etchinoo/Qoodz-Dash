@@ -39,6 +39,7 @@ const DataTableV2 = ({
   setSelectedCity,
   setSelectedGender,
   setSelectedBranch,
+  setSelectedType,
   details,
   hasChild,
   searchCategories,
@@ -73,6 +74,7 @@ const DataTableV2 = ({
         searchCategories={searchCategories}
         setSelectedCategory={setSelectedCategory}
         setSelectedBranch={setSelectedBranch}
+        setSelectedType={setSelectedType}
       />
       {data ? (
         <>

@@ -28,6 +28,7 @@ const Filterbar = ({
   details,
   searchCategories,
   setSelectedCategory,
+  setSelectedType,
 }) => {
   const [open, setOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -47,6 +48,9 @@ const Filterbar = ({
     }
     if (filter.name == "daterange" && setSelectedDate) {
       setSelectedDate(e.value);
+    }
+    if (filter.name == "type" && setSelectedType) {
+      setSelectedType(e.value);
     }
   };
   const handleSearchCatgoryChange = (e) => {

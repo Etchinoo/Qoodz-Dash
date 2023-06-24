@@ -36,6 +36,7 @@ const Offers = () => {
   }, [selectedDate, , searchKeyword, selectedCategory,selectedType]);
 
   const GetOffers = () => {
+    console.log(">>>> selectedType ",selectedType)
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/deals/my-deals?${
@@ -48,8 +49,7 @@ const Offers = () => {
             ? `&searchAttribute=${selectedCategory.value}&searchValue=` +
               searchKeyword
             : ""
-        }
-        ${selectedType ? "&branch=" + selectedType.value : ""}
+        }${selectedType ? "&type=" + selectedType : ""}
         `,
         {
           headers: {

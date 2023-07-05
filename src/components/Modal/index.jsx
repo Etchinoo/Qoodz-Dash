@@ -39,26 +39,26 @@ const ModalShadow = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  background-color: rgba(40, 42, 55, 0.32);;
+  background-color: rgba(40, 42, 55, 0.32);
   opacity: 0.7;
   z-index: 4;
 `;
 
-export default function ModalContainer({ setOpen, children }) {
+export default function ModalContainer({ setOpen, children, show = true }) {
   const size = useWindowSize();
   const { width, height } = size;
   console.log("Modal Open");
-  window.scrollTo(0,0)
-
-
+  window.scrollTo(0, 0);
 
   return (
     <>
       <ModalShadow as={motion.div} onClick={() => setOpen(false)} />
       <Modal sWidth={width} sHeight={height}>
-        <Exit>
-          <BiXCircle className="icon" onClick={() => setOpen(false)} />
-        </Exit>
+        {show && (
+          <Exit>
+            <BiXCircle className="icon" onClick={() => setOpen(false)} />
+          </Exit>
+        )}
         {children}
       </Modal>
     </>

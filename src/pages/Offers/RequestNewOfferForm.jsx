@@ -27,7 +27,9 @@ import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import axios from "axios";
 // import checkmark from "../../assets/checkmark.png";
-
+import DateRangePickerV2 from "../../components/DateRangePickerV2";
+import moment from "moment";
+import { APIsConstants } from "../../constants/API.constants";
 const offerTypes = [
   {
     value: "discount",
@@ -41,12 +43,12 @@ const offerTypes = [
 
 const DiscountTypes = [
   {
-    value: "percentage",
+    value: "percent",
     label: "Percentage",
   },
   {
-    value: "value",
-    label: "Value",
+    value: "flat",
+    label: "Flat",
   },
 ];
 
@@ -57,10 +59,27 @@ export default function RequestNewOfferForm() {
   const [branches, setBranches] = useState([]);
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
-  // const [selectedBranch, setSelectedBranch] = useAtom(homeBranchSelctorAtom);
-  const [offerType, setOfferType] = useState(offerTypes[0]);
-  const [discountType, setDiscountType] = useState(DiscountTypes[0]);
+
   const [selectedImages, setSelectedImages] = useState();
+  const [selectedDate, setSelectedDate] = useState({
+    fromDate: moment().date(-90).format("YYYY-MM-DD"),
+    toDate: moment().format("YYYY-MM-DD"),
+  });
+  const [name, setName] = useState(null);
+  const [offerCap, setOfferCap] = useState(null);
+  const [discountValue, setDiscountValue] = useState(null);
+  const [discountType, setDiscountType] = useState(DiscountTypes[0]);
+  const [originalPrice, setOriginalPrice] = useState(null);
+  const [offerType, setOfferType] = useState(offerTypes[0]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [description, setDescription] = useState(null);
+  const [applicability, setApplicability] = useState(null);
+  ///
+  const [mainProductName, setMainProductName] = useState(null);
+  const [selectedGiftValue, setSelectedGiftValue] = useState(null);
+  const [stage, setStage] = useState(1);
+
+  const [error, setError] = useState("");
 
   const onSelectFile = (event) => {
     const selectedFiles = event.target.files;
@@ -74,6 +93,59 @@ export default function RequestNewOfferForm() {
     URL.revokeObjectURL(selectedImages);
     setSelectedImages(null);
   }
+
+  const CreateOffer = () => {
+    let data = {
+      name: name,
+      offerType: offerType.value,
+      description: description,
+      applicability: applicability,
+      discountType: discountType.value,
+      discountValue: discountValue,
+      originalPrice: originalPrice,
+      offerCap: offerCap,
+      offerImage: offerImage,
+      applicableBranches: [selectedBranch.value],
+      startDate: selectedDate.fromDate,
+      endDate: selectedDate.toDate,
+    };
+    if (offerType.value === "gift") {
+      data = {
+        name: name,
+        offerType: offerType,
+        description: description,
+        applicability: applicability,
+        mainProductName: mainProductName,
+        giftValue: giftValue,
+        offerImage: offerImage,
+        redeemDuration: 30,
+        applicableBranches: [selectedBranch.value],
+        startDate: "2023-05-23T23:00:00",
+        endDate: "2023-05-30T23:00:00",
+      };
+    }
+
+    axios
+      .post(`${APIsConstants.BASE_URL}/deals`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setDoneModal(true);
+        setError("");
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        } else {
+          setError(error.response.data.message);
+        }
+      });
+  };
 
   const getBranches = async () => {
     try {
@@ -118,15 +190,47 @@ export default function RequestNewOfferForm() {
   }, []);
 
   const onSubmit = () => {
-    // e.preventDefault();
-    console.log("Done");
-    setDoneModal(true);
-    // setStage(2);
+    CreateOffer();
   };
 
   const onModalClosed = () => {
     setDoneModal(false);
     nav(-1);
+  };
+  const isDisabled = () => {
+    if (offerType.value === "discount") {
+      if (
+        name &&
+        offerCap &&
+        discountValue &&
+        discountType &&
+        originalPrice &&
+        offerType &&
+        selectedBranch &&
+        description &&
+        applicability &&
+        selectedDate
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    } else if (offerType.value === "gift") {
+      if (
+        name &&
+        selectedImages &&
+        discountType &&
+        description &&
+        mainProductName &&
+        selectedDate &&
+        offerType &&
+        applicability
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   };
 
   return (
@@ -137,16 +241,16 @@ export default function RequestNewOfferForm() {
         </ModalContainer>
       )}
 
-      <Col master paddingHorz={"42px"} paddingVert={"1rem"} gap={"32px"}>
+      <Col master paddingHorz={"30px"} paddingVert={".2rem"} gap={"32px"}>
         <Header
           style={{ fontFamily: "GilroyBold" }}
           marginVert={"18px"}
-          onClick={() => nav(-1)}
+          onClick={() => nav("/offers")}
         >
-          <BsChevronLeft /> Offer Details
+          <BsChevronLeft /> Offers
         </Header>
-        <Form style={{ padding: "16px", maxWidth: "720px" }}>
-          <Col gap="28px">
+        <Form style={{ padding: "16px", maxWidth: "520px" }}>
+          <Col gap="22px">
             <Label>Offer Image</Label>
             {!selectedImages && (
               <>
@@ -179,7 +283,7 @@ export default function RequestNewOfferForm() {
           <Row style={{ justifyContent: "flex-start" }} gap="16px">
             <InputGrp>
               <Label>Offer Name</Label>
-              <Input />
+              <Input type={"text"} onChange={(e) => setName(e.target.value)} />
             </InputGrp>
             <InputGrp>
               <Label>Offer Type</Label>
@@ -194,15 +298,21 @@ export default function RequestNewOfferForm() {
           </Row>
           <InputGrp>
             <Label>Description</Label>
-            <TextArea />
+            <TextArea onChange={(e) => setDescription(e.target.value)} />
           </InputGrp>
           <Row gap="38px">
             <CheckBoxInputGrp>
-              <Checkbox type="checkbox" />
+              <Checkbox
+                type="checkbox"
+                onChange={(e) => setApplicability("for_you")}
+              />
               <Label>For you</Label>
             </CheckBoxInputGrp>
             <CheckBoxInputGrp>
-              <Checkbox type="checkbox" />
+              <Checkbox
+                type="checkbox"
+                onChange={(e) => setApplicability("for_partner")}
+              />
               <Label>For Others</Label>
             </CheckBoxInputGrp>
           </Row>
@@ -216,39 +326,51 @@ export default function RequestNewOfferForm() {
                   classNamePrefix="filter-opt"
                   placeholder="Select Branches"
                   options={branches}
+                  onChange={(value) => setSelectedBranch(value)}
                 />
               </InputGrp>
-              <Row gap="38px">
-                <InputGrp>
-                  <Label>Discount Type</Label>
-                  <SSelect
-                    className="select-filter"
-                    classNamePrefix="filter-opt"
-                    options={DiscountTypes}
-                    onChange={(value) => setDiscountType(value)}
+              <InputGrp>
+                <Label>Discount Type</Label>
+                <SSelect
+                  fullWidth
+                  className="select-filter"
+                  classNamePrefix="filter-opt"
+                  placeholder="Select Discount Type"
+                  options={DiscountTypes}
+                  onChange={(value) => setDiscountType(value)}
+                />
+              </InputGrp>
+              <Row>
+                <InputGrp gap="38px">
+                  <Label>Discount Value</Label>
+                  <Input
+                    type={"number"}
+                    onChange={(e) => setDiscountValue(e.target.value)}
                   />
                 </InputGrp>
-                <InputGrp>
-                  <Label>Discount Value</Label>
-                  <Input type={"number"} />
-                </InputGrp>
               </Row>
+
               <Row gap="38px">
                 <InputGrp>
                   <Label>Original Price</Label>
-                  <Input type={"number"} />
+                  <Input
+                    type={"number"}
+                    onChange={(e) => setOriginalPrice(e.target.value)}
+                  />
                 </InputGrp>
                 <InputGrp>
                   <Label>Offer cap</Label>
                   <Input
                     disabled={discountType.value === "value" ? true : false}
+                    onChange={(e) => setOfferCap(e.target.value)}
                     type={"number"}
                   />
                 </InputGrp>
               </Row>
+
               <InputGrp>
                 <Label>Redeem Duration</Label>
-                <Input type={"date"} />
+                <DateRangePickerV2 setSelectedDate={setSelectedDate} />
               </InputGrp>
             </>
           ) : null}
@@ -256,7 +378,7 @@ export default function RequestNewOfferForm() {
             <>
               <InputGrp>
                 <Label>Main Produt Name</Label>
-                <Input />
+                <Input onChange={(e) => setMainProductName(e.target.value)} />
               </InputGrp>
               <InputGrp>
                 <Label>Gift Value</Label>
@@ -264,19 +386,20 @@ export default function RequestNewOfferForm() {
                   fullWidth
                   className="select-filter"
                   classNamePrefix="filter-opt"
+                  onChange={(value) => setSelectedGiftValue(value)}
                 />
               </InputGrp>
               <InputGrp>
                 <Label>Offer Duration</Label>
-                <SSelect
-                  fullWidth
-                  className="select-filter"
-                  classNamePrefix="filter-opt"
-                />
+                <DateRangePickerV2 setSelectedDate={setSelectedDate} />
               </InputGrp>
             </>
           ) : null}
-          <PrimaryBtn onClick={() => onClick()}>Request Offer</PrimaryBtn>
+          {error && <Error>{error}</Error>}
+
+          <PrimaryBtn disabled={isDisabled()} onClick={() => onSubmit()}>
+            Request Offer
+          </PrimaryBtn>
         </Form>
       </Col>
     </Layout>
@@ -368,5 +491,13 @@ const UploadImageBadege = styled.div`
   align-items: center;
   font-size: 2rem;
   color: #fff;
-  background: #0d9aff55; ;
+  background: #0d9aff55;
+`;
+
+const Error = styled.div`
+  width: 100%;
+  text-align: center;
+  color: red;
+  font-size: 16px;
+  font-family: "GilroyBold";
 `;

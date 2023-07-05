@@ -27,7 +27,6 @@ export default function AddNewBranchForm({ locations }) {
   const [user, setUser] = useAtom(userAtom);
 
   const CreateBranch = (name, phone, location, area, setError) => {
-    console.log(">>>> phone ", phone);
     let data = {
       phoneNumber: phone,
       name: name,

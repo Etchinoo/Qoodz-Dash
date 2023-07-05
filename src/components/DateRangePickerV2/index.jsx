@@ -33,6 +33,7 @@ const DateRangePickerV2 = ({
   withOptions = false,
   placeHolder,
   setselectedDate,
+  selectedDate,
 }) => {
   const [open, setOpen] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -49,11 +50,20 @@ const DateRangePickerV2 = ({
 
   useEffect(() => {
     setDisplayValue(`${DSF(fromDate)} - ${DSF(toDate)}`);
-    if (fromDate && toDate && setselectedDate){
+    if (fromDate && toDate && setselectedDate) {
       setselectedDate({ fromDate, toDate });
     }
-     
   }, [fromDate, toDate]);
+  
+  useEffect(() => {
+    if (selectedDate) {
+      setDisplayValue(
+        `${DSF(selectedDate.fromDate)} - ${DSF(selectedDate.toDate)}`
+      );
+      setFromDate(selectedDate.fromDate);
+      setToDate(selectedDate.toDate);
+    }
+  }, []);
 
   const DSF = (date) => {
     // convert date string from  2023-04-08 to 8 Apr
@@ -142,6 +152,7 @@ export default DateRangePickerV2;
 
 const CalContainer = styled.div`
   position: relative;
+  width: 100%;
 `;
 const Container = styled.div`
   display: flex;

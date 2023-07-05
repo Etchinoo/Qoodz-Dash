@@ -18,6 +18,7 @@ import PeoplePage from "../pages/Settings/PeoplePage";
 import RequestNewCampaigneForm from "../pages/Campaignes/RequestNewCampaigneForm";
 import ChangPassword from "../pages/Settings/ChangePassword";
 import RequireAuth from "../components/RequireAuth";
+import EditOffer from "../pages/Offers/EditOffer";
 
 const AppRouter = () => {
   return (
@@ -38,6 +39,7 @@ const AppRouter = () => {
           <Route path="" element={<Offers />} />
           <Route path=":id" element={<OfferDetails />} />
           <Route path="new" element={<RequestNewOfferForm />} />
+          <Route path="edit/:id" element={<EditOffer />} />
         </Route>
         <Route path="/campaignes">
           <Route path="" element={<Campaignes />} />

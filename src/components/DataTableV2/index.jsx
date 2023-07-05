@@ -110,8 +110,8 @@ const DataTableV2 = ({
                           <>
                             <BiEdit
                               style={{ cursor: "pointer" }}
-                              onClick={() =>
-                                actionHandler({ key: column.key, id: row.id,row:row })
+                              onClick={(e) =>
+                                actionHandler({ key: column.key, id: row.id,row:row ,e:e})
                               }
                             />
                           </>

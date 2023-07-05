@@ -26,17 +26,22 @@ const Offers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [offers, setOffers] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const nav = useNavigate();
   const actionHandler = (action) => {
-    if (action.key === "edit") console.log("Edit Offer");
+    action.e.stopPropagation();
+
+    if (action.key === "edit") {
+      nav(`/offers/edit/${action.id}`);
+      setSelectedRow(action.row);
+    }
   };
   useEffect(() => {
     GetOffers();
-  }, [selectedDate, , searchKeyword, selectedCategory,selectedType]);
+  }, [selectedDate, , searchKeyword, selectedCategory, selectedType]);
 
   const GetOffers = () => {
-    console.log(">>>> selectedType ",selectedType)
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/deals/my-deals?${
@@ -83,13 +88,14 @@ const Offers = () => {
         qkey={"offers"}
         download
         StatusRow={true}
+        hasChild={true}
         actionHandler={actionHandler}
         setSelectedDate={setSelectedDate}
         searchCategories={searchCategories}
         setSelectedCategory={setSelectedCategory}
         setSearchKeyword={setSearchKeyword}
         setSelectedType={setSelectedType}
-      
+        selectedRow={selectedRow}
       />
     </Layout>
   );
@@ -134,12 +140,12 @@ const columns = [
     visability: true,
     type: "number",
   },
-  {
-    name: "Percentage",
-    key: "percentage",
-    visability: true,
-    type: "string",
-  },
+  // {
+  //   name: "Percentage",
+  //   key: "percentage",
+  //   visability: true,
+  //   type: "string",
+  // },
   {
     name: "Orignal Price",
     key: "originalPrice",
@@ -156,13 +162,13 @@ const columns = [
     name: "Start Date",
     key: "startDate",
     visability: true,
-    type:"date",
+    type: "date",
   },
   {
     name: "End Date",
     key: "endDate",
     visability: true,
-    type:"date",
+    type: "date",
   },
   {
     name: "Edit",
@@ -172,6 +178,4 @@ const columns = [
   },
 ];
 
-const searchCategories = [
-  { label: "Name", value: "name" },
-];
+const searchCategories = [{ label: "Name", value: "name" }];

@@ -57,7 +57,7 @@ export const BranchSelect = styled.div`
 `;
 
 export const PrimaryBtn = styled.button`
-  width: 100%;
+  width: ${(props) => props.width || "100%"};
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsChevronLeft } from "react-icons/bs";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import Layout from "../../components/Layout";
 import ModalContainer from "../../components/Modal";
@@ -66,10 +66,7 @@ const RequestNewCampaigneForm = () => {
               <OfferCard />
               <OfferCard />
             </Row>
-            <PrimaryBtn
-              onClick={() => setStage(2)}
-              style={{ maxWidth: "802.03px" }}
-            >
+            <PrimaryBtn onClick={() => setStage(2)} width={"50%"}>
               Next
             </PrimaryBtn>
           </>
@@ -109,22 +106,19 @@ const RequestNewCampaigneForm = () => {
                   placeholder="Enter Estimated Campaign Reach"
                 />
               </InputGrp>
-              {/* <Row gap={"12px"}>
+              <Row gap={"12px"}>
                 <Value>36k</Value>
                 <Text>Estimated Campaign Reach</Text>
-              </Row> */}
-              <div
+              </Row>
+              {/* <div
                 style={{
                   height: "1px",
                   border: "1px solid #E4E4E4",
                   width: "100%",
                 }}
-              ></div>
-              <PrimaryBtn
-                onClick={() => setModal(true)}
-                style={{ maxWidth: "720px" }}
-              >
-                Next
+              ></div> */}
+              <PrimaryBtn onClick={() => setModal(true)} width={"50%"}>
+                Request Campaigne
               </PrimaryBtn>
             </Form>
           </>

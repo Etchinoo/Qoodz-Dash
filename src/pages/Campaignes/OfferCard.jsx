@@ -11,7 +11,7 @@ export function OfferCard({ onSelect }) {
       selected={selected}
       onClick={() => setSelected(!selected)}
     >
-      <Header style={{ gap: "6rem" }}>
+      <Header style={{ gap: "1rem" }}>
         <Row gap={"1rem"}>
           <OfferImage src={offerImage} alt="image of OfferImage" />
           <Col gap={"5px"}>
@@ -133,7 +133,7 @@ const SCurrentPartnerShipsCard = styled.div`
   border-radius: 25px;
   background-color: white;
   box-sizing: border-box;
-  padding: 38px 34px;
+  padding: 38px 25px;
   cursor: pointer;
   ${(props) =>
     props.selected &&

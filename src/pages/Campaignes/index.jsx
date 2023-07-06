@@ -16,13 +16,6 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { pauseCampaignAtom } from "../../store/Atoms";
 
-const headerOptions = {
-  title: "Ongoing Campaignes ",
-  type: "master",
-  AddNew: true,
-  addNewText: "+ Request new campaign",
-};
-
 const prevCampaingsData = [
   {
     id: "1",
@@ -137,7 +130,7 @@ const Campaignes = () => {
       <MainTitle>Previous Campaigns</MainTitle>
       <SliderV2 elements={preCampaingsSliderData} />
       {pauseCampaign && (
-        <ModalContainer setOpen={setPauseCampaign} show={false} >
+        <ModalContainer setOpen={setPauseCampaign} show={false}>
           <PauseCampaignModal />
         </ModalContainer>
       )}
@@ -148,7 +141,9 @@ const Campaignes = () => {
           <SliderV2 elements={sliderData} />
         </Col>
         <Col end>
-          <RequestNewOfferButton>+ Request new campaign</RequestNewOfferButton>
+          <RequestNewOfferButton onClick={() => nav("/campaignes/new")}>
+            + Request new campaign
+          </RequestNewOfferButton>
         </Col>
       </Row>
     </Layout>
@@ -162,6 +157,7 @@ const RequestNewOfferButton = styled.div`
   line-height: 28px;
   color: #0d99ff;
   cursor: pointer;
+  z-index: 1111;
 `;
 
 const MainTitle = styled.div`

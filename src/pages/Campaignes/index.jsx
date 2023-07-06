@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import Layout from "../../components/Layout";
 import { Col, Grid, H2, Header, Row } from "../../components/Shared";
-import CampaignCard from "./CampaignCard";
+
 import Carousel from "styled-components-carousel";
 import { CampaignCardV2 } from "./CampaignCardV2";
+import { PrevCampaignCard } from "./PrevCampaignCard";
 import { useNavigate } from "react-router-dom";
 import { NewBtn, Title } from "../Cashires/FormComponents.styles";
 import SliderV2 from "../../components/SliderV2";
@@ -22,6 +23,22 @@ const headerOptions = {
   addNewText: "+ Request new campaign",
 };
 
+const prevCampaingsData = [
+  {
+    id: "1",
+    name: "Campaign 1",
+    type: "Offer",
+    status: true,
+    start: "12/12/2020",
+    end: "12/12/2020",
+    redeems: "263",
+    newCustomers: "126",
+    totalScans: 225,
+    returningCustomers: 425,
+    archived: true,
+  },
+];
+
 const data = [
   {
     id: "1",
@@ -34,119 +51,72 @@ const data = [
     newCustomers: "126",
     archived: true,
   },
-  {
-    id: "2",
-    name: "Campaign 2",
-    type: "Gift",
-    status: false,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: true,
-  },
-  {
-    id: "3",
-    name: "Campaign 3",
-    type: "Gift",
-    status: false,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: true,
-  },
-  {
-    id: "4",
-    name: "Campaign 4",
-    type: "Gift",
-    status: false,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: false,
-  },
-  {
-    id: "5",
-    name: "Campaign 5",
-    type: "Gift",
-    status: false,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: false,
-  },
-  {
-    id: "6",
-    name: "Campaign 6",
-    type: "Offer",
-    status: true,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: false,
-  },
-  {
-    id: "7",
-    name: "Campaign 7",
-    type: "Offer",
-    status: true,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "163",
-    newCustomers: "26",
-    archived: false,
-  },
-];
-
-const columns = [
-  {
-    name: "ID",
-    key: "id",
-    visability: true,
-    type: "string",
-  },
-  {
-    name: "Name",
-    key: "name",
-    visability: true,
-    type: "string",
-    // link: true,
-  },
-  {
-    name: "Type",
-    key: "type",
-    visability: true,
-    type: "string",
-  },
-
-  {
-    name: "Start",
-    key: "start",
-    visability: true,
-    type: "date",
-  },
-  {
-    name: "End",
-    key: "end",
-    visability: true,
-    type: "date",
-  },
-  {
-    name: "Redeems",
-    key: "redeems",
-    visability: true,
-    type: "number",
-  },
-  {
-    name: "New Customers",
-    key: "newCustomers",
-    visability: true,
-    type: "number",
-  },
+  // {
+  //   id: "2",
+  //   name: "Campaign 2",
+  //   type: "Gift",
+  //   status: false,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: true,
+  // },
+  // {
+  //   id: "3",
+  //   name: "Campaign 3",
+  //   type: "Gift",
+  //   status: false,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: true,
+  // },
+  // {
+  //   id: "4",
+  //   name: "Campaign 4",
+  //   type: "Gift",
+  //   status: false,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: false,
+  // },
+  // {
+  //   id: "5",
+  //   name: "Campaign 5",
+  //   type: "Gift",
+  //   status: false,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: false,
+  // },
+  // {
+  //   id: "6",
+  //   name: "Campaign 6",
+  //   type: "Offer",
+  //   status: true,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: false,
+  // },
+  // {
+  //   id: "7",
+  //   name: "Campaign 7",
+  //   type: "Offer",
+  //   status: true,
+  //   start: "12/12/2020",
+  //   end: "12/12/2020",
+  //   redeems: "163",
+  //   newCustomers: "26",
+  //   archived: false,
+  // },
 ];
 
 // onClick={() => nav("/campaignes/new")}
@@ -158,52 +128,45 @@ const Campaignes = () => {
     return CampaignCardV2(item);
   });
 
+  const preCampaingsSliderData = prevCampaingsData.map((item) => {
+    return PrevCampaignCard(item);
+  });
+
   return (
-    <Layout header={headerOptions} addNew={() => nav("/campaignes/new")}>
+    <Layout>
+      <MainTitle>Previous Campaigns</MainTitle>
+      <SliderV2 elements={preCampaingsSliderData} />
       {pauseCampaign && (
-        <ModalContainer setOpen={setPauseCampaign}>
+        <ModalContainer setOpen={setPauseCampaign} show={false} >
           <PauseCampaignModal />
         </ModalContainer>
       )}
 
-      <SliderV2 elements={sliderData} />
-      <H2>Campaign History</H2>
-      <DataTableV2
-        data={data}
-        columns={columns}
-        filters={Filters}
-        key={"campaignes"}
-        searchPlaceholder={"Search name"}
-        StatusRow={true}
-        // download
-        // actionHandler={actionHandler}
-      />
+      <MainTitle>Ongoing Campaigns</MainTitle>
+      <Row gap={50} spread={"space-between"} allignStart="flex-start">
+        <Col width={"350"}>
+          <SliderV2 elements={sliderData} />
+        </Col>
+        <Col end>
+          <RequestNewOfferButton>+ Request new campaign</RequestNewOfferButton>
+        </Col>
+      </Row>
     </Layout>
   );
 };
 
 export default Campaignes;
 
-const Filters = [
-  {
-    name: "date",
-    label: "Date",
-    type: "date",
-  },
-  {
-    name: "type",
-    label: "Type",
-    type: "Select",
-    opt: [
-      { value: "gift", label: "Gift" },
-      { value: "offer", label: "Offer" },
-    ],
-  },
-];
-
 const RequestNewOfferButton = styled.div`
   font-size: 24px;
   line-height: 28px;
   color: #0d99ff;
   cursor: pointer;
+`;
+
+const MainTitle = styled.div`
+  font-size: 32px;
+  line-height: 40px;
+  color: #282a37;
+  font-family: GilroyBold;
 `;

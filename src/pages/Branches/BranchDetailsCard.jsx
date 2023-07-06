@@ -89,7 +89,7 @@ const Name = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 24px;
-  font-family: GilroyBold, sans-serif;
+  font-family: GilroyBold  ;
   font-weight: initial;
   /* line-height: 40px; */
   text-align: left;
@@ -99,7 +99,7 @@ const Email = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 20px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular  ;
   font-weight: initial;
   line-height: 28px;
   text-align: left;
@@ -108,7 +108,7 @@ const Branch = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 20px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular  ;
   font-weight: initial;
   line-height: 28px;
   text-align: left;
@@ -117,7 +117,7 @@ const PhoneNumber = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 20px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular  ;
   font-weight: initial;
   line-height: 28px;
   text-align: left;

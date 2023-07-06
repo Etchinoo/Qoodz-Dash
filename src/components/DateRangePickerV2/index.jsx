@@ -54,7 +54,7 @@ const DateRangePickerV2 = ({
       setselectedDate({ fromDate, toDate });
     }
   }, [fromDate, toDate]);
-  
+
   useEffect(() => {
     if (selectedDate) {
       setDisplayValue(
@@ -220,7 +220,7 @@ const CustomRange = styled.li`
 const Input = styled.input`
   border: solid 1px rgba(115, 112, 113, 0.37);
   border-radius: 15px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   padding: 1rem;
   margin-top: 8px;
   border-radius: 15px;

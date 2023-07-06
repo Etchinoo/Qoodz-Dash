@@ -51,7 +51,7 @@ const SliderV2 = ({ elements, action }) => {
 export default SliderV2;
 
 const Container = styled.div`
-  width: 100vw;
+  width: ${(props) => props.width || "100vw"};
   overflow: hidden;
   padding-right: 20rem;
   /* background: none; */
@@ -62,9 +62,9 @@ const SliderWarpper = styled.div`
   overflow: hidden;
 `;
 
-const SlidesContainer = styled.ul`
+const SlidesContainer = styled.div`
   display: flex;
-  gap: 1rem;
+  // gap: 1rem;
   list-style: none;
   margin: 0;
   padding: 10px;
@@ -76,6 +76,6 @@ const SlidesContainer = styled.ul`
     height: 8px;
   }
 `;
-const Slide = styled.li`
+const Slide = styled.div`
   width: 100%;
 `;

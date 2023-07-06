@@ -22,6 +22,7 @@ export const Row = styled.div`
   justify-content: ${(props) => (props.even ? "space-evenly" : null)};
 
   align-items: ${(props) => (props.allignBottom ? "flex-end" : "center")};
+  align-items: ${(props) => (props.allignStart ? "flex-start" : "center")};
   width: ${(props) => props.width || "100%"};
   gap: ${(props) => props.gap || "0"};
   margin-top: ${(props) => props.mt || "0"};
@@ -42,6 +43,7 @@ export const Col = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   ${(props) => (props.center ? "align-items: center" : null)};
+  ${(props) => (props.end ? "align-items: end" : null)};
   gap: ${(props) => props.gap || "0"};
   width: 100%;
   max-width: ${(props) => (props.width ? `${props.width}px` : "100%")};

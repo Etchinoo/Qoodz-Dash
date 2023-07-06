@@ -47,7 +47,6 @@ const ModalShadow = styled.div`
 export default function ModalContainer({ setOpen, children, show = true }) {
   const size = useWindowSize();
   const { width, height } = size;
-  console.log("Modal Open");
   window.scrollTo(0, 0);
 
   return (

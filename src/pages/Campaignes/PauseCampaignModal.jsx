@@ -1,25 +1,30 @@
 import styled from "styled-components";
 import { Col, Row } from "../../components/Shared";
-
+import { useState } from "react";
+import { PrimaryBtn } from "../../components/FormComponents";
 export function PauseCampaignModal() {
+  const [text, setText] = useState(null);
+  const [reasonId, setReasonId] = useState(null);
+
   return (
     <RootWrapperPauseCampaignModal>
-      <Col gap={"28px"}>
+      <Col gap={"20px"}>
         <Title>Are you sure you want to pause campaign?</Title>
         <SubTitle>Choose a reason for pause</SubTitle>
       </Col>
-      <Row gap={"13px"}>
-        <OpBtn>Pause for edit</OpBtn>
-        <OpBtn>Pause for cancel</OpBtn>
-        <OpBtn>Other</OpBtn>
+      <Row gap={"10px"}>
+        <OpBtn onClick={() => setReasonId(1)}>Pause for edit</OpBtn>
+        <OpBtn onClick={() => setReasonId(2)}>Pause for cancel</OpBtn>
+        <OpBtn onClick={() => setReasonId(3)}>Other</OpBtn>
       </Row>
       <NotesInputGrp>
         <AdditionalNotes>Additional notes</AdditionalNotes>
-        <TextArea />
+        <TextArea onChange={(e) => setText(e.target.value)} />
       </NotesInputGrp>
-      <Button>
-        <PauseCampaign>Pause campaign</PauseCampaign>
-      </Button>
+   
+       <PrimaryBtn disabled={!(reasonId && text)}>
+        Pause campaign
+      </PrimaryBtn> 
     </RootWrapperPauseCampaignModal>
   );
 }
@@ -29,7 +34,7 @@ const RootWrapperPauseCampaignModal = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   align-items: flex-start;
-  gap: 30px;
+  gap: 15px;
   border-radius: 50px;
   background-color: white;
   box-sizing: border-box;
@@ -39,10 +44,10 @@ const RootWrapperPauseCampaignModal = styled.div`
 const Title = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
-  font-size: 28px;
-  font-family: GilroyBold, sans-serif;
+  font-size: 32px;
+  font-family: GilroyBold;
   font-weight: initial;
-  /* line-height: 40px; */
+  line-height: 40px;
   text-align: left;
 `;
 
@@ -50,12 +55,11 @@ const SubTitle = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 24px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   font-weight: initial;
-  /* line-height: 28px; */
+  line-height: 28px;
   text-align: left;
 `;
-
 
 const OpBtn = styled.div`
   width: 200px;
@@ -67,7 +71,7 @@ const OpBtn = styled.div`
   border: solid 1px rgba(115, 112, 113, 0.37);
   border-radius: 15px;
   cursor: pointer;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
 `;
 
 const NotesInputGrp = styled.div`
@@ -84,7 +88,7 @@ const AdditionalNotes = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 24px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   font-weight: initial;
   line-height: 28px;
   text-align: left;
@@ -95,7 +99,7 @@ const TextArea = styled.textarea`
   height: 146px;
   border: solid 1px rgba(115, 112, 113, 0.37);
   border-radius: 15px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   padding: 1rem;
 `;
 
@@ -117,7 +121,7 @@ const PauseCampaign = styled.span`
   color: rgba(115, 112, 113, 0.37);
   text-overflow: ellipsis;
   font-size: 22px;
-  font-family: Gilroy-Bold, sans-serif;
+  font-family: GilroyBold;
   font-weight: initial;
   /* line-height: 40px; */
   text-align: left;

@@ -178,7 +178,7 @@ const OfferTypeText = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 20px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   font-weight: initial;
   line-height: 28px;
   text-align: left;
@@ -235,7 +235,7 @@ const DateValue = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 18px;
-  font-family: GilroyRegular, sans-serif;
+  font-family: GilroyRegular;
   font-weight: initial;
   /* line-height: 28px; */
   text-align: left;

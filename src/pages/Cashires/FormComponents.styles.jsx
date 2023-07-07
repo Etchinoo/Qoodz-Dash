@@ -61,7 +61,7 @@ export const PrimaryBtn = styled.button`
   border-radius: 15px;
   background-color: rgb(236, 232, 86);
   box-sizing: border-box;
-  padding: 16px 60px;
+  padding: ${(props) => props.padding || "16px 60px"};
   color: rgb(40, 42, 55);
   border: none;
   text-overflow: ellipsis;

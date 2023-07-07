@@ -2,35 +2,15 @@ import { BiXCircle } from "react-icons/bi";
 import { motion } from "framer-motion";
 import styled, { css } from "styled-components";
 import useWindowSize from "../../hooks/useWindowSize";
+import {useEffect} from 'react'
 const Modal = styled.div`
   background-color: white;
   z-index: 5;
   border-radius: 15px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(
-    ${(props) => props.sWidth / 3.5}px,
-    ${(props) => props.sHeight / 12}px
-  );
-
-  ${({ sWidth, sHeight }) => {
-    if (sWidth > 1368) {
-      return css`
-        transform: translate(
-          ${(props) => props.sWidth / 3}px,
-          ${(props) => props.sHeight / 6}px
-        );
-      `;
-    } else {
-      return css`
-        transform: translate(
-          ${(props) => props.sWidth / 4}px,
-          ${(props) => props.sHeight / 12}px
-        );
-      `;
-    }
-  }}
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const ModalShadow = styled.div`
@@ -47,7 +27,8 @@ const ModalShadow = styled.div`
 export default function ModalContainer({ setOpen, children, show = true }) {
   const size = useWindowSize();
   const { width, height } = size;
-  window.scrollTo(0, 0);
+
+
 
   return (
     <>

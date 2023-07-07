@@ -2,22 +2,15 @@ import styled, { css } from "styled-components";
 import { Col, Row } from "../../components/Shared";
 import brandLogo from "../../assets/BrandLogo.png";
 import brandBadgeLogo from "../../assets/BrandBadgeLogo.png";
-import ModalContainer from "../../components/Modal";
+
 import { useState } from "react";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
 
-export function PartnershipRequestCard(data) {
-  const [modal, setModal] = useState(false);
+export function PartnershipRequestCard(data,setIsRequestModal) {
+ 
   return (
     <>
-      {modal && (
-        <ModalContainer setOpen={setModal}>
-          <AcceptForm
-            onConfirm={() => setModal(false)}
-            onCancel={() => setModal(false)}
-          />
-        </ModalContainer>
-      )}
+    
       <SPartnershipRequestCard>
         <LeftColumn>
           <Col gap={"58px"}>
@@ -112,10 +105,10 @@ export function PartnershipRequestCard(data) {
         </MidColumn>
         <RightColumn>
           <BtnGrp>
-            <PrimaryBtn onClick={() => setModal(true)}>
+            <PrimaryBtn padding={"0px 50px;"} onClick={() => setIsRequestModal(true)}>
               <Accept>Accept</Accept>
             </PrimaryBtn>
-            <PrimaryBtn skelaton>
+            <PrimaryBtn padding={"0px 50px;"} skelaton>
               <Refuse>Refuse</Refuse>
             </PrimaryBtn>
           </BtnGrp>
@@ -380,70 +373,3 @@ const PartnerNamePizzaEgypt = styled.span`
   text-align: left;
 `;
 
-import handshake from "../../assets/handshake.png";
-const AcceptForm = ({ mainText, subText, onConfirm, onCancel }) => {
-  return (
-    <RootWrapperDeleteConfirmation>
-      <ImageContainer>
-        <Emoji src={handshake} alt="image of Emoji" />
-      </ImageContainer>
-      <Col gap="13px">
-        <MainText>Are you sure you want to Accept oli’s offer?</MainText>
-        <SubText>{subText}</SubText>
-      </Col>
-      <Col gap="20px">
-        <PrimaryBtn danger="true" onClick={onConfirm}>
-          Accept
-        </PrimaryBtn>
-        <PrimaryBtn skelaton onClick={() => onCancel(false)}>
-          Cancel
-        </PrimaryBtn>
-      </Col>
-    </RootWrapperDeleteConfirmation>
-  );
-};
-
-const RootWrapperDeleteConfirmation = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  box-sizing: border-box;
-  padding: 120px;
-  /* paddingVert={"120px"} paddingHorz={"20px"} */
-`;
-
-const ImageContainer = styled.div`
-  background-color: #ece856;
-  width: 120px;
-  height: 120px;
-  border-radius: 120px / 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Emoji = styled.img`
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-`;
-
-const MainText = styled.span`
-  color: rgb(40, 42, 55);
-  text-overflow: ellipsis;
-  font-size: 28px;
-  font-family: GilroyBold, sans-serif;
-  font-weight: initial;
-  text-align: center;
-`;
-
-const SubText = styled.span`
-  color: rgb(40, 42, 55);
-  text-overflow: ellipsis;
-  font-size: 18px;
-  font-family: GilroyRegular, sans-serif;
-  font-weight: initial;
-  text-align: center;
-`;

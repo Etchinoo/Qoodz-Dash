@@ -31,11 +31,11 @@ const RootWrapperRequestOfferModal = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   align-items: center;
-  gap: 66px;
+  gap: 20px;
   border-radius: 50px;
   background-color: white;
   box-sizing: border-box;
-  padding: 32px 28px;
+  padding: 22px 28px;
 `;
 
 const OfferImage = styled.img`

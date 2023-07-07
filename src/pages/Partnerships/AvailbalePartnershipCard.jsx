@@ -5,16 +5,12 @@ import partnerImage from "../../assets/PartnerImage2.png";
 import ModalContainer from "../../components/Modal";
 import { Col } from "../../components/Shared";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
-import { RequestOfferModal } from "./RequestOfferModal";
-export function AvailbalePartnershipCard(data) {
+
+export function AvailbalePartnershipCard(data,setIsAvalibaleModal) {
   const [openModal, setOpenModal] = useState(false);
   return (
     <SAvailbalePartnershipCard>
-      {openModal && (
-        <ModalContainer setOpen={setOpenModal}>
-          <RequestOfferModal onClose={setOpenModal}/>
-        </ModalContainer>
-      )}
+    
       <Header>
         <OfferImage src={offerImage} alt="image of OfferImage" />
         <Col gap={"5px"}>
@@ -46,7 +42,7 @@ export function AvailbalePartnershipCard(data) {
       </Footer>
       <PrimaryBtn
         onClick={() => {
-          setOpenModal(true);
+          setIsAvalibaleModal(true);
         }}
       >
         Request

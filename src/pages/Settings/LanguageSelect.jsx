@@ -9,6 +9,7 @@ const headerOptions = {
   title: "Language",
   type: "detail",
   back: true,
+  to:"/settings",
 };
 
 const LanguageSelect = () => {

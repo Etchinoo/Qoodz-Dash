@@ -24,7 +24,14 @@ const headerOptions = {
   back: true,
   AddNew: true,
   addNewText: "Add a new staff member",
+  to:"/settings",
 };
+const options = [
+  { value: 1, label: "Branch manager" },
+  { value: 2, label: "Operation Manager" },
+  { value: 3, label: "Brand Owner" },
+  { value: 4, label: "Cashier" },
+];
 
 const PeoplePage = () => {
   const [newOpen, setNewOpen] = useState(false);
@@ -37,18 +44,20 @@ const PeoplePage = () => {
           <NewStaffFrom onClose={() => setNewOpen(false)} />
         </ModalContainer>
       )}
-        <Col>
-          <Container>
-            <SHeader>
-              <OfferImage src={Staff} alt="image of OfferImage" />
-              <Col gap={"5px"}>
-                <OfferNameText>Esraa</OfferNameText>
-                <OfferTypeText>Brnach Manger</OfferTypeText>
-              </Col>
-            </SHeader>
-            <SSelect />
-          </Container>
-        </Col>
+      <Col>
+        <Container>
+          <SHeader>
+            <OfferImage src={Staff} alt="image of OfferImage" />
+            <Col gap={"5px"}>
+              <OfferNameText>Esraa</OfferNameText>
+              <OfferTypeText>Brnach Manger</OfferTypeText>
+            </Col>
+          </SHeader>
+          <ControlContainer>
+            <SSelect options={options} />
+          </ControlContainer>
+        </Container>
+      </Col>
     </Layout>
   );
 };
@@ -90,14 +99,16 @@ const OfferTypeText = styled.span`
   line-height: 28px;
   text-align: left;
 `;
-
+const ControlContainer = styled.div`
+  width: 15%;
+`;
 const Container = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  gap: 20px;
   height: 120px;
   box-shadow: 1px 4px 77px rgba(237, 237, 255, 0.89);
   border-radius: 25px;
@@ -128,7 +139,7 @@ const NewStaffFrom = ({ onClose }) => {
         </Row>
         <InputGrp>
           <Label>Staff Role</Label>
-          <Input />
+          <SSelect        className="select-filter"  options={options} />
         </InputGrp>
         <PrimaryBtn onClick={() => setStage(2)}>Add Staff</PrimaryBtn>
       </Form>

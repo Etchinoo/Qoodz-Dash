@@ -32,6 +32,14 @@ const data = [
     name: "Super Pack",
   },
 ];
+const prevData = [
+ 
+  {
+    name: "40% Off",
+  },
+
+];
+
 
 const _data = [
   {
@@ -90,13 +98,18 @@ const Partneships = () => {
   const sliderDataAvailbalePartnership = data.map((item) => {
     return AvailbalePartnershipCard(item, setIsAvalibaleModal);
   });
+  const sliderDataPrev = prevData.map((item) => {
+    return PrevPartnershipCard(item);
+  });
 
   useEffect(() => {
     setSliderController("");
   }, [sliderController]);
 
   return (
-    <Layout header={headerOptions}>
+    <Layout>
+      <MainTitle>Previous Partnerships</MainTitle>
+      <SliderV2 elements={sliderDataPrev} />
       {isRequestModal && (
         <ModalContainer setOpen={setIsRequestModal} show={false}>
           <AcceptForm
@@ -105,8 +118,8 @@ const Partneships = () => {
           />
         </ModalContainer>
       )}
-     
 
+      <MainTitle> Requested Partnerships</MainTitle>
       <SliderV2 elements={sliderDataRequests} />
       {/* <Slider data={data} sliderController={sliderController} /> */}
       <Header style={{ fontSize: "22px" }} marginVert={"18px"}>
@@ -149,6 +162,7 @@ const chartFilter = [
 ];
 
 import handshake from "../../assets/handshake.png";
+import { PrevPartnershipCard } from "./PrevPartnershipCard";
 const AcceptForm = ({ mainText, subText, onConfirm, onCancel }) => {
   return (
     <RootWrapperDeleteConfirmation>
@@ -214,4 +228,11 @@ const SubText = styled.span`
   font-family: GilroyRegular, sans-serif;
   font-weight: initial;
   text-align: center;
+`;
+
+const MainTitle = styled.div`
+  font-size: 32px;
+  line-height: 40px;
+  color: #282a37;
+  font-family: GilroyBold;
 `;

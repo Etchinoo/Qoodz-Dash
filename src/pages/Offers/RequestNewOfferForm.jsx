@@ -39,6 +39,10 @@ const offerTypes = [
     value: "gift",
     label: "Gift",
   },
+  {
+    value: "giftCard",
+    label: "Gift Card",
+  },
 ];
 
 const DiscountTypes = [
@@ -77,6 +81,7 @@ export default function RequestNewOfferForm() {
   ///
   const [mainProductName, setMainProductName] = useState(null);
   const [selectedGiftValue, setSelectedGiftValue] = useState(null);
+  const [giftCardValue, setGiftCardValue] = useState(null);
   const [stage, setStage] = useState(1);
 
   const [error, setError] = useState("");
@@ -230,7 +235,79 @@ export default function RequestNewOfferForm() {
       } else {
         return true;
       }
+    } else if (offerType.value === "giftCard") {
+      if (name && selectedImages && giftCardValue) {
+        return false;
+      } else {
+        return true;
+      }
     }
+  };
+
+  const renderGiftCardForm = () => {
+    return (
+      <Form style={{ padding: "16px", maxWidth: "520px" }}>
+        <Col gap="22px">
+          <Label>Offer Image</Label>
+          {!selectedImages && (
+            <>
+              <UploadOfferImage>
+                <UploadImageBadege>
+                  <BsCamera />
+                </UploadImageBadege>
+                <input
+                  type="file"
+                  name="images"
+                  id="actual-btn"
+                  onChange={onSelectFile}
+                  accept="image/png , image/jpeg, image/webp"
+                />
+                <label for="actual-btn">Choose File</label>
+              </UploadOfferImage>
+            </>
+          )}
+          {selectedImages && (
+            <CurrentImageContainer>
+              <OfferImgContainer onClick={() => deleteHandler()}>
+                <OfferImg src={selectedImages} height="200" alt="upload" />
+              </OfferImgContainer>
+              <DetleteBtn style={{}} skelaton onClick={() => deleteHandler()}>
+                Delete
+              </DetleteBtn>
+            </CurrentImageContainer>
+          )}
+        </Col>
+        <Row style={{ justifyContent: "flex-start" }} gap="16px">
+          <InputGrp>
+            <Label>Offer Name</Label>
+            <Input type={"text"} onChange={(e) => setName(e.target.value)} />
+          </InputGrp>
+          <InputGrp>
+            <Label>Offer Type</Label>
+            <SSelect
+              className="select-filter"
+              classNamePrefix="filter-opt"
+              options={offerTypes}
+              onChange={(value) => setOfferType(value)}
+            />
+          </InputGrp>
+        </Row>
+
+        <InputGrp>
+          <Label>Gift Card Value</Label>
+          <Input
+            type={"number"}
+            onChange={(e) => setGiftCardValue(e.target.value)}
+          />
+        </InputGrp>
+
+        {error && <Error>{error}</Error>}
+
+        <PrimaryBtn disabled={isDisabled()} onClick={() => onSubmit()}>
+          Request Offer
+        </PrimaryBtn>
+      </Form>
+    );
   };
 
   return (
@@ -249,158 +326,169 @@ export default function RequestNewOfferForm() {
         >
           <BsChevronLeft /> Offers
         </Header>
-        <Form style={{ padding: "16px", maxWidth: "520px" }}>
-          <Col gap="22px">
-            <Label>Offer Image</Label>
-            {!selectedImages && (
+        {offerType.value == "giftCard" ? (
+          renderGiftCardForm()
+        ) : (
+          <Form style={{ padding: "16px", maxWidth: "520px" }}>
+            <Col gap="22px">
+              <Label>Offer Image</Label>
+              {!selectedImages && (
+                <>
+                  <UploadOfferImage>
+                    <UploadImageBadege>
+                      <BsCamera />
+                    </UploadImageBadege>
+                    <input
+                      type="file"
+                      name="images"
+                      id="actual-btn"
+                      onChange={onSelectFile}
+                      accept="image/png , image/jpeg, image/webp"
+                    />
+                    <label for="actual-btn">Choose File</label>
+                  </UploadOfferImage>
+                </>
+              )}
+              {selectedImages && (
+                <CurrentImageContainer>
+                  <OfferImgContainer onClick={() => deleteHandler()}>
+                    <OfferImg src={selectedImages} height="200" alt="upload" />
+                  </OfferImgContainer>
+                  <DetleteBtn
+                    style={{}}
+                    skelaton
+                    onClick={() => deleteHandler()}
+                  >
+                    Delete
+                  </DetleteBtn>
+                </CurrentImageContainer>
+              )}
+            </Col>
+            <Row style={{ justifyContent: "flex-start" }} gap="16px">
+              <InputGrp>
+                <Label>Offer Name</Label>
+                <Input
+                  type={"text"}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGrp>
+              <InputGrp>
+                <Label>Offer Type</Label>
+                <SSelect
+                  className="select-filter"
+                  classNamePrefix="filter-opt"
+                  options={offerTypes}
+                  defaultValue={offerTypes[0]}
+                  onChange={(value) => setOfferType(value)}
+                />
+              </InputGrp>
+            </Row>
+            <InputGrp>
+              <Label>Description</Label>
+              <TextArea onChange={(e) => setDescription(e.target.value)} />
+            </InputGrp>
+            <Row gap="38px">
+              <CheckBoxInputGrp>
+                <Checkbox
+                  type="checkbox"
+                  onChange={(e) => setApplicability("for_you")}
+                />
+                <Label>For you</Label>
+              </CheckBoxInputGrp>
+              <CheckBoxInputGrp>
+                <Checkbox
+                  type="checkbox"
+                  onChange={(e) => setApplicability("for_partner")}
+                />
+                <Label>For Others</Label>
+              </CheckBoxInputGrp>
+            </Row>
+            {offerType.value === "discount" ? (
               <>
-                <UploadOfferImage>
-                  <UploadImageBadege>
-                    <BsCamera />
-                  </UploadImageBadege>
-                  <input
-                    type="file"
-                    name="images"
-                    id="actual-btn"
-                    onChange={onSelectFile}
-                    accept="image/png , image/jpeg, image/webp"
+                <InputGrp>
+                  <Label>Applicable branches</Label>
+                  <SSelect
+                    fullWidth
+                    className="select-filter"
+                    classNamePrefix="filter-opt"
+                    placeholder="Select Branches"
+                    options={branches}
+                    onChange={(value) => setSelectedBranch(value)}
                   />
-                  <label for="actual-btn">Choose File</label>
-                </UploadOfferImage>
+                </InputGrp>
+                <InputGrp>
+                  <Label>Discount Type</Label>
+                  <SSelect
+                    fullWidth
+                    className="select-filter"
+                    classNamePrefix="filter-opt"
+                    placeholder="Select Discount Type"
+                    options={DiscountTypes}
+                    onChange={(value) => setDiscountType(value)}
+                  />
+                </InputGrp>
+                <Row>
+                  <InputGrp gap="38px">
+                    <Label>Discount Value</Label>
+                    <Input
+                      type={"number"}
+                      onChange={(e) => setDiscountValue(e.target.value)}
+                    />
+                  </InputGrp>
+                </Row>
+
+                <Row gap="38px">
+                  <InputGrp>
+                    <Label>Original Price</Label>
+                    <Input
+                      type={"number"}
+                      onChange={(e) => setOriginalPrice(e.target.value)}
+                    />
+                  </InputGrp>
+                  <InputGrp>
+                    <Label>Offer cap</Label>
+                    <Input
+                      disabled={discountType.value === "value" ? true : false}
+                      onChange={(e) => setOfferCap(e.target.value)}
+                      type={"number"}
+                    />
+                  </InputGrp>
+                </Row>
+
+                <InputGrp>
+                  <Label>Redeem Duration</Label>
+                  <DateRangePickerV2 setSelectedDate={setSelectedDate} />
+                </InputGrp>
               </>
-            )}
-            {selectedImages && (
-              <CurrentImageContainer>
-                <OfferImgContainer onClick={() => deleteHandler()}>
-                  <OfferImg src={selectedImages} height="200" alt="upload" />
-                </OfferImgContainer>
-                <DetleteBtn style={{}} skelaton onClick={() => deleteHandler()}>
-                  Delete
-                </DetleteBtn>
-              </CurrentImageContainer>
-            )}
-          </Col>
-          <Row style={{ justifyContent: "flex-start" }} gap="16px">
-            <InputGrp>
-              <Label>Offer Name</Label>
-              <Input type={"text"} onChange={(e) => setName(e.target.value)} />
-            </InputGrp>
-            <InputGrp>
-              <Label>Offer Type</Label>
-              <SSelect
-                className="select-filter"
-                classNamePrefix="filter-opt"
-                options={offerTypes}
-                defaultValue={offerTypes[0]}
-                onChange={(value) => setOfferType(value)}
-              />
-            </InputGrp>
-          </Row>
-          <InputGrp>
-            <Label>Description</Label>
-            <TextArea onChange={(e) => setDescription(e.target.value)} />
-          </InputGrp>
-          <Row gap="38px">
-            <CheckBoxInputGrp>
-              <Checkbox
-                type="checkbox"
-                onChange={(e) => setApplicability("for_you")}
-              />
-              <Label>For you</Label>
-            </CheckBoxInputGrp>
-            <CheckBoxInputGrp>
-              <Checkbox
-                type="checkbox"
-                onChange={(e) => setApplicability("for_partner")}
-              />
-              <Label>For Others</Label>
-            </CheckBoxInputGrp>
-          </Row>
-          {offerType.value === "discount" ? (
-            <>
-              <InputGrp>
-                <Label>Applicable branches</Label>
-                <SSelect
-                  fullWidth
-                  className="select-filter"
-                  classNamePrefix="filter-opt"
-                  placeholder="Select Branches"
-                  options={branches}
-                  onChange={(value) => setSelectedBranch(value)}
-                />
-              </InputGrp>
-              <InputGrp>
-                <Label>Discount Type</Label>
-                <SSelect
-                  fullWidth
-                  className="select-filter"
-                  classNamePrefix="filter-opt"
-                  placeholder="Select Discount Type"
-                  options={DiscountTypes}
-                  onChange={(value) => setDiscountType(value)}
-                />
-              </InputGrp>
-              <Row>
-                <InputGrp gap="38px">
-                  <Label>Discount Value</Label>
-                  <Input
-                    type={"number"}
-                    onChange={(e) => setDiscountValue(e.target.value)}
-                  />
-                </InputGrp>
-              </Row>
-
-              <Row gap="38px">
+            ) : null}
+            {offerType.value === "gift" ? (
+              <>
                 <InputGrp>
-                  <Label>Original Price</Label>
+                  <Label>Main Produt Name</Label>
+                  <Input onChange={(e) => setMainProductName(e.target.value)} />
+                </InputGrp>
+                <InputGrp>
+                  <Label>Gift Value</Label>
                   <Input
-                    type={"number"}
-                    onChange={(e) => setOriginalPrice(e.target.value)}
+                    // fullWidth
+                    // className="select-filter"
+                    // classNamePrefix="filter-opt"
+                    onChange={(e) => setSelectedGiftValue(e.target.value)}
                   />
                 </InputGrp>
                 <InputGrp>
-                  <Label>Offer cap</Label>
-                  <Input
-                    disabled={discountType.value === "value" ? true : false}
-                    onChange={(e) => setOfferCap(e.target.value)}
-                    type={"number"}
-                  />
+                  <Label>Offer Duration</Label>
+                  <DateRangePickerV2 setSelectedDate={setSelectedDate} />
                 </InputGrp>
-              </Row>
+              </>
+            ) : null}
+            {error && <Error>{error}</Error>}
 
-              <InputGrp>
-                <Label>Redeem Duration</Label>
-                <DateRangePickerV2 setSelectedDate={setSelectedDate} />
-              </InputGrp>
-            </>
-          ) : null}
-          {offerType.value === "gift" ? (
-            <>
-              <InputGrp>
-                <Label>Main Produt Name</Label>
-                <Input onChange={(e) => setMainProductName(e.target.value)} />
-              </InputGrp>
-              <InputGrp>
-                <Label>Gift Value</Label>
-                <SSelect
-                  fullWidth
-                  className="select-filter"
-                  classNamePrefix="filter-opt"
-                  onChange={(value) => setSelectedGiftValue(value)}
-                />
-              </InputGrp>
-              <InputGrp>
-                <Label>Offer Duration</Label>
-                <DateRangePickerV2 setSelectedDate={setSelectedDate} />
-              </InputGrp>
-            </>
-          ) : null}
-          {error && <Error>{error}</Error>}
-
-          <PrimaryBtn disabled={isDisabled()} onClick={() => onSubmit()}>
-            Request Offer
-          </PrimaryBtn>
-        </Form>
+            <PrimaryBtn disabled={isDisabled()} onClick={() => onSubmit()}>
+              Request Offer
+            </PrimaryBtn>
+          </Form>
+        )}
       </Col>
     </Layout>
   );

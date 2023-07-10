@@ -243,8 +243,8 @@ const scansColumns = [
     type: "object",
   },
   {
-    name: "Scans",
-    key: "numOfScans",
+    name: "Scan Type",
+    key: "type",
     visability: true,
     type: "string",
   },
@@ -297,8 +297,8 @@ const redeemssColumns = [
     type: "object",
   },
   {
-    name: "Redeems",
-    key: "numOfRedeems",
+    name: "Redeems Type",
+    key: "type",
     visability: true,
     type: "string",
   },

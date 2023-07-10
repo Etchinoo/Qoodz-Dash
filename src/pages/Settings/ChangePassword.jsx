@@ -20,6 +20,7 @@ const headerOptions = {
   title: "Change Password",
   type: "detail",
   back: true,
+  to:"/settings",
 };
 const ChangPassword = () => {
   const [modal, setModal] = React.useState(false);

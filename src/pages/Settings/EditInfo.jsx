@@ -20,6 +20,7 @@ const headerOptions = {
   title: "Edit Basic Information",
   type: "detail",
   back: true,
+  to:"/settings",
 };
 
 const EditInfo = () => {

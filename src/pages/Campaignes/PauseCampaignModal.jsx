@@ -2,9 +2,44 @@ import styled from "styled-components";
 import { Col, Row } from "../../components/Shared";
 import { useState } from "react";
 import { PrimaryBtn } from "../../components/FormComponents";
-export function PauseCampaignModal() {
+import { APIsConstants } from "../../constants/API.constants";
+import { useAtom } from "jotai";
+
+import axios from "axios";
+import {
+  homeBranchSelctorAtom,
+  userAtom,
+  userTokenAtom,
+} from "../../store/Atoms";
+
+export function PauseCampaignModal({ id, getActiveCampaigns }) {
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+
   const [text, setText] = useState(null);
   const [reasonId, setReasonId] = useState(null);
+
+  const pauseCampaign = () => {
+    let data = {
+      reason: reasonId,
+      additionalNotes: text,
+    };
+    axios
+      .patch(`${APIsConstants.BASE_URL}/campaigns/${id}/pause`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => getActiveCampaigns())
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
 
   return (
     <RootWrapperPauseCampaignModal>
@@ -21,10 +56,13 @@ export function PauseCampaignModal() {
         <AdditionalNotes>Additional notes</AdditionalNotes>
         <TextArea onChange={(e) => setText(e.target.value)} />
       </NotesInputGrp>
-   
-       <PrimaryBtn disabled={!(reasonId && text)}>
+
+      <PrimaryBtn
+        disabled={!(reasonId && text)}
+        onClick={() => pauseCampaign()}
+      >
         Pause campaign
-      </PrimaryBtn> 
+      </PrimaryBtn>
     </RootWrapperPauseCampaignModal>
   );
 }

@@ -26,6 +26,7 @@ export const Row = styled.div`
   width: ${(props) => props.width || "100%"};
   gap: ${(props) => props.gap || "0"};
   margin-top: ${(props) => props.mt || "0"};
+  overflow:${(props) => props.overflow || "unset"};
 `;
 
 export const Grid = styled.div`

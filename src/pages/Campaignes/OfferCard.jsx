@@ -1,22 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import offerImage from "../../assets/offerImage.png";
 import PartnerImage from "../../assets/PartnerImage.png";
 import { Col, Row } from "../../components/Shared";
-export function OfferCard({ onSelect }) {
+import moment from "moment";
+export function OfferCard({ onSelect, data }) {
   const [selected, setSelected] = useState(false);
 
+  const handleSelect=()=>{
+    setSelected(!selected);
+    onSelect(data?.id)
+  }
   return (
     <SCurrentPartnerShipsCard
       selected={selected}
-      onClick={() => setSelected(!selected)}
+      onClick={ handleSelect}
+      key={data?.id}
     >
-      <Header style={{ gap: "1rem" }}>
+      <Header style={{ gap: ".1rem" }}>
         <Row gap={"1rem"}>
-          <OfferImage src={offerImage} alt="image of OfferImage" />
+          <OfferImage src={data.offerImage} alt="" />
           <Col gap={"5px"}>
-            <OfferNameText>Buy 1 Get 1</OfferNameText>
-            <OfferTypeText>Type : Discount</OfferTypeText>
+            <OfferNameText>{data?.name}</OfferNameText>
+            <OfferTypeText>Type : {data.offerType}</OfferTypeText>
           </Col>
         </Row>
         <SelectMarker selected={selected}>
@@ -31,7 +37,7 @@ export function OfferCard({ onSelect }) {
       <Body>
         <StatusCard>
           <Col gap={"9px"}>
-            <StateActive>State: Active - Extend</StateActive>
+            <StateActive>State: {data.status} - Extend</StateActive>
             <Row gap={"13px"}>
               <DateText>Starting Date -</DateText>
               <DateText>End Date</DateText>
@@ -57,10 +63,11 @@ export function OfferCard({ onSelect }) {
                   fill="#2D264B"
                 />
               </Vector>
-              <Row gap={"6px"}>
-                <DateValue>10/2/2022 -</DateValue>
-                <DateValue>10/3/2022</DateValue>
-              </Row>
+
+              <DateValue>
+                {moment(data.startDate).format("DD/MM/YYYY")}-
+              </DateValue>
+              <DateValue>{moment(data.endDate).format("DD/MM/YYYY")}</DateValue>
             </Row>
           </Col>
         </StatusCard>
@@ -96,9 +103,16 @@ export function OfferCard({ onSelect }) {
               />
             </Vector>
             <Row gap="1rem">
-              <DateText>200 EGP</DateText>
+              <DateText>{data.originalPrice || 0} EGP</DateText>
               <DateText>-</DateText>
-              <DateText>200 EGP</DateText>
+              <DateText>
+                {data.originalPrice
+                  ? data.discountType == "percent"
+                    ? data.originalPrice - (data.originalPrice * 15) / 100
+                    : data.originalPrice - data.discountValue
+                  : 0}{" "}
+                EGP
+              </DateText>
             </Row>
           </Row>
         </Col>
@@ -234,7 +248,7 @@ const Vector = styled.svg`
 const DateValue = styled.span`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
-  font-size: 18px;
+  font-size: 16px;
   font-family: GilroyRegular;
   font-weight: initial;
   /* line-height: 28px; */

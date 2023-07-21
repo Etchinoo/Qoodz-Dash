@@ -12,9 +12,16 @@ import SliderV2 from "../../components/SliderV2";
 import DataTableV2 from "../../components/DataTableV2";
 import ModalContainer from "../../components/Modal";
 import { PauseCampaignModal } from "./PauseCampaignModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { pauseCampaignAtom } from "../../store/Atoms";
+import axios from "axios";
+import { APIsConstants } from "../../constants/API.constants";
+import {
+  homeBranchSelctorAtom,
+  userAtom,
+  userTokenAtom,
+} from "../../store/Atoms";
 
 const prevCampaingsData = [
   {
@@ -115,15 +122,59 @@ const data = [
 // onClick={() => nav("/campaignes/new")}
 const Campaignes = () => {
   const nav = useNavigate();
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+
+  const [activeCampaignsData, setActiveCampaignsData] = useState(null);
   const [pauseCampaign, setPauseCampaign] = useAtom(pauseCampaignAtom);
-
-  const sliderData = data.map((item) => {
-    return CampaignCardV2(item);
-  });
-
+  const [campaignState, setCampaignState] = useState();
+  const [showMore, setShowMore] = useState(false);
+  const [pausedId, setPausedId] = useState(null);
   const preCampaingsSliderData = prevCampaingsData.map((item) => {
     return PrevCampaignCard(item);
   });
+
+  const getActiveCampaigns = () => {
+    axios
+      .get(`${APIsConstants.BASE_URL}/campaigns/status/active`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(">>> res", res.data);
+        setActiveCampaignsData(res.data);
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+  useEffect(() => {
+    getActiveCampaigns();
+  }, []);
+
+  const updateActiveCampaignsState = (status, id) => {
+    setPausedId(id)
+    setPauseCampaign(true);
+    setActiveCampaignsData(
+      activeCampaignsData.filter((ele) =>
+        ele.id == id
+          ? {
+              ...ele,
+              status: campaignState,
+            }
+          : { ...ele }
+      )
+    );
+
+    setCampaignState(status);
+  };
 
   return (
     <Layout>
@@ -131,21 +182,21 @@ const Campaignes = () => {
       <SliderV2 elements={preCampaingsSliderData} />
       {pauseCampaign && (
         <ModalContainer setOpen={setPauseCampaign} show={false}>
-          <PauseCampaignModal />
+          <PauseCampaignModal id={pausedId} getActiveCampaigns={getActiveCampaigns}/>
         </ModalContainer>
       )}
 
       <MainTitle>Ongoing Campaigns</MainTitle>
-      <Row gap={50} spread={"space-between"} allignStart="flex-start">
-        <Col width={"350"}>
-          <SliderV2 elements={sliderData} />
-        </Col>
-        <Col end>
-          <RequestNewOfferButton onClick={() => nav("/campaignes/new")}>
-            + Request new campaign
-          </RequestNewOfferButton>
-        </Col>
-      </Row>
+
+      <RequestNewOfferButton onClick={() => nav("/campaignes/new")}>
+        + Request new campaign
+      </RequestNewOfferButton>
+
+      <SliderV2
+        elements={activeCampaignsData?.map((item) =>
+          CampaignCardV2(item, updateActiveCampaignsState)
+        )}
+      />
     </Layout>
   );
 };
@@ -158,6 +209,8 @@ const RequestNewOfferButton = styled.div`
   color: #0d99ff;
   cursor: pointer;
   z-index: 1111;
+  justify-content: end;
+  display: flex;
 `;
 
 const MainTitle = styled.div`

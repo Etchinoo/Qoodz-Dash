@@ -90,21 +90,35 @@ const Partneships = () => {
   const [sliderController, setSliderController] = useState();
   const [isRequestModal, setIsRequestModal] = useState(false);
   const [isAvalibaleModal, setIsAvalibaleModal] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  const [avalibalePartnershipId, setAvalibalePartnershipId] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState(11);
+
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
   const [avalibalePartnerships, setAvaliablePartnerShips] = useState([]);
   const [requestedPartnerShips, setRequestedPartnerShips] = useState([]);
   const [currentPartnerShips, setCurrentPartnerShips] = useState([]);
 
+  const onExit = () => {
+    setModal(false);
+  };
+
+  const handleRequestAvalibaleParternership = (id) => {
+    setIsAvalibaleModal(true);
+    setAvalibalePartnershipId(id);
+  };
+
   const sliderDataRequests = requestedPartnerShips.map((item) => {
     return PartnershipRequestCard(item, setIsRequestModal);
   });
-  const sliderDataCurrent = _data.map((item) => {
+  const sliderDataCurrent = currentPartnerShips.map((item) => {
     return CurrentPartnerShipsCard(item);
   });
 
-  const sliderDataAvailbalePartnership = data.map((item) => {
-    return AvailbalePartnershipCard(item, setIsAvalibaleModal);
+  const sliderDataAvailbalePartnership = avalibalePartnerships.map((item) => {
+    return AvailbalePartnershipCard(item, handleRequestAvalibaleParternership);
   });
   const sliderDataPrev = prevData.map((item) => {
     return PrevPartnershipCard(item);
@@ -182,6 +196,12 @@ const Partneships = () => {
 
   return (
     <Layout>
+        {modal && (
+        <ModalContainer setOpen={onExit}>
+          <SuccessModal mainText={"Your request has been sent Successfully!"} />
+        </ModalContainer>
+      )}
+
       <MainTitle>Previous Partnerships</MainTitle>
       <SliderV2 elements={sliderDataPrev} />
       {isRequestModal && (
@@ -202,9 +222,15 @@ const Partneships = () => {
       <SliderV2 elements={sliderDataCurrent} />
       {isAvalibaleModal && (
         <ModalContainer setOpen={setIsAvalibaleModal} show={false}>
-          <RequestOfferModal onClose={setIsAvalibaleModal} />
+          <RequestOfferModal
+            onClose={setIsAvalibaleModal}
+            id={avalibalePartnershipId}
+            branchId={selectedBranch}
+            setModal={setModal}
+          />
         </ModalContainer>
       )}
+      <MainTitle> Avaliable Partnerships</MainTitle>
       <SliderV2 elements={sliderDataAvailbalePartnership} />
       {/* <DataGrid
         data={data}
@@ -238,6 +264,7 @@ const chartFilter = [
 import handshake from "../../assets/handshake.png";
 import { PrevPartnershipCard } from "./PrevPartnershipCard";
 import { APIsConstants } from "../../constants/API.constants";
+import SuccessModal from "../../components/Shared/SuccessModal";
 const AcceptForm = ({ mainText, subText, onConfirm, onCancel }) => {
   return (
     <RootWrapperDeleteConfirmation>

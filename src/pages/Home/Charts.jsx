@@ -38,7 +38,6 @@ export default function Charts({ analyticsData }) {
     value: 1,
   });
   useEffect(() => {}, []);
-  console.log(">>>> data ",analyticsData?.analytics?.scans_dominating_areas)
   return (
     <Row gap="19px" width="95%">
       <Col>

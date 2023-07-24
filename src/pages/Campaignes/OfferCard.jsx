@@ -22,7 +22,7 @@ export function OfferCard({ onSelect, data }) {
           <OfferImage src={data.offerImage} alt="" />
           <Col gap={"5px"}>
             <OfferNameText>{data?.name}</OfferNameText>
-            <OfferTypeText>Type : {data.offerType}</OfferTypeText>
+            <OfferTypeText>Type :  {data.offerType.charAt(0).toUpperCase() + data.offerType.slice(1)}</OfferTypeText>
           </Col>
         </Row>
         <SelectMarker selected={selected}>

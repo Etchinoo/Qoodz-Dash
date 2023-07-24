@@ -17,11 +17,18 @@ export function PartnershipRequestCard(data, setIsRequestModal) {
               <BrandLogo src={data.deal.offerImage} alt="image of BrandLogo" />
               <Col>
                 <OfferName>{data.deal.name}</OfferName>
-                <TypeGift>Type :{data.deal.offerType}</TypeGift>
+                <TypeGift>
+                  Type :
+                  {data.deal.offerType.charAt(0).toUpperCase() +
+                    data.deal.offerType.slice(1)}
+                </TypeGift>
               </Col>
             </TitleHeader>
             <StatusCard>
-              <StateActive>State: {data.status}</StateActive>
+              <StateActive>
+                State:{" "}
+                {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+              </StateActive>
               <Row gap={"13px"}>
                 <DateText>Starting Date -</DateText>
                 <DateText>End Date</DateText>
@@ -137,7 +144,7 @@ export function PartnershipRequestCard(data, setIsRequestModal) {
             />
             <PartnerNamePizzaEgypt>
               Partner name: <br />
-             {data.partner.name}
+              {data.partner.name}
             </PartnerNamePizzaEgypt>
           </PartnerBadge>
         </RightColumn>

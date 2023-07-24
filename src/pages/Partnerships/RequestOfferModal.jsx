@@ -1,9 +1,46 @@
+import { useState } from "react";
 import styled from "styled-components";
 import offerImage from "../../assets/OfferImage 2.png";
 import { Col } from "../../components/Shared";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
+import axios from "axios";
+import { userAtom, userTokenAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
+import { APIsConstants } from "../../constants/API.constants";
 
-export function RequestOfferModal({ onClose }) {
+
+export function RequestOfferModal({ onClose, id, branchId, setModal }) {
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+
+
+  const handleRequest = () => {
+    onClose(false);
+    axios
+      .post(
+        `${APIsConstants.BASE_URL}/partnerships/${Number(
+          branchId
+        )}/request/${Number(id)}`,
+        { dealId: id, branchId: branchId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        setModal(true);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
   return (
     <RootWrapperRequestOfferModal>
       <OfferImage src={offerImage} alt="image of OfferImage" />
@@ -16,7 +53,7 @@ export function RequestOfferModal({ onClose }) {
         </Body>
         <br />
         <Col gap={"1rem"}>
-          <PrimaryBtn onClick={() => onClose(false)}>Request</PrimaryBtn>
+          <PrimaryBtn onClick={handleRequest}>Request</PrimaryBtn>
           <PrimaryBtn onClick={() => onClose(false)} skelaton>
             Cancel
           </PrimaryBtn>

@@ -14,7 +14,6 @@ const CustomerSegmention = ({ analyticsData }) => {
     if (analyticsData?.analytics?.age_ranges.length > 0)
       setChartData([...analyticsData?.analytics?.age_ranges]);
   }, [analyticsData]);
-  console.log(">>>> analyticsData ", analyticsData);
   return (
     chartDate && (
       <Container>

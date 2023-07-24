@@ -6,22 +6,24 @@ import ModalContainer from "../../components/Modal";
 import { Col } from "../../components/Shared";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
 
-export function AvailbalePartnershipCard(data,setIsAvalibaleModal) {
-  const [openModal, setOpenModal] = useState(false);
+export function AvailbalePartnershipCard(data, handleRequestAvalibaleParternership) {
+
   return (
-    <SAvailbalePartnershipCard>
-    
+    <SAvailbalePartnershipCard  key={data.id}>
       <Header>
-        <OfferImage src={offerImage} alt="image of OfferImage" />
+        <OfferImage src={data.offerImage} alt="image of OfferImage" />
         <Col gap={"5px"}>
-          <OfferNameText>Buy 1 Get 1</OfferNameText>
-          <OfferTypeText>Type : Discount</OfferTypeText>
+          <OfferNameText>{data.name}</OfferNameText>
+          <OfferTypeText>
+            Type :{" "}
+            {data.offerType.charAt(0).toUpperCase() + data.offerType.slice(1)}
+          </OfferTypeText>
         </Col>
       </Header>
       <Col>
         <OfferDetails>Offer Details</OfferDetails>
         <OfferBody>
-          Buy 1 and Get 1 on on of the following products from any branch
+          {data.description}
           <br />
           <ul>
             <li> Margretta Pizza</li>
@@ -37,12 +39,12 @@ export function AvailbalePartnershipCard(data,setIsAvalibaleModal) {
         />
         <PartnerName>
           Partner name: <br />
-          <b>Oli Egypt</b>
+          <b>{data.partner.name}</b>
         </PartnerName>
       </Footer>
       <PrimaryBtn
         onClick={() => {
-          setIsAvalibaleModal(true);
+          handleRequestAvalibaleParternership(data.id);
         }}
       >
         Request

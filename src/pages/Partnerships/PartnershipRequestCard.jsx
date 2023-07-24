@@ -5,24 +5,23 @@ import brandBadgeLogo from "../../assets/BrandBadgeLogo.png";
 
 import { useState } from "react";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
+import moment from "moment/moment";
 
-export function PartnershipRequestCard(data,setIsRequestModal) {
- 
+export function PartnershipRequestCard(data, setIsRequestModal) {
   return (
     <>
-    
-      <SPartnershipRequestCard>
+      <SPartnershipRequestCard key={data.id}>
         <LeftColumn>
           <Col gap={"58px"}>
             <TitleHeader>
-              <BrandLogo src={brandLogo} alt="image of BrandLogo" />
+              <BrandLogo src={data.deal.offerImage} alt="image of BrandLogo" />
               <Col>
-                <OfferName>{data.name}</OfferName>
-                <TypeGift>Type : Gift</TypeGift>
+                <OfferName>{data.deal.name}</OfferName>
+                <TypeGift>Type :{data.deal.offerType}</TypeGift>
               </Col>
             </TitleHeader>
             <StatusCard>
-              <StateActive>State: Active</StateActive>
+              <StateActive>State: {data.status}</StateActive>
               <Row gap={"13px"}>
                 <DateText>Starting Date -</DateText>
                 <DateText>End Date</DateText>
@@ -49,8 +48,14 @@ export function PartnershipRequestCard(data,setIsRequestModal) {
                   />
                 </Vector>
                 <Row gap={"6px"}>
-                  <DateText>10/2/2022 -</DateText>
-                  <DateText>10/3/2022</DateText>
+                  <DateText>
+                    {" "}
+                    {moment(data.deal.startDate).format("DD/MM/YYYY")} -
+                  </DateText>
+                  <DateText>
+                    {" "}
+                    {moment(data.deal.endDate).format("DD/MM/YYYY")}
+                  </DateText>
                 </Row>
               </Row>
             </StatusCard>
@@ -82,19 +87,29 @@ export function PartnershipRequestCard(data,setIsRequestModal) {
                     fill="#2D264B"
                   />
                 </Vector>
-                <Row gap={"20px"}>
-                  <OfferValue>200 EGP -</OfferValue>
-                  <OfferValue>200 EGP</OfferValue>
+                <Row gap="20px">
+                  <DateText>{data.deal.originalPrice || 0} EGP</DateText>
+                  <DateText>-</DateText>
+                  <DateText>
+                    {data.deal.originalPrice
+                      ? data.deal.discountType == "percent"
+                        ? data.deal.originalPrice -
+                          (data.deal.originalPrice * data.deal.discountValue) /
+                            100
+                        : data.deal.originalPrice - data.deal.discountValue
+                      : 0}{" "}
+                    EGP
+                  </DateText>
                 </Row>
               </Row>
             </Col>
-            <BranchName>15-MAY Branch</BranchName>
+            <BranchName>{data.branch.name}</BranchName>
           </Col>
         </LeftColumn>
         <MidColumn>
           <OfferDetails>Offer Details</OfferDetails>
           <OfferBody>
-            Buy 1 and Get 1 on on of the following products from any branch
+            {data.deal.description}
             <br />
             <ul>
               <li> Margretta Pizza</li>
@@ -105,7 +120,10 @@ export function PartnershipRequestCard(data,setIsRequestModal) {
         </MidColumn>
         <RightColumn>
           <BtnGrp>
-            <PrimaryBtn padding={"0px 50px;"} onClick={() => setIsRequestModal(true)}>
+            <PrimaryBtn
+              padding={"0px 50px;"}
+              onClick={() => setIsRequestModal(true)}
+            >
               <Accept>Accept</Accept>
             </PrimaryBtn>
             <PrimaryBtn padding={"0px 50px;"} skelaton>
@@ -119,7 +137,7 @@ export function PartnershipRequestCard(data,setIsRequestModal) {
             />
             <PartnerNamePizzaEgypt>
               Partner name: <br />
-              Pizza Egypt
+             {data.partner.name}
             </PartnerNamePizzaEgypt>
           </PartnerBadge>
         </RightColumn>
@@ -214,6 +232,16 @@ const DateText = styled.span`
   text-overflow: ellipsis;
   font-size: 18px;
   font-family: GilroyMedium, sans-serif;
+  font-weight: initial;
+  /* line-height: 28px; */
+  text-align: left;
+`;
+
+const DateValue = styled.span`
+  color: rgb(40, 42, 55);
+  text-overflow: ellipsis;
+  font-size: 16px;
+  font-family: GilroyRegular;
   font-weight: initial;
   /* line-height: 28px; */
   text-align: left;
@@ -372,4 +400,3 @@ const PartnerNamePizzaEgypt = styled.span`
   line-height: 23px;
   text-align: left;
 `;
-

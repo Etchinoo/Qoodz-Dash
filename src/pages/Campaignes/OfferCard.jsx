@@ -108,7 +108,7 @@ export function OfferCard({ onSelect, data }) {
               <DateText>
                 {data.originalPrice
                   ? data.discountType == "percent"
-                    ? data.originalPrice - (data.originalPrice * 15) / 100
+                    ? data.originalPrice - (data.originalPrice * data.discountValue) / 100
                     : data.originalPrice - data.discountValue
                   : 0}{" "}
                 EGP

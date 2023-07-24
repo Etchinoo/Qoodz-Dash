@@ -11,7 +11,13 @@ import { PartnershipRequestCard } from "./PartnershipRequestCard";
 import ModalContainer from "../../components/Modal";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
 import { RequestOfferModal } from "./RequestOfferModal";
-
+import {
+  homeBranchSelctorAtom,
+  userAtom,
+  userTokenAtom,
+} from "../../store/Atoms";
+import { useAtom } from "jotai";
+import axios from "axios";
 const data = [
   {
     name: "Buy 1 Get 1 Free",
@@ -33,13 +39,10 @@ const data = [
   },
 ];
 const prevData = [
- 
   {
     name: "40% Off",
   },
-
 ];
-
 
 const _data = [
   {
@@ -87,8 +90,13 @@ const Partneships = () => {
   const [sliderController, setSliderController] = useState();
   const [isRequestModal, setIsRequestModal] = useState(false);
   const [isAvalibaleModal, setIsAvalibaleModal] = useState(false);
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+  const [avalibalePartnerships, setAvaliablePartnerShips] = useState([]);
+  const [requestedPartnerShips, setRequestedPartnerShips] = useState([]);
+  const [currentPartnerShips, setCurrentPartnerShips] = useState([]);
 
-  const sliderDataRequests = data.map((item) => {
+  const sliderDataRequests = requestedPartnerShips.map((item) => {
     return PartnershipRequestCard(item, setIsRequestModal);
   });
   const sliderDataCurrent = _data.map((item) => {
@@ -101,6 +109,72 @@ const Partneships = () => {
   const sliderDataPrev = prevData.map((item) => {
     return PrevPartnershipCard(item);
   });
+
+  const getAvalibalePartenerships = () => {
+    axios
+      .get(`${APIsConstants.BASE_URL}/partnerships/11/available`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setAvaliablePartnerShips(res.data);
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
+  const getRequestedPartenerships = () => {
+    axios
+      .get(`${APIsConstants.BASE_URL}/partnerships/15/requested`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setRequestedPartnerShips(res.data);
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
+  const getCurrentPartenerships = () => {
+    axios
+      .get(`${APIsConstants.BASE_URL}/partnerships/15/current`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setCurrentPartnerShips(res.data);
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
+  useEffect(() => {
+    getAvalibalePartenerships();
+    getCurrentPartenerships();
+    getRequestedPartenerships();
+  }, []);
 
   useEffect(() => {
     setSliderController("");
@@ -163,11 +237,12 @@ const chartFilter = [
 
 import handshake from "../../assets/handshake.png";
 import { PrevPartnershipCard } from "./PrevPartnershipCard";
+import { APIsConstants } from "../../constants/API.constants";
 const AcceptForm = ({ mainText, subText, onConfirm, onCancel }) => {
   return (
     <RootWrapperDeleteConfirmation>
       <ImageContainer>
-        <Emoji src={handshake} alt="image of Emoji" />
+        <Emoji src={handshake} alt="" />
       </ImageContainer>
       <Col gap="13px">
         <MainText>Are you sure you want to Accept oli’s offer?</MainText>

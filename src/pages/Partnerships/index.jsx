@@ -196,7 +196,7 @@ const Partneships = () => {
 
   return (
     <Layout>
-        {modal && (
+      {modal && (
         <ModalContainer setOpen={onExit}>
           <SuccessModal mainText={"Your request has been sent Successfully!"} />
         </ModalContainer>

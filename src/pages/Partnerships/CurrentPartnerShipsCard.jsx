@@ -2,14 +2,20 @@ import styled from "styled-components";
 import offerImage from "../../assets/offerImage.png";
 import PartnerImage from "../../assets/PartnerImage.png";
 import { Col, Row } from "../../components/Shared";
-export function CurrentPartnerShipsCard() {
+import moment from "moment/moment";
+export function CurrentPartnerShipsCard(data) {
+  console.log(">>>> current part ", data);
   return (
     <SCurrentPartnerShipsCard>
       <Header>
-        <OfferImage src={offerImage} alt="image of OfferImage" />
+        <OfferImage src={data.deal.offerImage} alt="image of OfferImage" />
         <Col gap={"5px"}>
-          <OfferNameText>Buy 1 Get 1</OfferNameText>
-          <OfferTypeText>Type : Discount</OfferTypeText>
+          <OfferNameText>{data.deal.name}</OfferNameText>
+          <OfferTypeText>
+            Type :{" "}
+            {data.deal.offerType.charAt(0).toUpperCase() +
+              data.deal.offerType.slice(1)}
+          </OfferTypeText>
         </Col>
       </Header>
       <Body>
@@ -43,13 +49,19 @@ export function CurrentPartnerShipsCard() {
                 />
               </Vector>
               <Row gap={"6px"}>
-                <DateValue>10/2/2022 -</DateValue>
-                <DateValue>10/3/2022</DateValue>
+                <DateValue>
+                  {" "}
+                  {moment(data.deal.startDate).format("DD/MM/YYYY")}-
+                </DateValue>
+                <DateValue>
+                  {" "}
+                  {moment(data.deal.endDate).format("DD/MM/YYYY")}
+                </DateValue>
               </Row>
             </Row>
           </Col>
         </StatusCard>
-        <BranchTitleText>15-MAY Branch</BranchTitleText>
+        <BranchTitleText>{data.branch.name}</BranchTitleText>
       </Body>
       <Footer>
         <PartnerImageContainer
@@ -58,7 +70,7 @@ export function CurrentPartnerShipsCard() {
         />
         <PartnerName>
           Partner name: <br />
-          <b>Oli Egypt</b>
+          <b>{data.partner.name}</b>
         </PartnerName>
       </Footer>
     </SCurrentPartnerShipsCard>
@@ -156,9 +168,6 @@ const DateText = styled.span`
   text-align: left;
 `;
 
-
-
-
 const Vector = styled.svg`
   width: 28px;
   height: 28px;
@@ -173,7 +182,6 @@ const DateValue = styled.span`
   /* line-height: 28px; */
   text-align: left;
 `;
-
 
 const BranchTitleText = styled.span`
   color: rgb(40, 42, 55);

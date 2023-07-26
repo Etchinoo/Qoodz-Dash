@@ -93,7 +93,7 @@ const Partneships = () => {
   const [modal, setModal] = useState(false);
 
   const [avalibalePartnershipId, setAvalibalePartnershipId] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState(11);
+  const [selectedBranch, setSelectedBranch] = useState(10);
 
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
@@ -111,7 +111,15 @@ const Partneships = () => {
   };
 
   const sliderDataRequests = requestedPartnerShips.map((item) => {
-    return PartnershipRequestCard(item, setIsRequestModal);
+    return PartnershipRequestCard(
+      item,
+      setIsRequestModal,
+      selectedBranch,
+      setUser,
+      token,
+      setToken,
+      setModal
+    );
   });
   const sliderDataCurrent = currentPartnerShips.map((item) => {
     return CurrentPartnerShipsCard(item);

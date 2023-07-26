@@ -4,7 +4,6 @@ import PartnerImage from "../../assets/PartnerImage.png";
 import { Col, Row } from "../../components/Shared";
 import moment from "moment/moment";
 export function CurrentPartnerShipsCard(data) {
-  console.log(">>>> current part ", data);
   return (
     <SCurrentPartnerShipsCard>
       <Header>

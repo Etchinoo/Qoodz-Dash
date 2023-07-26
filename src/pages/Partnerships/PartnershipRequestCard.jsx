@@ -6,8 +6,71 @@ import brandBadgeLogo from "../../assets/BrandBadgeLogo.png";
 import { useState } from "react";
 import { PrimaryBtn } from "../Cashires/FormComponents.styles";
 import moment from "moment/moment";
+import axios from "axios";
 
-export function PartnershipRequestCard(data, setIsRequestModal) {
+import { APIsConstants } from "../../constants/API.constants";
+
+export const PartnershipRequestCard = (
+  data,
+  setIsRequestModa,
+  branchId,
+  setUser,
+  token,
+  setToken,
+  setModal
+) => {
+  const handleAccept = () => {
+    axios
+      .post(
+        `${APIsConstants.BASE_URL}/partnerships/${Number(
+          branchId
+        )}/accept/${Number(data.id)}`,
+        { dealId: data.id, branchId: branchId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        setModal(true);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
+  const handleRefuse = () => {
+    axios
+      .post(
+        `${APIsConstants.BASE_URL}/partnerships/${Number(
+          branchId
+        )}/refuse/${Number(data.id)}`,
+        { dealId: data.id, branchId: branchId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        setModal(true);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
   return (
     <>
       <SPartnershipRequestCard key={data.id}>
@@ -129,11 +192,13 @@ export function PartnershipRequestCard(data, setIsRequestModal) {
           <BtnGrp>
             <PrimaryBtn
               padding={"0px 50px;"}
-              onClick={() => setIsRequestModal(true)}
+              // onClick={() => setIsRequestModal(true)}
+              onClick={handleAccept}
             >
               <Accept>Accept</Accept>
             </PrimaryBtn>
-            <PrimaryBtn padding={"0px 50px;"} skelaton>
+
+            <PrimaryBtn padding={"0px 50px;"} skelaton onClick={handleRefuse}>
               <Refuse>Refuse</Refuse>
             </PrimaryBtn>
           </BtnGrp>
@@ -151,7 +216,7 @@ export function PartnershipRequestCard(data, setIsRequestModal) {
       </SPartnershipRequestCard>
     </>
   );
-}
+};
 
 const SPartnershipRequestCard = styled.div`
   display: flex;

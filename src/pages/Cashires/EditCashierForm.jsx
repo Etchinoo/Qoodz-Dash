@@ -19,6 +19,7 @@ import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
 import { isPhoneNumber } from "../../Validations";
+import Loader from "../../components/loader";
 
 export default function EditCashierForm({ onCancel, selectedRow, branches }) {
   const [stage, setStage] = useState(1);
@@ -30,8 +31,10 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
   const [error, setError] = useState("");
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const UpdateCashier = (phone, password, name, branchId, GetCashires) => {
+    setLoading(true);
     let data = {
       phoneNumber: phone,
       password: password,
@@ -51,10 +54,12 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
         }
       )
       .then((res) => {
+        setLoading(false);
         setStage(2);
         setError("");
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           // setToken(null);
           // setUser(null);
@@ -65,6 +70,7 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
   };
 
   const deleteCashier = () => {
+    setLoading(true);
     axios
       .delete(
         `${APIsConstants.BASE_URL}/partners/cashiers/${selectedRow.id}`,
@@ -78,10 +84,12 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
         }
       )
       .then((res) => {
+        setLoading(false);
         setStage(4);
         setError("");
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -119,6 +127,7 @@ export default function EditCashierForm({ onCancel, selectedRow, branches }) {
   if (stage === 1)
     return (
       <Form style={{ width: "100%" }}>
+        {loading ? <Loader /> : null}
         <Title>Edit Cashier Information</Title>
         <Row gap="19px">
           <InputGrp>

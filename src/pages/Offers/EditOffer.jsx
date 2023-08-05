@@ -25,6 +25,7 @@ import axios from "axios";
 import DateRangePickerV2 from "../../components/DateRangePickerV2";
 import moment from "moment";
 import { APIsConstants } from "../../constants/API.constants";
+import Loader from "../../components/loader";
 
 const offerTypes = [
   {
@@ -60,7 +61,7 @@ export default function EditOffer() {
   const [branches, setBranches] = useState([]);
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
-
+  const [loading, setLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState();
   const [selectedDate, setSelectedDate] = useState({
     fromDate: moment().date(-90).format("YYYY-MM-DD"),
@@ -98,6 +99,7 @@ export default function EditOffer() {
   }
 
   const EditOffer = () => {
+    setLoading(true);
     let data = {
       name: name,
       offerType: offerType.value,
@@ -138,10 +140,12 @@ export default function EditOffer() {
         },
       })
       .then((res) => {
+        setLoading(false);
         setDoneModal(true);
         setError("");
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -152,6 +156,7 @@ export default function EditOffer() {
   };
 
   const getBranches = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         "https://qoodz-api.herokuapp.com/api/branches",
@@ -163,10 +168,10 @@ export default function EditOffer() {
           },
         }
       );
-      console.log("res: ", res.data);
+      setLoading(false);
       return res.data;
     } catch (error) {
-      console.log("error: ", error.response.status);
+      setLoading(false);
       if (error.response.status === 401) {
         setToken(null);
         setUser(null);
@@ -357,6 +362,8 @@ export default function EditOffer() {
   };
   return (
     <Layout>
+       {loading ? <Loader /> : null}
+       
       {doneModal && (
         <ModalContainer setOpen={onModalClosed}>
           <SuccessModal mainText="Your request has been sent Successfully!" />

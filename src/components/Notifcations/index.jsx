@@ -10,10 +10,13 @@ import {
   userAtom,
   userTokenAtom,
 } from "../../store/Atoms";
+import { APIsConstants } from "../../constants/API.constants";
 
 const Notifcations = () => {
   const [showMenue, setShowMenue] = useState(false);
   const menuRef = useRef();
+  const [unSeenNotification, setunSeenNotification] = useState([]);
+  const [token, setToken] = useAtom(userTokenAtom);
 
   // useEffect(() => {
   //   const closeDropDown = (e) => {
@@ -25,12 +28,35 @@ const Notifcations = () => {
   //   document.body.addEventListener("click", closeDropDown);
   //   return () => document.body.removeEventListener("click", closeDropDown);
   // }, []);
+  const getUnseenNotification = () => {
+    axios
+      .get(`${APIsConstants.BASE_URL}/notifications?status=unseen`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => setunSeenNotification(res.data))
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          // setToken(null);
+        }
+      });
+  };
+
+  useEffect(() => {
+    getUnseenNotification();
+  }, []);
 
   return (
     <NotifcationDIV ref={menuRef} onClick={() => setShowMenue(!showMenue)}>
       <NotifcationBell src={icon} alt=""></NotifcationBell>
-      <NotifcationBadge>1</NotifcationBadge>
-      <Dropdown show={showMenue} />
+      {unSeenNotification.length > 0 && (
+        <NotifcationBadge>{unSeenNotification.length}</NotifcationBadge>
+      )}
+      <Dropdown show={showMenue} unSeenNotification={unSeenNotification} />
     </NotifcationDIV>
   );
 };
@@ -94,32 +120,7 @@ const _Dropdown = styled.div`
   /* transition: height var(--speed) ease; */
 `;
 
-function Dropdown({ show }) {
-  const [token, setToken] = useAtom(userTokenAtom);
-  const [unSeenNotification, setunSeenNotification] = useState([]);
-
-  const getUnseenNotification = () => {
-    axios
-      .get("https://qoodz-api.herokuapp.com/api/notifications?status=unseen", {
-        headers: {
-          "Content-Type": "application/json",
-          apiKey: "63cad87c3207fce093f8c08388e5a805",
-          Authorization: `Bearer ${token?.accessToken}`,
-        },
-      })
-      .then((res) => setunSeenNotification(res.data))
-      .catch((error) => {
-        console.log("error: ", error.response.status);
-        if (error.response.status === 401) {
-          // setToken(null);
-        }
-      });
-  };
-
-  useEffect(() => {
-    // getUnseenNotification();
-  }, []);
-
+function Dropdown({ show, unSeenNotification }) {
   return (
     <Container show={show}>
       {unSeenNotification.length > 0 ? (

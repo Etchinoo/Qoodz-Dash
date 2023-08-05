@@ -7,6 +7,7 @@ import moment from "moment";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
+import Loader from "../../components/loader";
 
 const headerOptions = {
   title: "Offers",
@@ -27,6 +28,7 @@ const Offers = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [offers, setOffers] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const nav = useNavigate();
   const actionHandler = (action) => {
@@ -42,6 +44,7 @@ const Offers = () => {
   }, [selectedDate, , searchKeyword, selectedCategory, selectedType]);
 
   const GetOffers = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/deals/my-deals?${
@@ -64,9 +67,9 @@ const Offers = () => {
           },
         }
       )
-      .then((res) => setOffers(res.data))
+      .then((res) => {    setLoading(false); setOffers(res.data)})
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -81,6 +84,7 @@ const Offers = () => {
         nav("/offers/new");
       }}
     >
+      {loading ? <Loader /> : null}
       <DataTableV2
         data={offers}
         columns={columns}

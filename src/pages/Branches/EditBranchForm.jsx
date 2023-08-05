@@ -18,6 +18,7 @@ import { APIsConstants } from "../../constants/API.constants";
 import DeleteConfirmationMessage from "../../components/Shared/DeleteConfirmationMessage";
 import SuccessModal from "../../components/Shared/SuccessModal";
 import axios from "axios";
+import Loader from "../../components/loader";
 
 export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   const [stage, setStage] = useState(1);
@@ -29,8 +30,10 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const GetAreas = async () => {
+    setLoading(true);
     axios
       .get(
         `${APIsConstants.BASE_URL}/locations/areas?location=${location.value}`,
@@ -42,15 +45,16 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
           },
         }
       )
-      .then((res) =>
+      .then((res) =>{
+        setLoading(false);
         setAreas(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
+        )}
       )
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -94,6 +98,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   if (stage === 1)
     return (
       <Form>
+        {loading ? <Loader /> : null}
         <Title>Edit Branch</Title>
         <Row gap={"2rem"}>
           <InputGrp>

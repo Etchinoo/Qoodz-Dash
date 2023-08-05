@@ -17,13 +17,16 @@ import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
 import { isPhoneNumber } from "../../Validations";
+import Loader from "../../components/loader";
 
 export default function AddNewCashierForm({ branches, GetCashires }) {
   const [stage, setStage] = useState(1);
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const CreateCashier = (phone, password, name, branchId, setError) => {
+    setLoading(true);
     let data = {
       phoneNumber: phone,
       password: password,
@@ -39,10 +42,12 @@ export default function AddNewCashierForm({ branches, GetCashires }) {
         },
       })
       .then((res) => {
+        setLoading(false);
         setStage(2);
         setError("");
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -59,7 +64,13 @@ export default function AddNewCashierForm({ branches, GetCashires }) {
   if (stage === 2)
     return <SuccessModal mainText={"Cashier Successfully Added!"} />;
   if (stage === 1)
-    return <AddNewCashier onSubmit={onSubmit} branches={branches} />;
+    return (
+      <AddNewCashier
+        onSubmit={onSubmit}
+        branches={branches}
+        loading={loading}
+      />
+    );
 }
 
 export function AddNewCashier({ onSubmit, branches }) {
@@ -72,6 +83,7 @@ export function AddNewCashier({ onSubmit, branches }) {
 
   return (
     <Form style={{ width: "100%" }}>
+      {loading ? <Loader /> : null}
       <Title>Add a new Cashier</Title>
       <Row gap="19px">
         <InputGrp>

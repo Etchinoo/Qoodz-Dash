@@ -14,16 +14,19 @@ import { userAtom, userTokenAtom } from "../../store/Atoms";
 import axios from "axios";
 import ModalContainer from "../../components/Modal";
 import SuccessModal from "../../components/Shared/SuccessModal";
+import Loader from "../../components/loader";
 
 export function PauseOfferForm({ id, setPauseOffer }) {
   const [reason, setReson] = useState(null);
   const [doneModal, setDoneModal] = useState(false);
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const nav = useNavigate();
 
   const pauseOffer = () => {
+    setLoading(true);
     axios
       .post(
         `${APIsConstants.BASE_URL}/deals/${id}/pause`,
@@ -37,10 +40,12 @@ export function PauseOfferForm({ id, setPauseOffer }) {
         }
       )
       .then((res) => {
+        setLoading(false);
         setDoneModal(true);
         setPauseOffer(false)
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -55,6 +60,7 @@ export function PauseOfferForm({ id, setPauseOffer }) {
 
   return (
     <Form>
+       {loading ? <Loader /> : null}
       {doneModal && (
         <ModalContainer setOpen={onModalClosed}>
           <SuccessModal mainText="Your request has been sent Successfully!" />

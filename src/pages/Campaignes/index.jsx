@@ -22,6 +22,7 @@ import {
   userAtom,
   userTokenAtom,
 } from "../../store/Atoms";
+import Loader from "../../components/loader";
 
 const prevCampaingsData = [
   {
@@ -130,11 +131,13 @@ const Campaignes = () => {
   const [campaignState, setCampaignState] = useState();
   const [showMore, setShowMore] = useState(false);
   const [pausedId, setPausedId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const preCampaingsSliderData = prevCampaingsData.map((item) => {
     return PrevCampaignCard(item);
   });
 
   const getActiveCampaigns = () => {
+    setLoading(true);
     axios
       .get(`${APIsConstants.BASE_URL}/campaigns/status/active`, {
         headers: {
@@ -144,11 +147,11 @@ const Campaignes = () => {
         },
       })
       .then((res) => {
-        console.log(">>> res", res.data);
+        setLoading(false);
         setActiveCampaignsData(res.data);
       })
       .catch((error) => {
-        console.log("error: ", error);
+        setLoading(false);
         if (error?.response?.status === 401) {
           setToken(null);
           setUser(null);
@@ -178,6 +181,7 @@ const Campaignes = () => {
 
   return (
     <Layout>
+       {loading ? <Loader /> : null}
       <MainTitle>Previous Campaigns</MainTitle>
       <SliderV2 elements={preCampaingsSliderData} />
       {pauseCampaign && (

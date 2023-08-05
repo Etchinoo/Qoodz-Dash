@@ -26,7 +26,7 @@ const Settings = () => {
   return (
     <Layout header={headerOptions}>
       {newOpen && (
-        <ModalContainer setOpen={setNewOpen}>
+        <ModalContainer setOpen={setNewOpen} show={false} >
           <SupportForm onClose={() => setNewOpen(false)} />
         </ModalContainer>
       )}
@@ -65,7 +65,7 @@ export default Settings;
 const SupportForm = ({ onClose }) => {
   return (
     <Form style={{ width: "100%" }}>
-      <Title>What can we help you with ??</Title>
+      <Title>What can we help you with ?</Title>
       <InputGrp>
         <Label>Subject</Label>
         <Input />

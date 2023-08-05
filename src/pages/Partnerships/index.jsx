@@ -18,73 +18,15 @@ import {
 } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import axios from "axios";
-const data = [
-  {
-    name: "Buy 1 Get 1 Free",
-  },
-  {
-    name: "40% Off",
-  },
-  {
-    name: "2 for 1",
-  },
-  {
-    name: "Free Delivery",
-  },
-  {
-    name: "Freinds & Family",
-  },
-  {
-    name: "Super Pack",
-  },
-];
+import Loader from "../../components/loader";
+
 const prevData = [
   {
     name: "40% Off",
   },
 ];
 
-const _data = [
-  {
-    id: "1",
-    name: "Buy 1 Get 1 Free",
-  },
-  {
-    id: "2",
-    name: "40% Off",
-  },
-  {
-    id: "3",
-    name: "2 for 1",
-  },
-  {
-    id: "4",
-    name: "Free Delivery",
-  },
-  {
-    id: "5",
-    name: "Freinds & Family",
-  },
-  {
-    id: "6",
-    name: "Super Pack",
-  },
-];
 
-const Arrows = styled.button`
-  width: 58.25px;
-  height: 58.25px;
-  border-radius: 50%;
-  border: none;
-  background: #ffffff;
-  box-shadow: 1px 4px 17px #ededff;
-  font-size: 2rem;
-  cursor: pointer;
-`;
-const headerOptions = {
-  title: "Requested Partnerships",
-  type: "master",
-};
 
 const Partneships = () => {
   const [sliderController, setSliderController] = useState();
@@ -100,6 +42,7 @@ const Partneships = () => {
   const [avalibalePartnerships, setAvaliablePartnerShips] = useState([]);
   const [requestedPartnerShips, setRequestedPartnerShips] = useState([]);
   const [currentPartnerShips, setCurrentPartnerShips] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const onExit = () => {
     setModal(false);
@@ -133,6 +76,7 @@ const Partneships = () => {
   });
 
   const getAvalibalePartenerships = () => {
+    setLoading(true);
     axios
       .get(`${APIsConstants.BASE_URL}/partnerships/11/available`, {
         headers: {
@@ -142,9 +86,11 @@ const Partneships = () => {
         },
       })
       .then((res) => {
+        setLoading(false);
         setAvaliablePartnerShips(res.data);
       })
       .catch((error) => {
+        setLoading(false);
         if (error?.response?.status === 401) {
           setToken(null);
           setUser(null);
@@ -153,6 +99,7 @@ const Partneships = () => {
   };
 
   const getRequestedPartenerships = () => {
+    setLoading(true);
     axios
       .get(`${APIsConstants.BASE_URL}/partnerships/15/requested`, {
         headers: {
@@ -162,9 +109,11 @@ const Partneships = () => {
         },
       })
       .then((res) => {
+        setLoading(false);
         setRequestedPartnerShips(res.data);
       })
       .catch((error) => {
+        setLoading(false);
         if (error?.response?.status === 401) {
           setToken(null);
           setUser(null);
@@ -173,6 +122,7 @@ const Partneships = () => {
   };
 
   const getCurrentPartenerships = () => {
+    setLoading(true);
     axios
       .get(`${APIsConstants.BASE_URL}/partnerships/15/current`, {
         headers: {
@@ -182,9 +132,11 @@ const Partneships = () => {
         },
       })
       .then((res) => {
+        setLoading(false);
         setCurrentPartnerShips(res.data);
       })
       .catch((error) => {
+        setLoading(false);
         if (error?.response?.status === 401) {
           setToken(null);
           setUser(null);
@@ -204,6 +156,7 @@ const Partneships = () => {
 
   return (
     <Layout>
+      {loading ? <Loader /> : null}
       {modal && (
         <ModalContainer setOpen={onExit}>
           <SuccessModal mainText={"Your request has been sent Successfully!"} />

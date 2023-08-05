@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import Loader from "../../components/loader";
 
 const headerOptions = {
   title: "Customers",
@@ -16,8 +16,7 @@ const headerOptions = {
 };
 
 const Customers = () => {
- 
- 
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
   const [locations, setLocations] = useState([]);
   const [selectedDate, setSelectedDate] = useState({
@@ -58,8 +57,8 @@ const Customers = () => {
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
 
-
   const GetCustomers = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         `https://qoodz-api.herokuapp.com/api/partners/3/customers?${
@@ -83,8 +82,10 @@ const Customers = () => {
           },
         }
       );
+      setLoading(false);
       return res.data;
     } catch (error) {
+      setLoading(false)
       console.log("error: ", error.response.status);
       if (error.response.status === 401) {
         setToken(null);
@@ -94,6 +95,7 @@ const Customers = () => {
   };
 
   const GetLocations = async () => {
+    setLoading(true);
     axios
       .get("https://qoodz-api.herokuapp.com/api/locations", {
         headers: {
@@ -102,13 +104,14 @@ const Customers = () => {
           Authorization: `Bearer ${token?.accessToken}`,
         },
       })
-      .then((res) =>
+      .then((res) => {
+        setLoading(false);
         setLocations(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
-      )
+        );
+      })
       .catch((error) => {
         console.log("error: ", error.response.status);
         if (error.response.status === 401) {
@@ -147,6 +150,7 @@ const Customers = () => {
 
   return (
     <Layout header={headerOptions} setselectedDate={setSelectedDate}>
+      {loading ? <Loader /> : null}
       <DataTableV2
         data={data}
         columns={columns}
@@ -229,10 +233,17 @@ const columns = [
     type: "number",
   },
   {
-    name: "Gneder",
+    name: "Gender",
     key: "gender",
     visability: true,
     type: "string",
+  },
+  {
+    name: "Nationality",
+    key: "nationality",
+    visability: true,
+    type: "object",
+    subKey: "name",
   },
   {
     name: "Date",

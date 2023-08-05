@@ -16,7 +16,7 @@ export const Table = styled.table`
   }
   width: 100%;
   overflow-x: auto;
-  white-space: nowrap;
+  // white-space: nowrap;
   overflow-x: scroll;
 `;
 export const THead = styled.thead`
@@ -49,6 +49,9 @@ export const TD = styled.td`
   color: #414357;
   padding: .8rem .8rem;
   text-align: center;
+  font-size:14px;
+  word-wrap: break-word;
+  max-width: 200px;
 `;
 
 export const SFilterBar = styled.div`

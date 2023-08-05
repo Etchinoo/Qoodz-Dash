@@ -18,6 +18,8 @@ import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { APIsConstants } from "../../constants/API.constants";
 import { isPhoneNumber } from "../../Validations";
+import Loader from "../../components/loader";
+
 export default function AddNewBranchForm({ locations }) {
   const [stage, setStage] = useState(1);
   const [location, setLocation] = useState(null);
@@ -25,8 +27,10 @@ export default function AddNewBranchForm({ locations }) {
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const CreateBranch = (name, phone, location, area, setError) => {
+    setLoading(true);
     let data = {
       phoneNumber: phone,
       name: name,
@@ -42,9 +46,11 @@ export default function AddNewBranchForm({ locations }) {
         },
       })
       .then((res) => {
+        setLoading(false);
         setStage(2);
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -54,6 +60,7 @@ export default function AddNewBranchForm({ locations }) {
       });
   };
   const GetAreas = async () => {
+    setLoading(true);
     axios
       .get(
         `${APIsConstants.BASE_URL}/locations/areas?location=${location.value}`,
@@ -66,6 +73,7 @@ export default function AddNewBranchForm({ locations }) {
         }
       )
       .then((res) => {
+        setLoading(false);
         setAreas(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
@@ -73,7 +81,7 @@ export default function AddNewBranchForm({ locations }) {
         );
       })
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -122,6 +130,7 @@ export function AddNewBranch({
 
   return (
     <Form>
+      {loading ? <Loader /> : null}
       <Title>Request a new Branch</Title>
       <Row gap={"2rem"}>
         <InputGrp>

@@ -15,7 +15,6 @@ export const CampaignCardV2 = (data, updateActiveCampaignsState) => {
   // const [pauseCampaign, setPauseCampaign] = useAtom(pauseCampaignAtom);
 
   const onToggle = (state) => {
-    console.log(">>> state", state);
     updateActiveCampaignsState(state ? "active" : "paused", data.id);
   };
 
@@ -25,7 +24,6 @@ export const CampaignCardV2 = (data, updateActiveCampaignsState) => {
   //     setPauseCampaign(true);
   //   }
   // };
-  console.log(">>>> campagin data ", data);
   return (
     data && (
       <RootWrapperCampaignCard key={data.id}>

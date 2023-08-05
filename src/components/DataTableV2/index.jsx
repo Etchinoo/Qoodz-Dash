@@ -123,6 +123,7 @@ const DataTableV2 = ({
                           moment(row[column.key]).format("DD/MM")
                         ) : (
                           row[column.key]
+                          
                         )}
                       </TD>
                     ) : null

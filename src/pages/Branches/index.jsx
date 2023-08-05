@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import axios from "axios";
 import StatbarV2 from "../../components/StatbarV2";
+import Loader from "../../components/loader";
 import "./index.css";
 
 const headerOptions = {
@@ -25,6 +26,7 @@ const Branches = () => {
   const [newOpen, setNewOpen] = useState(false);
   const [EditOpen, setEditOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const actionHandler = (action) => {
     if (action.key === "edit") {
@@ -64,6 +66,7 @@ const Branches = () => {
   ]);
 
   const GetBranches = async () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/branches?${
@@ -86,6 +89,7 @@ const Branches = () => {
         }
       )
       .then((res) => {
+        setLoading(false);
         setData(res.data);
         setBranches(
           res.data.map((ele) => {
@@ -95,6 +99,7 @@ const Branches = () => {
       })
       .catch((error) => {
         console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -102,6 +107,7 @@ const Branches = () => {
       });
   };
   const getPartanerAnalytics = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/partners?startDate=${selectedDate.fromDate}&endDate=${selectedDate.toDate}`,
@@ -115,7 +121,7 @@ const Branches = () => {
       )
       .then((res) => setAnalyticsData(res.data))
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -130,6 +136,7 @@ const Branches = () => {
   }, [selectedBranch, selectedCategory, selectedDate, searchKeyword]);
 
   const GetLocations = async () => {
+    setLoading(true);
     axios
       .get("https://qoodz-api.herokuapp.com/api/locations", {
         headers: {
@@ -138,15 +145,17 @@ const Branches = () => {
           Authorization: `Bearer ${token?.accessToken}`,
         },
       })
-      .then((res) =>
+      .then((res) =>{
+        setLoading(false);
         setLocations(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
         )
+      }
       )
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -163,6 +172,7 @@ const Branches = () => {
 
   return (
     <Layout header={headerOptions} addNew={() => setNewOpen(true)}>
+       {loading ? <Loader /> : null}
       {EditOpen && (
         <ModalContainer setOpen={setEditOpen}>
           <EditBranchForm

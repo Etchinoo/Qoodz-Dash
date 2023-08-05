@@ -11,6 +11,7 @@ import {
   userAtom,
   userTokenAtom,
 } from "../../store/Atoms";
+import Loader from "../../components/loader";
 
 export function PauseCampaignModal({ id, getActiveCampaigns }) {
   const [user, setUser] = useAtom(userAtom);
@@ -18,8 +19,10 @@ export function PauseCampaignModal({ id, getActiveCampaigns }) {
 
   const [text, setText] = useState(null);
   const [reasonId, setReasonId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const pauseCampaign = () => {
+    setLoading(true);
     let data = {
       reason: reasonId,
       additionalNotes: text,
@@ -32,8 +35,9 @@ export function PauseCampaignModal({ id, getActiveCampaigns }) {
           Authorization: `Bearer ${token?.accessToken}`,
         },
       })
-      .then((res) => getActiveCampaigns())
+      .then((res) => {    setLoading(true); getActiveCampaigns()})
       .catch((error) => {
+        setLoading(true);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);

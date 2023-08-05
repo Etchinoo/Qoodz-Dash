@@ -30,6 +30,8 @@ import axios from "axios";
 import DateRangePickerV2 from "../../components/DateRangePickerV2";
 import moment from "moment";
 import { APIsConstants } from "../../constants/API.constants";
+import Loader from "../../components/loader";
+
 const offerTypes = [
   {
     value: "discount",
@@ -83,7 +85,7 @@ export default function RequestNewOfferForm() {
   const [selectedGiftValue, setSelectedGiftValue] = useState(null);
   const [giftCardValue, setGiftCardValue] = useState(null);
   const [stage, setStage] = useState(1);
-
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const onSelectFile = (event) => {
@@ -100,6 +102,7 @@ export default function RequestNewOfferForm() {
   }
 
   const CreateOffer = () => {
+    setLoading(true);
     let data = {
       name: name,
       offerType: offerType.value,
@@ -139,10 +142,12 @@ export default function RequestNewOfferForm() {
         },
       })
       .then((res) => {
+        setLoading(false);
         setDoneModal(true);
         setError("");
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -153,6 +158,7 @@ export default function RequestNewOfferForm() {
   };
 
   const getBranches = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         "https://qoodz-api.herokuapp.com/api/branches",
@@ -164,10 +170,10 @@ export default function RequestNewOfferForm() {
           },
         }
       );
-      console.log("res: ", res.data);
+      setLoading(false);
       return res.data;
     } catch (error) {
-      console.log("error: ", error.response.status);
+      setLoading(false);
       if (error.response.status === 401) {
         setToken(null);
         setUser(null);
@@ -312,6 +318,7 @@ export default function RequestNewOfferForm() {
 
   return (
     <Layout>
+      {loading ? <Loader /> : null}
       {doneModal && (
         <ModalContainer setOpen={onModalClosed}>
           <SuccessModal mainText="Your request has been sent Successfully!" />

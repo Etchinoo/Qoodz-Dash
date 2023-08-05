@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BsChevronLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
@@ -16,16 +16,52 @@ import {
 import styled from "styled-components";
 import SuccessModal from "../../components/Shared/SuccessModal";
 import ModalContainer from "../../components/Modal";
+import axios from "axios";
+import { userAtom, userTokenAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 const headerOptions = {
   title: "Edit Basic Information",
   type: "detail",
   back: true,
-  to:"/settings",
+  to: "/settings",
 };
 
 const EditInfo = () => {
   const [modal, setModal] = React.useState(false);
   const nav = useNavigate();
+
+  const [branches, setBranches] = useState([]);
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+
+  const GetBranches = async () => {
+    axios
+      .get(
+        `https://qoodz-api.herokuapp.com/api/branches`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) =>
+        setBranches(
+          res.data.map((ele) => {
+            return { value: ele.id, label: ele.name };  
+          })
+        )
+      )
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
   return (
     <Layout header={headerOptions}>
       {modal && (

@@ -353,7 +353,7 @@ const cashiersColumns = [
   },
   {
     name: "Active Hours",
-    key: "total_orders",
+    key: "activeHours",
     visability: true,
     type: "number",
   },

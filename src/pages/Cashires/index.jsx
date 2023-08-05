@@ -16,9 +16,10 @@ import {
   userAtom,
   userTokenAtom,
 } from "../../store/Atoms";
-
+import Loader from "../../components/loader";
 import moment from "moment";
 import "./index.css";
+
 const headerOptions = {
   title: "Cashires",
   type: "master",
@@ -60,6 +61,7 @@ const Cashires = () => {
       ],
     },
   ]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     GetLocations();
@@ -69,6 +71,7 @@ const Cashires = () => {
   }, [selectedDate, selectedBranch, searchKeyword, selectedCategory]);
 
   const GetCashires = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/partners/cashiers/all?${
@@ -90,9 +93,9 @@ const Cashires = () => {
           },
         }
       )
-      .then((res) => setCashirs(res.data))
+      .then((res) => {  setLoading(false); setCashirs(res.data)})
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -100,6 +103,7 @@ const Cashires = () => {
       });
   };
   const GetLocations = async () => {
+    setLoading(true);
     axios
       .get("https://qoodz-api.herokuapp.com/api/locations", {
         headers: {
@@ -109,14 +113,14 @@ const Cashires = () => {
         },
       })
       .then((res) =>
-        setLocations(
+      {setLoading(false);  setLocations(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
+        )}
       )
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -124,6 +128,7 @@ const Cashires = () => {
       });
   };
   const GetBranches = async () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/branches?${
@@ -141,14 +146,14 @@ const Cashires = () => {
         }
       )
       .then((res) =>
-        setBranches(
+      {setLoading(false);  setBranches(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
+        )}
       )
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -156,6 +161,7 @@ const Cashires = () => {
       });
   };
   const getPartanerAnalytics = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/partners?startDate=${selectedDate.fromDate}&endDate=${selectedDate.toDate}`,
@@ -167,9 +173,9 @@ const Cashires = () => {
           },
         }
       )
-      .then((res) => setAnalyticsData(res.data))
+      .then((res) => {setLoading(false); setAnalyticsData(res.data)})
       .catch((error) => {
-        console.log("error: ", error.response.status);
+        setLoading(false);
         if (error.response.status === 401) {
           setToken(null);
           setUser(null);
@@ -192,6 +198,7 @@ const Cashires = () => {
 
   return (
     <Layout header={headerOptions} addNew={() => setNewOpen(true)}>
+       {loading ? <Loader /> : null}
       {EditOpen && (
         <ModalContainer setOpen={setEditOpen}>
           <EditCashierForm
@@ -259,7 +266,7 @@ const columns = [
   },
   {
     name: "Active Hours",
-    key: "total_orders",
+    key: "activeHours",
     visability: true,
     type: "number",
   },

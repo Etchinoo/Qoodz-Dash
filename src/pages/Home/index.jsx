@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { bindActionCreators } from "redux";
-import { useDispatch, useSelector } from "react-redux";
 import CustomerSegmention from "./CustomerSegmention";
 import StatbarV2 from "../../components/StatbarV2";
 import CustomerVists from "./CustomerVists";
@@ -15,8 +13,7 @@ import axios from "axios";
 import Charts from "./Charts";
 import "./index.css";
 import moment from "moment";
-import { homeActions } from "../../redux/actions/Home.actions";
-import { authActions } from "../../redux/actions/Auth.actions";
+import Loader from "../../components/loader";
 
 const headerOptions = {
   title: "Overview",
@@ -35,9 +32,10 @@ const Home = () => {
     toDate: moment().format("YYYY-MM-DD"),
   });
   const [analyticsData, setAnalyticsData] = useState({});
- 
- 
+  const [loading, setLoading] = useState(false);
+
   const getBranches = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         "https://qoodz-api.herokuapp.com/api/branches",
@@ -49,7 +47,7 @@ const Home = () => {
           },
         }
       );
-      console.log("res: ", res.data);
+      setLoading(false);
       return res.data;
     } catch (error) {
       console.log("error: ", error.response.status);
@@ -61,6 +59,7 @@ const Home = () => {
   };
 
   const getPartanerAnalytics = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/partners?startDate=${selectedDate.fromDate}&endDate=${selectedDate.toDate}`,
@@ -74,6 +73,7 @@ const Home = () => {
       )
       .then((res) => setAnalyticsData(res.data))
       .catch((error) => {
+        setLoading(false)
         console.log("error: ", error.response.status);
         if (error.response.status === 401) {
           setToken(null);
@@ -94,8 +94,6 @@ const Home = () => {
     setSelectedBranch(e);
   };
 
- 
-
   useEffect(() => {
     getPartanerAnalytics();
     getBranches().then((res) => {
@@ -103,7 +101,7 @@ const Home = () => {
     });
   }, [selectedDate]);
 
-  console.log
+
   return (
     <Layout
       header={headerOptions}
@@ -112,6 +110,7 @@ const Home = () => {
       filterChange={onBranchChange}
       setselectedDate={setselectedDate}
     >
+      {loading ? <Loader /> : null}
       {analyticsData && (
         <>
           <StatbarV2 devider={true} analyticsData={analyticsData} />

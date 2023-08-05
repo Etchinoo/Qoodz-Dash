@@ -13,6 +13,7 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { SidebarStateAtom } from "../../store/Atoms";
+import Loader from "../../components/loader";
 
 const TabsData = [
   {
@@ -43,6 +44,7 @@ const CustomerDetails = () => {
 
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
+  const [loading, setLoading] = useState(false);
 
   const setActiveTab = (tab) => {
     const index = TabsData.findIndex((t) => t.key === tab);
@@ -50,6 +52,7 @@ const CustomerDetails = () => {
   };
 
   const GetCustomerData = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         "https://qoodz-api.herokuapp.com/api/partners/3/customers",
@@ -62,7 +65,9 @@ const CustomerDetails = () => {
         }
       );
       //get the customer data from the response data using the id from the params
+      setLoading(false);
       let customerData = {};
+
       res.data.forEach((customer) => {
         if (customer.id === parseInt(id)) {
           customerData = customer;
@@ -70,6 +75,7 @@ const CustomerDetails = () => {
       });
       return customerData;
     } catch (error) {
+      setLoading(false);
       console.log("error: ", error.response.status);
       if (error.response.status === 401) {
         setToken(null);
@@ -79,6 +85,7 @@ const CustomerDetails = () => {
   };
 
   const GetTabsData = () => {
+    setLoading(true);
     axios
       .get(
         `https://qoodz-api.herokuapp.com/api/partners/3/customers/${parseInt(
@@ -104,8 +111,9 @@ const CustomerDetails = () => {
           },
         }
       )
-      .then((res) => setTabData(res.data))
+      .then((res) => {  setLoading(false);setTabData(res.data)})
       .catch((error) => {
+        setLoading(false)
         console.log("error: ", error.response.status);
         if (error.response.status === 401) {
           setToken(null);
@@ -133,6 +141,7 @@ const CustomerDetails = () => {
 
   return (
     <Layout header={headerOptions}>
+      {loading ? <Loader /> : null}
       <Row gap={"12px"} style={{ alignItems: "flex-start" }}>
         <TabsContainer>
           <Tabs active={active} setActive={setActive} Tabs={TabsData}>

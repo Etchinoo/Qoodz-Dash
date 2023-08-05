@@ -7,14 +7,16 @@ import axios from "axios";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { APIsConstants } from "../../constants/API.constants";
-
+import Loader from "../../components/loader";
 
 export function RequestOfferModal({ onClose, id, branchId, setModal }) {
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
+  const [loading, setLoading] = useState(false);
 
 
   const handleRequest = () => {
+    setLoading(true);
     onClose(false);
     axios
       .post(
@@ -32,9 +34,11 @@ export function RequestOfferModal({ onClose, id, branchId, setModal }) {
       )
       .then((res) => {
         setModal(true);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.response.status === 401) {
+          setLoading(false);
           setToken(null);
           setUser(null);
         }
@@ -43,6 +47,7 @@ export function RequestOfferModal({ onClose, id, branchId, setModal }) {
 
   return (
     <RootWrapperRequestOfferModal>
+      {loading ? <Loader /> : null}
       <OfferImage src={offerImage} alt="image of OfferImage" />
       <br />
       <Col>

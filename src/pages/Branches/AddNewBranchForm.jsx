@@ -108,6 +108,7 @@ export default function AddNewBranchForm({ locations }) {
         onSubmit={onSubmit}
         location={location}
         setLocation={setLocation}
+        loading={loading}
       />
     );
 }
@@ -118,6 +119,7 @@ export function AddNewBranch({
   onSubmit,
   location,
   setLocation,
+  loading
 }) {
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);

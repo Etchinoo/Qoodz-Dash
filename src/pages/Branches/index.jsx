@@ -28,7 +28,8 @@ const Branches = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const actionHandler = (action) => {
+  const actionHandler = (action,id,row,e) => {
+
     if (action.key === "edit") {
       setEditOpen(true);
       setSelectedRow(action.row);
@@ -64,6 +65,7 @@ const Branches = () => {
       type: "date",
     },
   ]);
+
 
   const GetBranches = async () => {
     setLoading(true);
@@ -145,15 +147,14 @@ const Branches = () => {
           Authorization: `Bearer ${token?.accessToken}`,
         },
       })
-      .then((res) =>{
+      .then((res) => {
         setLoading(false);
         setLocations(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )
-      }
-      )
+        );
+      })
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 401) {
@@ -172,7 +173,7 @@ const Branches = () => {
 
   return (
     <Layout header={headerOptions} addNew={() => setNewOpen(true)}>
-       {loading ? <Loader /> : null}
+      {loading ? <Loader /> : null}
       {EditOpen && (
         <ModalContainer setOpen={setEditOpen}>
           <EditBranchForm
@@ -203,6 +204,7 @@ const Branches = () => {
         setSearchKeyword={setSearchKeyword}
         setSelectedBranch={setSelectedBranch}
         setSelectedDate={setSelectedDate}
+        hasEditButton={true}
       />
     </Layout>
   );

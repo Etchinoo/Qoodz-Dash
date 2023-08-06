@@ -19,19 +19,20 @@ import DeleteConfirmationMessage from "../../components/Shared/DeleteConfirmatio
 import SuccessModal from "../../components/Shared/SuccessModal";
 import axios from "axios";
 import Loader from "../../components/loader";
+import { useNavigate } from "react-router-dom";
 
 export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   const [stage, setStage] = useState(1);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
-  const [area, setArea] = useState("");
+  const [location, setLocation] = useState(null);
+  const [area, setArea] = useState(null);
   const [areas, setAreas] = useState(null);
 
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useState(false);
-
+  const nav = useNavigate();
   const GetAreas = async () => {
     setLoading(true);
     axios
@@ -45,14 +46,14 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
           },
         }
       )
-      .then((res) =>{
+      .then((res) => {
         setLoading(false);
         setAreas(
           res.data.map((ele) => {
             return { value: ele.id, label: ele.name };
           })
-        )}
-      )
+        );
+      })
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 401) {
@@ -61,6 +62,68 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
         }
       });
   };
+
+  const UpdateBranch = () => {
+    setLoading(true);
+    let data = {
+      phoneNumber: phone,
+      name: name,
+      location: location?.value,
+      area: area?.value,
+    };
+    axios
+      .put(`${APIsConstants.BASE_URL}/branches/${selectedRow.id}`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setStage(2);
+        setError("");
+        nav("/branches");
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response.status === 401) {
+          // setToken(null);
+          // setUser(null);
+        } else {
+          setError(error.response.data.message);
+        }
+      });
+  };
+
+  const deleteBranch = () => {
+    setLoading(true);
+    let data = {};
+    axios
+      .delete(`${APIsConstants.BASE_URL}/branches/${selectedRow.id}`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setStage(4);
+        setError("");
+        nav("/branches");
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response.status === 401) {
+          // setToken(null);
+          // setUser(null);
+        } else {
+          setError(error.response.data.message);
+        }
+      });
+  };
+
   useEffect(() => {
     if (location) {
       GetAreas();
@@ -80,8 +143,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
   }, [selectedRow]);
 
   const onSubmit = () => {
-    console.log("Done");
-    setStage(2);
+    UpdateBranch()
   };
   if (stage === 4)
     return <SuccessModal mainText={"Branch Successfully Deleted!"} />;
@@ -89,7 +151,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
     return (
       <DeleteConfirmationMessage
         mainText={"Are you sure you want to Delete Branch?"}
-        onConfirm={() => setStage(4)}
+        onConfirm={() => deleteBranch()}
         onCancel={onCancel}
       />
     );
@@ -113,11 +175,7 @@ export default function EditBranchForm({ onCancel, locations, selectedRow }) {
           </InputGrp>
           <InputGrp>
             <Label>Phone Number</Label>
-            <Input
-              
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
-            />
+            <Input onChange={(e) => setPhone(e.target.value)} value={phone} />
           </InputGrp>
         </Row>
         <InputGrp>

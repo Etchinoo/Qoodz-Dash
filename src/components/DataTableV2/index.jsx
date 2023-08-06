@@ -97,6 +97,7 @@ const DataTableV2 = ({
                   status={row.status ? "green" : "red"}
                   onClick={() =>
                     hasChild &&
+                    
                     navigate(`/${qkey}/${row.id}`, { replace: true })
                   }
                 >
@@ -110,8 +111,16 @@ const DataTableV2 = ({
                           <>
                             <BiEdit
                               style={{ cursor: "pointer" }}
-                              onClick={(e) =>
-                                actionHandler({ key: column.key, id: row.id,row:row ,e:e})
+                              onClick={(e) =>{
+                                e.stopPropagation()
+                                actionHandler({
+                                  key: column.key,
+                                  id: row.id,
+                                  row: row,
+                                  e: e,
+                                })
+                              }
+                              
                               }
                             />
                           </>
@@ -123,7 +132,6 @@ const DataTableV2 = ({
                           moment(row[column.key]).format("DD/MM")
                         ) : (
                           row[column.key]
-                          
                         )}
                       </TD>
                     ) : null

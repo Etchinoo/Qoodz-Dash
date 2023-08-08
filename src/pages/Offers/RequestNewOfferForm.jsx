@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
 import { Col, Header, Row } from "../../components/Shared";
-import Select from "react-select";
-import PrimButton from "../../components/PrimButton";
-// import PhoneInput from "react-phone-number-input";
-import checkmark from "../../assets/checkmark.png";
+
 import Layout from "../../components/Layout";
 import { BsChevronLeft, BsCamera } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import offerImage from "../../assets/offerImage.png";
-import CheckBoxWithLabel from "../../components/CheckBoxWithLabel";
 import ModalContainer from "../../components/Modal";
 import {
   Form,
@@ -31,7 +26,14 @@ import DateRangePickerV2 from "../../components/DateRangePickerV2";
 import moment from "moment";
 import { APIsConstants } from "../../constants/API.constants";
 import Loader from "../../components/loader";
-
+import { storage } from "../../firebase";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { v4 } from "uuid";
 const offerTypes = [
   {
     value: "discount",
@@ -66,7 +68,7 @@ export default function RequestNewOfferForm() {
   const [token, setToken] = useAtom(userTokenAtom);
   const [user, setUser] = useAtom(userAtom);
 
-  const [selectedImages, setSelectedImages] = useState();
+  const [selectedImageURL, setSelectedImageURL] = useState();
   const [selectedDate, setSelectedDate] = useState({
     fromDate: moment().date(-90).format("YYYY-MM-DD"),
     toDate: moment().format("YYYY-MM-DD"),
@@ -87,18 +89,33 @@ export default function RequestNewOfferForm() {
   const [stage, setStage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageName, setImageName] = useState(null);
 
   const onSelectFile = (event) => {
     const selectedFiles = event.target.files;
-    console.log(selectedFiles[0]);
-    console.log(URL.createObjectURL(selectedFiles[0]));
-    setSelectedImages(URL.createObjectURL(selectedFiles[0]));
-    event.target.value = "";
+    let imageName = selectedFiles[0].name + v4();
+    setImageName(imageName);
+    const imageRef = ref(storage, `images/${imageName}`);
+    uploadBytes(imageRef, selectedFiles[0]).then(() =>
+      getDownloadURL(imageRef, selectedFiles[0]).then((e) =>
+        setSelectedImageURL(e)
+      )
+    );
   };
 
   function deleteHandler() {
-    URL.revokeObjectURL(selectedImages);
-    setSelectedImages(null);
+    const desertRef = ref(storage, `images/${imageName}`);
+
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        // File deleted successfully
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+      });
+
+    setSelectedImageURL(null);
   }
 
   const CreateOffer = () => {
@@ -112,7 +129,7 @@ export default function RequestNewOfferForm() {
       discountValue: discountValue,
       originalPrice: originalPrice,
       offerCap: offerCap,
-      offerImage: offerImage,
+      offerImage: selectedImageURL,
       applicableBranches: [selectedBranch.value],
       startDate: selectedDate.fromDate,
       endDate: selectedDate.toDate,
@@ -125,7 +142,7 @@ export default function RequestNewOfferForm() {
         applicability: applicability,
         mainProductName: mainProductName,
         giftValue: giftValue,
-        offerImage: offerImage,
+        offerImage: selectedImageURL,
         redeemDuration: 30,
         applicableBranches: [selectedBranch.value],
         startDate: "2023-05-23T23:00:00",
@@ -229,7 +246,7 @@ export default function RequestNewOfferForm() {
     } else if (offerType.value === "gift") {
       if (
         name &&
-        selectedImages &&
+        selectedImageURL &&
         discountType &&
         description &&
         mainProductName &&
@@ -242,7 +259,7 @@ export default function RequestNewOfferForm() {
         return true;
       }
     } else if (offerType.value === "giftCard") {
-      if (name && selectedImages && giftCardValue) {
+      if (name && selectedImageURL && giftCardValue) {
         return false;
       } else {
         return true;
@@ -255,7 +272,7 @@ export default function RequestNewOfferForm() {
       <Form style={{ padding: "16px", maxWidth: "520px" }}>
         <Col gap="22px">
           <Label>Offer Image</Label>
-          {!selectedImages && (
+          {!selectedImageURL && (
             <>
               <UploadOfferImage>
                 <UploadImageBadege>
@@ -272,10 +289,10 @@ export default function RequestNewOfferForm() {
               </UploadOfferImage>
             </>
           )}
-          {selectedImages && (
+          {selectedImageURL && (
             <CurrentImageContainer>
               <OfferImgContainer onClick={() => deleteHandler()}>
-                <OfferImg src={selectedImages} height="200" alt="upload" />
+                <OfferImg src={selectedImageURL} height="200" alt="upload" />
               </OfferImgContainer>
               <DetleteBtn style={{}} skelaton onClick={() => deleteHandler()}>
                 Delete
@@ -339,7 +356,7 @@ export default function RequestNewOfferForm() {
           <Form style={{ padding: "16px", maxWidth: "520px" }}>
             <Col gap="22px">
               <Label>Offer Image</Label>
-              {!selectedImages && (
+              {!selectedImageURL && (
                 <>
                   <UploadOfferImage>
                     <UploadImageBadege>
@@ -356,10 +373,14 @@ export default function RequestNewOfferForm() {
                   </UploadOfferImage>
                 </>
               )}
-              {selectedImages && (
+              {selectedImageURL && (
                 <CurrentImageContainer>
                   <OfferImgContainer onClick={() => deleteHandler()}>
-                    <OfferImg src={selectedImages} height="200" alt="upload" />
+                    <OfferImg
+                      src={selectedImageURL}
+                      height="200"
+                      alt="upload"
+                    />
                   </OfferImgContainer>
                   <DetleteBtn
                     style={{}}

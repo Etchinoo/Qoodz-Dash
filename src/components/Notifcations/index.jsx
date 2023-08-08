@@ -45,10 +45,35 @@ const Notifcations = () => {
         }
       });
   };
+  const setNotifactionsAsSeen = () => {
+    let data = {
+      registrationToken: token?.accessToken,
+    };
+    axios
+      .put(`${APIsConstants.BASE_URL}/notifications/all/seen`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => setunSeenNotification(res.data))
+      .catch((error) => {
+        console.log("error: ", error.response.status);
+        if (error.response.status === 401) {
+          // setToken(null);
+        }
+      });
+  };
 
   useEffect(() => {
     getUnseenNotification();
   }, []);
+  useEffect(() => {
+    if (showMenue) {
+      setNotifactionsAsSeen();
+    }
+  }, [showMenue]);
 
   return (
     <NotifcationDIV ref={menuRef} onClick={() => setShowMenue(!showMenue)}>
@@ -143,25 +168,7 @@ function Dropdown({ show, unSeenNotification }) {
             </Col>
           </Row>
         ))
-      ) : (
-        <Row gap={"33px"}>
-          <SnederArea>
-            <SenderImage src={KfcNoti} alt="image of SenderImage" />
-            <Badge>
-              <Icon xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="white"
-                  d="M20.2189 5.45757C20.83 2.27097 18.0324 -0.526646 14.8458 0.0844921L5.69673 1.83914C3.70789 2.22056 2.11735 3.72601 1.61202 5.68218C0.603112 9.58776 4.22515 13.1572 8.11424 12.0135C8.22164 11.9819 8.32143 12.0817 8.28984 12.1891C7.14617 16.0782 10.7156 19.7003 14.6212 18.6914C16.5774 18.186 18.0828 16.5955 18.4642 14.6066L20.2189 5.45757ZM15.1283 1.55764C17.2737 1.1462 19.1572 3.02968 18.7457 5.17504L16.9911 14.3241C16.7197 15.739 15.6455 16.8775 14.246 17.239C11.4489 17.9616 8.91949 15.3647 9.72891 12.6123C10.0954 11.3659 8.93743 10.2079 7.69105 10.5744C4.93864 11.3839 2.34178 8.85447 3.06435 6.05735C3.42585 4.65792 4.56437 3.58364 5.97926 3.31229L15.1283 1.55764Z"
-                />
-              </Icon>
-            </Badge>
-          </SnederArea>
-          <Col>
-            <Title>KFC - 15 May branch</Title>
-            <Message>Accepted your partnership request</Message>
-          </Col>
-        </Row>
-      )}
+      ) : null}
 
       <Devider />
     </Container>

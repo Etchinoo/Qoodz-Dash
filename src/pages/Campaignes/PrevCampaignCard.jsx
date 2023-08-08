@@ -1,25 +1,11 @@
-import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
 import { BiLeftDownArrowCircle } from "react-icons/bi";
 import styled, { css } from "styled-components";
-import ModalContainer from "../../components/Modal";
+
 import { Col, Row } from "../../components/Shared";
-import ToggleSwitch from "../../components/ToggleSwitch";
-import { pauseCampaignAtom } from "../../store/Atoms";
-import { PauseCampaignModal } from "./PauseCampaignModal";
+
 import { Divider } from "antd";
+import moment from "moment";
 export function PrevCampaignCard(data) {
-  // const [openModal, setOpenModal] = useState(false);
-  const [campaignState, setCampaignState] = useState(data.status);
-  const [showMore, setShowMore] = useState(false);
-
-  const onToggle = (state) => {
-    console.log(state);
-    if (campaignState === true && state === false) {
-      setPauseCampaign(true);
-    }
-  };
-
   return (
     <RootWrapperCampaignCard>
       <Col gap={"10px"}>
@@ -87,9 +73,13 @@ export function PrevCampaignCard(data) {
                 />
               </Vector>
               <Row gap={"6px"}>
-                <DateValue>{data.start} -</DateValue>
-                <DateValue>{data.end}</DateValue>
-              </Row>
+                    <DateValue>
+                      {moment(data.deal.startDate).format("DD-MM-YYYY")} -
+                    </DateValue>
+                    <DateValue>
+                      {moment(data.deal.endDate).format("DD-MM-YYYY")}
+                    </DateValue>
+                  </Row>
             </Row>
           </Col>
         </Row>

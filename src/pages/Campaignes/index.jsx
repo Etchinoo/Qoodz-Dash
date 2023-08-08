@@ -24,21 +24,6 @@ import {
 } from "../../store/Atoms";
 import Loader from "../../components/loader";
 
-const prevCampaingsData = [
-  {
-    id: "1",
-    name: "Campaign 1",
-    type: "Offer",
-    status: true,
-    start: "12/12/2020",
-    end: "12/12/2020",
-    redeems: "263",
-    newCustomers: "126",
-    totalScans: 225,
-    returningCustomers: 425,
-    archived: true,
-  },
-];
 
 const data = [
   {
@@ -127,14 +112,12 @@ const Campaignes = () => {
   const [token, setToken] = useAtom(userTokenAtom);
 
   const [activeCampaignsData, setActiveCampaignsData] = useState(null);
+  const[prevCampaingsData,setPrevCampaingsData]=useState(null)
   const [pauseCampaign, setPauseCampaign] = useAtom(pauseCampaignAtom);
   const [campaignState, setCampaignState] = useState();
   const [showMore, setShowMore] = useState(false);
   const [pausedId, setPausedId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const preCampaingsSliderData = prevCampaingsData.map((item) => {
-    return PrevCampaignCard(item);
-  });
 
   const getActiveCampaigns = () => {
     setLoading(true);
@@ -158,8 +141,32 @@ const Campaignes = () => {
         }
       });
   };
+  const getPrevCampagins=()=>{
+    setLoading(true);
+    axios
+      .get(`${APIsConstants.BASE_URL}/campaigns/previous`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setPrevCampaingsData(res.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  }
+
   useEffect(() => {
     getActiveCampaigns();
+    getPrevCampagins();
   }, []);
 
   const updateActiveCampaignsState = (status, id) => {
@@ -183,7 +190,13 @@ const Campaignes = () => {
     <Layout>
        {loading ? <Loader /> : null}
       <MainTitle>Previous Campaigns</MainTitle>
-      <SliderV2 elements={preCampaingsSliderData} />
+
+      <SliderV2
+        elements={prevCampaingsData?.map((item) =>
+          PrevCampaignCard(item)
+        )}
+      />
+      
       {pauseCampaign && (
         <ModalContainer setOpen={setPauseCampaign} show={false}>
           <PauseCampaignModal id={pausedId} getActiveCampaigns={getActiveCampaigns}/>

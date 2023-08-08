@@ -159,7 +159,8 @@ const RootWrapperCampaignCard = styled.div`
   margin-bottom: 8px;
   margin-left: 8px;
   gap: 2rem;
-   max-width: 38%;
+  max-width: 320px;
+  width: 420px;
 `;
 
 const Title = styled.div`

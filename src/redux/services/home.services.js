@@ -15,7 +15,6 @@ export const HomeService = {
 };
 
 function getParteners(selectedDate) {
-  console.log(">>>> token ",token)
   return HelperInstance.Get(
     `${APIsConstants.BASE_URL}/partners?startDate=${selectedDate.fromDate}&endDate=${selectedDate.toDate}`,
     config

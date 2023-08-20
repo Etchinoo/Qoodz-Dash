@@ -34,33 +34,7 @@ const EditInfo = () => {
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
 
-  const GetBranches = async () => {
-    axios
-      .get(
-        `https://qoodz-api.herokuapp.com/api/branches`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            apiKey: "63cad87c3207fce093f8c08388e5a805",
-            Authorization: `Bearer ${token?.accessToken}`,
-          },
-        }
-      )
-      .then((res) =>
-        setBranches(
-          res.data.map((ele) => {
-            return { value: ele.id, label: ele.name };  
-          })
-        )
-      )
-      .catch((error) => {
-        console.log("error: ", error.response.status);
-        if (error.response.status === 401) {
-          setToken(null);
-          setUser(null);
-        }
-      });
-  };
+
 
   return (
     <Layout header={headerOptions}>

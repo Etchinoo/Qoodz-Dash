@@ -61,4 +61,5 @@ export const BranchSelector = styled.div`
   padding: 16px 0;
   padding-left: 1.8rem;
   border-left: 1px solid #e4e4e4;
+  width:150px
 `;

@@ -114,6 +114,14 @@ export const SSelect = styled(Select)`
       border: solid 1px rgba(115, 112, 113, 0.37);
       border-radius: 15px;
     }
+    .filter-label__control{
+      border:unset;
+      box-shadow:unset;
+     
+      .filter-label__indicator-separator{
+        display:none;
+      }
+    }
   }
 `;
 

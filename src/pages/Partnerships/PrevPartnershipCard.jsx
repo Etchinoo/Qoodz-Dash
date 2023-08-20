@@ -4,18 +4,17 @@ import styled, { css } from "styled-components";
 import { Col, Row } from "../../components/Shared";
 import brandLogo from "../../assets/BrandLogo.png";
 import { Divider } from "antd";
+import moment from "moment";
 
 export function PrevPartnershipCard(data) {
-  // const [openModal, setOpenModal] = useState(false);
-
   return (
     <RootWrapperCampaignCard>
       <Col gap={"10px"}>
         <TitleHeader>
-          <BrandLogo src={brandLogo} alt="image of BrandLogo" />
+          <BrandLogo src={data.deal.offerImage} alt="image of BrandLogo" />
           <Col>
             <StaticText>Partner With:</StaticText>
-            <Name>Oli Egypt</Name>
+            <Name>{data.partner.name}</Name>
           </Col>
         </TitleHeader>
 
@@ -25,7 +24,7 @@ export function PrevPartnershipCard(data) {
               Offer A
             </StaticText>
             <Name fontSize={"28px"} lineHeight={"40px"}>
-              Buy 1 Get 1
+              {data.deal.name}
             </Name>
           </Col>
         </Row>
@@ -58,21 +57,14 @@ export function PrevPartnershipCard(data) {
                 />
               </Vector>
               <Row gap={"6px"}>
-                <DateValue>2023/7/6 -</DateValue>
-                <DateValue>2023/7/10 </DateValue>
+                <DateValue>
+                  {moment(data.deal.startDate).format("DD-MM-YYYY")} -
+                </DateValue>
+                <DateValue>
+                  {moment(data.deal.endDate).format("DD-MM-YYYY")}
+                </DateValue>
               </Row>
             </Row>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col>
-            <StaticText fontSize={"20px"} lineHeight={"28px"}>
-              Offer B
-            </StaticText>
-            <Name fontSize={"28px"} lineHeight={"40px"}>
-              40% Off
-            </Name>
           </Col>
         </Row>
 
@@ -80,14 +72,14 @@ export function PrevPartnershipCard(data) {
         <Row>
           <Col>
             <SummeryTtile>Total Scans</SummeryTtile>
-            <SummeryValue>225</SummeryValue>
+            <SummeryValue>{data.scansNum}</SummeryValue>
           </Col>
 
           <Divider type="vertical" style={{ height: "100%" }} />
 
           <Col>
             <SummeryTtile>Total Redeems</SummeryTtile>
-            <SummeryValue>445</SummeryValue>
+            <SummeryValue>{data.redeemsNum}</SummeryValue>
           </Col>
         </Row>
         <Row>
@@ -172,7 +164,6 @@ const RootWrapperCampaignCard = styled.div`
   margin-bottom: 8px;
   margin-left: 8px;
   gap: 2rem;
-  max-width: 37%;
 `;
 
 const Title = styled.div`

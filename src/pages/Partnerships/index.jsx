@@ -20,14 +20,6 @@ import { useAtom } from "jotai";
 import axios from "axios";
 import Loader from "../../components/loader";
 
-const prevData = [
-  {
-    name: "40% Off",
-  },
-];
-
-
-
 const Partneships = () => {
   const [sliderController, setSliderController] = useState();
   const [isRequestModal, setIsRequestModal] = useState(false);
@@ -35,13 +27,15 @@ const Partneships = () => {
   const [modal, setModal] = useState(false);
 
   const [avalibalePartnershipId, setAvalibalePartnershipId] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState(10);
 
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
+  const [selectedBranch, setSelectedBranch] = useAtom(homeBranchSelctorAtom);
   const [avalibalePartnerships, setAvaliablePartnerShips] = useState([]);
   const [requestedPartnerShips, setRequestedPartnerShips] = useState([]);
   const [currentPartnerShips, setCurrentPartnerShips] = useState([]);
+  const [previousPartnerships, setPreviousPartnerships] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const onExit = () => {
@@ -71,14 +65,14 @@ const Partneships = () => {
   const sliderDataAvailbalePartnership = avalibalePartnerships.map((item) => {
     return AvailbalePartnershipCard(item, handleRequestAvalibaleParternership);
   });
-  const sliderDataPrev = prevData.map((item) => {
+  const sliderDataPrev = previousPartnerships.map((item) => {
     return PrevPartnershipCard(item);
   });
 
   const getAvalibalePartenerships = () => {
     setLoading(true);
     axios
-      .get(`${APIsConstants.BASE_URL}/partnerships/11/available`, {
+      .get(`${APIsConstants.BASE_URL}/partnerships/${selectedBranch.value}/available`, {
         headers: {
           "Content-Type": "application/json",
           apiKey: "63cad87c3207fce093f8c08388e5a805",
@@ -101,7 +95,7 @@ const Partneships = () => {
   const getRequestedPartenerships = () => {
     setLoading(true);
     axios
-      .get(`${APIsConstants.BASE_URL}/partnerships/15/requested`, {
+      .get(`${APIsConstants.BASE_URL}/partnerships/${selectedBranch.value}/requested`, {
         headers: {
           "Content-Type": "application/json",
           apiKey: "63cad87c3207fce093f8c08388e5a805",
@@ -124,7 +118,7 @@ const Partneships = () => {
   const getCurrentPartenerships = () => {
     setLoading(true);
     axios
-      .get(`${APIsConstants.BASE_URL}/partnerships/15/current`, {
+      .get(`${APIsConstants.BASE_URL}/partnerships/${selectedBranch.value}/current`, {
         headers: {
           "Content-Type": "application/json",
           apiKey: "63cad87c3207fce093f8c08388e5a805",
@@ -144,16 +138,39 @@ const Partneships = () => {
       });
   };
 
+  const getPreviousPartenerships = () => {
+    setLoading(true);
+    axios
+      .get(`${APIsConstants.BASE_URL}/partnerships/${selectedBranch.value}/previous`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token?.accessToken}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setPreviousPartnerships(res.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error?.response?.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
+
   useEffect(() => {
     getAvalibalePartenerships();
     getCurrentPartenerships();
     getRequestedPartenerships();
-  }, []);
+    getPreviousPartenerships();
+  }, [selectedBranch]);
 
   useEffect(() => {
     setSliderController("");
   }, [sliderController]);
-
   return (
     <Layout>
       {loading ? <Loader /> : null}
@@ -186,7 +203,7 @@ const Partneships = () => {
           <RequestOfferModal
             onClose={setIsAvalibaleModal}
             id={avalibalePartnershipId}
-            branchId={selectedBranch}
+            branchId={selectedBranch?.value}
             setModal={setModal}
           />
         </ModalContainer>

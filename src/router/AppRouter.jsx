@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Customers from "../pages/Customers";
 import Home from "../pages/Home";
 import Branches from "../pages/Branches";
@@ -23,18 +23,29 @@ import EditOffer from "../pages/Offers/EditOffer";
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/sign-in" element={<Signin />} />
-      <Route path="" element={<RequireAuth />}>
+      <Route path="/sign-in" element={<Signin/>} />
+
+      <Route
+        element={
+          <RequireAuth>
+            <Outlet />
+          </RequireAuth>
+        }
+      >
         <Route path="/" element={<Home />} />
+
         <Route path="/customers">
           <Route path="" element={<Customers />} />
           <Route path=":id" element={<CustomerDetails />} />
         </Route>
+        
         <Route path="/cashires" element={<Cashires />} />
+        
         <Route path="/branches">
           <Route path="" element={<Branches />} />
           <Route path=":id" element={<BranchDetails />} />
         </Route>
+        
         <Route path="/offers">
           <Route path="" element={<Offers />} />
           <Route path=":id" element={<OfferDetails />} />

@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { userAtom } from "../../store/Atoms";
 
-const RequireAuth = () => {
+const RequireAuth = ({children}) => {
   const location = useLocation();
   const [user, setUser] = useAtom(userAtom);
 
@@ -13,7 +13,7 @@ const RequireAuth = () => {
     );
   }
 
-  return <Outlet />;
+  return children;
 };
 
 export default RequireAuth;

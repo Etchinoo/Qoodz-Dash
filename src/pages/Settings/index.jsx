@@ -14,6 +14,10 @@ import {
   TextArea,
   Title,
 } from "../Cashires/FormComponents.styles";
+import { APIsConstants } from "../../constants/API.constants";
+import { userAtom, userTokenAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
+import axios from "axios";
 
 const headerOptions = {
   title: "Settings",
@@ -26,7 +30,7 @@ const Settings = () => {
   return (
     <Layout header={headerOptions}>
       {newOpen && (
-        <ModalContainer setOpen={setNewOpen} show={false} >
+        <ModalContainer setOpen={setNewOpen} show={false}>
           <SupportForm onClose={() => setNewOpen(false)} />
         </ModalContainer>
       )}
@@ -63,18 +67,48 @@ const Settings = () => {
 export default Settings;
 
 const SupportForm = ({ onClose }) => {
+  const [subject, setSubject] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [user, setUser] = useAtom(userAtom);
+  const [token, setToken] = useAtom(userTokenAtom);
+
+  const handleClick = () => {
+    axios
+      .post(
+        `${APIsConstants.BASE_URL}/support/ticket`,
+        { message: message, subject: subject },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            apiKey: "63cad87c3207fce093f8c08388e5a805",
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        onClose();
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setToken(null);
+          setUser(null);
+        }
+      });
+  };
   return (
     <Form style={{ width: "100%" }}>
       <Title>What can we help you with ?</Title>
       <InputGrp>
         <Label>Subject</Label>
-        <Input />
+        <Input onChange={(e) => setSubject(e.target.value)} />
       </InputGrp>
       <InputGrp>
         <Label>Message</Label>
-        <TextArea />
+        <TextArea onChange={(e) => setMessage(e.target.value)} />
       </InputGrp>
-      <PrimaryBtn onClick={onClose}>Send</PrimaryBtn>
+      <PrimaryBtn disabled={!(subject && message)} onClick={handleClick}>
+        Send
+      </PrimaryBtn>
     </Form>
   );
 };

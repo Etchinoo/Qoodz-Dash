@@ -70,7 +70,7 @@ const CustomerSegmention = ({ analyticsData }) => {
                       </StatValue>
                       <Col>
                         <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                        <TransactionValue>200</TransactionValue>
+                        <TransactionValue>{analyticsData?.analytics?.male_to_female[0].avg_transaction_size}</TransactionValue>
                       </Col>
                     </StatContainer>
                     <VertDevider />
@@ -96,7 +96,7 @@ const CustomerSegmention = ({ analyticsData }) => {
                       </StatValue>
                       <Col>
                         <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                        <TransactionValue>200</TransactionValue>
+                        <TransactionValue>{analyticsData?.analytics?.male_to_female[1].avg_transaction_size}</TransactionValue>
                       </Col>
                     </StatContainer>
                   </StatArea>

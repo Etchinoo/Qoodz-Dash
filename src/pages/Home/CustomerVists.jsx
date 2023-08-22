@@ -2,18 +2,14 @@ import { Col, Row } from "../../components/Shared";
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { BiLeftDownArrowCircle } from "react-icons/bi";
-import {
-  FaAngleDown,
-  FaAngleUp,
-} from "react-icons/fa";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
-const CustomerVists = () => {
+const CustomerVists = ({ analyticsData }) => {
   const [open, setOpen] = useState(true);
-  const data = {
-    total: 237,
-    new: 74,
-    returning: 163,
-  };
+
+  let total = analyticsData?.analytics?.customer_categories
+    ?.map((obj) => +obj.count)
+    .reduce((accumulator, current) => accumulator + current, 0);
   return (
     <Container>
       <Row spread>
@@ -27,28 +23,52 @@ const CustomerVists = () => {
       {open && <HorzDevider />}
       {open && (
         <Col marginVert={"1rem"}>
-          <Row gap={"2rem"} style={{ justifyContent: "flex-start" }} width={"45%"}>
+          <Row
+            gap={"2rem"}
+            style={{ justifyContent: "flex-start" }}
+            width={"45%"}
+          >
             <Row>
-              <Col>
-                <Row gap={"16px"}>
-                  <StatBlock color={"#00BEA7"} />
-                  <StatTitle>Returning Customers</StatTitle>
-                </Row>
-                <StatValue>{data.returning}</StatValue>
-              </Col>
-              <VertDevider/>
-              <Col>
-                <Row gap={"16px"}>
-                  <StatBlock color={"#E1E1FB"} />
-                  <StatTitle>New Customers</StatTitle>
-                </Row>
-                <StatValue>{data.new}</StatValue>
-              </Col>
+              {analyticsData?.analytics?.customer_categories?.map(
+                (ele, index) => (
+                  <>
+                    <Col>
+                      <Row gap={"16px"}>
+                        <StatBlock
+                          color={
+                            ele.category === "new_customers"
+                              ? "#00BEA7"
+                              : "#E1E1FB"
+                          }
+                        />
+                        <StatTitle>
+                          {ele.category === "new_customers"
+                            ? "Returning Customers"
+                            : "New Customers"}
+                        </StatTitle>
+                      </Row>
+                      <StatValue>{ele.count}</StatValue>
+                    </Col>
+                    {!(
+                      index ===
+                      analyticsData?.analytics?.customer_categories?.length - 1
+                    ) && <VertDevider />}
+                  </>
+                )
+              )}
             </Row>
           </Row>
-          <Row>
-            <ProgressBar percent={(data.returning / data.total) * 100} />
-          </Row>
+          {total > 0 && (
+            <Row>
+              <ProgressBar
+                percent={
+                  (analyticsData?.analytics?.customer_categories[0].count /
+                    total) *
+                  100
+                }
+              />
+            </Row>
+          )}
         </Col>
       )}
     </Container>
@@ -60,7 +80,7 @@ export default CustomerVists;
 const ProgressBar = styled.div`
   width: 100%;
   height: 32px;
-  background-color: #E1E1FB;
+  background-color: #e1e1fb;
   border-radius: 10px 10px 0px 0px;
   position: relative;
   margin-top: 1rem;
@@ -72,7 +92,7 @@ const ProgressBar = styled.div`
       left: 0;
       width: ${percent}%;
       height: 100%;
-      background-color: #00BEA7;
+      background-color: #00bea7;
       border-radius: 4px;
     }
   `}
@@ -125,7 +145,7 @@ const HorzDevider = styled.div`
 const VertDevider = styled.div`
   width: 2px;
   height: 105px;
-  background-color: #DEDEDE;
+  background-color: #dedede;
   margin: 0 1rem;
 `;
 
@@ -146,4 +166,3 @@ const StatBlock = styled.div`
   border-radius: 5px;
   background-color: ${(props) => props.color};
 `;
-

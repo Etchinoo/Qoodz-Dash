@@ -54,7 +54,7 @@ const CustomerSegmention = ({ analyticsData }) => {
                       <Row gap={"16px"}>
                         <StatBlock color={"#9747FF"} />
                         <StatTitle>
-                          {!maleToFemale.length ? "" : maleToFemale[0].gender}
+                          {!maleToFemale.length ? " " : maleToFemale[0].gender}
                         </StatTitle>
                       </Row>
                       <StatValue>

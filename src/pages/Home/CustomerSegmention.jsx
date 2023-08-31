@@ -9,7 +9,8 @@ import { useEffect } from "react";
 
 const CustomerSegmention = ({ analyticsData }) => {
   const [open, setOpen] = useState(true);
-  const [chartDate, setChartData] = useState(null); 
+  const [chartDate, setChartData] = useState(null);
+  const maleToFemale = analyticsData?.analytics?.male_to_female || null;
   useEffect(() => {
     if (analyticsData?.analytics?.age_ranges.length > 0)
       setChartData([...analyticsData?.analytics?.age_ranges]);
@@ -53,24 +54,30 @@ const CustomerSegmention = ({ analyticsData }) => {
                       <Row gap={"16px"}>
                         <StatBlock color={"#9747FF"} />
                         <StatTitle>
-                          {analyticsData?.analytics?.male_to_female[0].gender}
+                          {!maleToFemale.length ? "" : maleToFemale[0].gender}
                         </StatTitle>
                       </Row>
                       <StatValue>
-                        {analyticsData?.analytics?.male_to_female[0].count} (
+                        {!maleToFemale.length ? "" : maleToFemale[0].count} (
                         {Math.round(
-                          (analyticsData?.analytics?.male_to_female[0].count *
-                            100) /
-                            (+analyticsData?.analytics?.male_to_female[0]
-                              .count +
-                              +analyticsData?.analytics?.male_to_female[1]
-                                .count)
+                          (!maleToFemale.length
+                            ? ""
+                            : maleToFemale[0].count * 100) /
+                            (+!maleToFemale.length
+                              ? ""
+                              : maleToFemale[0].count + +!maleToFemale.length
+                              ? ""
+                              : maleToFemale[1].count)
                         )}
                         %)
                       </StatValue>
                       <Col>
                         <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                        <TransactionValue>{analyticsData?.analytics?.male_to_female[0].avg_transaction_size}</TransactionValue>
+                        <TransactionValue>
+                          {!maleToFemale.length
+                            ? ""
+                            : maleToFemale[0].avg_transaction_size}
+                        </TransactionValue>
                       </Col>
                     </StatContainer>
                     <VertDevider />
@@ -78,25 +85,31 @@ const CustomerSegmention = ({ analyticsData }) => {
                       <Row gap={"16px"}>
                         <StatBlock color={"#AEDDEB"} />
                         <StatTitle>
-                          {analyticsData?.analytics?.male_to_female[1].gender}
+                          {!maleToFemale.length ? "" : maleToFemale[1].gender}
                         </StatTitle>
                       </Row>
                       <StatValue>
                         {" "}
-                        {analyticsData?.analytics?.male_to_female[1].count} (
+                        {!maleToFemale.length ? "" : maleToFemale[1].count} (
                         {Math.round(
-                          (analyticsData?.analytics?.male_to_female[1].count *
-                            100) /
-                            (+analyticsData?.analytics?.male_to_female[0]
-                              .count +
-                              +analyticsData?.analytics?.male_to_female[1]
-                                .count)
+                          (!maleToFemale.length
+                            ? ""
+                            : maleToFemale[1].count * 100) /
+                            (+!maleToFemale.length
+                              ? ""
+                              : maleToFemale[0].count + +!maleToFemale.length
+                              ? ""
+                              : maleToFemale[1].count)
                         )}
                         %)
                       </StatValue>
                       <Col>
                         <AvgTicketSize>AVG Transaction Size</AvgTicketSize>
-                        <TransactionValue>{analyticsData?.analytics?.male_to_female[1].avg_transaction_size}</TransactionValue>
+                        <TransactionValue>
+                          {!maleToFemale.length
+                            ? ""
+                            : maleToFemale[1].avg_transaction_size}
+                        </TransactionValue>
                       </Col>
                     </StatContainer>
                   </StatArea>

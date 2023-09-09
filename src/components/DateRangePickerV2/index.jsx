@@ -1,12 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import {
-  FaCalendar,
-  FaCalendarAlt,
-  FaChevronDown,
-  FaAngleDown,
-  FaAngleUp,
-} from "react-icons/fa";
+import { FaCalendar, FaCalendarAlt } from "react-icons/fa";
 import styled from "styled-components";
 import { PrimaryBtn } from "../../pages/Cashires/FormComponents.styles";
 import { Col, Row } from "../Shared";
@@ -34,12 +28,14 @@ const DateRangePickerV2 = ({
   placeHolder,
   setselectedDate,
   selectedDate,
+  minStart,
+  maxStart,
+  minEnd,
+  maxEnd,
 }) => {
   const [open, setOpen] = useState(false);
-  const [fromDate, setFromDate] = useState(
-    moment().date(-90).format("YYYY-MM-DD")
-  );
-  const [toDate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [fromDate, setFromDate] = useState();
+  const [toDate, setToDate] = useState();
   const [displayValue, setDisplayValue] = useState("From - To");
 
   //a function to close the date picker when clicked outside using useRef hook
@@ -49,9 +45,11 @@ const DateRangePickerV2 = ({
   });
 
   useEffect(() => {
-    setDisplayValue(`${DSF(fromDate)} - ${DSF(toDate)}`);
-    if (fromDate && toDate && setselectedDate) {
-      setselectedDate({ fromDate, toDate });
+    setDisplayValue(
+      `${fromDate ? DSF(fromDate) : "From"} - ${toDate ? DSF(toDate) : "To"}`
+    );
+    if (setselectedDate) {
+      setselectedDate({ fromDate: fromDate || "", toDate: toDate || "" });
     }
   }, [fromDate, toDate]);
 
@@ -92,12 +90,9 @@ const DateRangePickerV2 = ({
         setOpen(false);
         break;
       case "clear":
-        setDisplay(
-          moment().date(-90).format("YYYY-MM-DD"),
-          moment().format("YYYY-MM-DD")
-        );
-        setFromDate(moment().date(-90).format("YYYY-MM-DD"));
-        setToDate(moment().format("YYYY-MM-DD"));
+        setDisplay("", "");
+        setFromDate("");
+        setToDate("");
         setOpen(false);
         break;
       default:
@@ -110,7 +105,7 @@ const DateRangePickerV2 = ({
       <Container>
         <Row gap={"28px"} onClick={() => setOpen(!open)}>
           <Text>{displayValue}</Text>
-          {open ? <FaAngleUp /> : <FaAngleDown />}
+          <CalendarIcon />
         </Row>
       </Container>
       {open && (
@@ -123,6 +118,8 @@ const DateRangePickerV2 = ({
                   type="date"
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
+                  max={maxStart}
+                  min={minStart}
                 />
               </Row>
               <Row spread>
@@ -131,6 +128,8 @@ const DateRangePickerV2 = ({
                   type="date"
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
+                  min={minEnd}
+                  max={maxEnd}
                 />
               </Row>
             </CustomRange>
@@ -241,4 +240,8 @@ const Actions = styled.button`
   /* line-height: 28px; */
   text-align: left;
   cursor: pointer;
+`;
+
+const CalendarIcon = styled(FaCalendar)`
+  margin-left: auto;
 `;

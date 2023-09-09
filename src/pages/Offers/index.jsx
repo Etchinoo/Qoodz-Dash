@@ -8,6 +8,7 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { userAtom, userTokenAtom } from "../../store/Atoms";
 import Loader from "../../components/loader";
+import { APIsConstants } from "../../constants/API.constants";
 
 const headerOptions = {
   title: "Offers",
@@ -17,10 +18,7 @@ const headerOptions = {
 };
 
 const Offers = () => {
-  const [selectedDate, setSelectedDate] = useState({
-    fromDate: moment().date(-90).format("YYYY-MM-DD"),
-    toDate: moment().format("YYYY-MM-DD"),
-  });
+  const [selectedDate, setSelectedDate] = useState();
   const [user, setUser] = useAtom(userAtom);
   const [token, setToken] = useAtom(userTokenAtom);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -47,11 +45,14 @@ const Offers = () => {
     setLoading(true);
     axios
       .get(
-        `https://qoodz-api.herokuapp.com/api/deals/my-deals?${
-          "startDate=" +
-          selectedDate.fromDate +
-          "&endDate=" +
-          selectedDate.toDate
+        `${APIsConstants.BASE_URL}/deals/my-deals?${
+          selectedDate?.fromDate
+            ? "startDate=" +
+              selectedDate?.fromDate +
+              (selectedDate?.toDate ? "&endDate=" + selectedDate?.toDate : "")
+            : selectedDate?.toDate
+            ? "endDate=" + selectedDate?.toDate
+            : ""
         } ${
           selectedCategory && searchKeyword
             ? `&searchAttribute=${selectedCategory.value}&searchValue=` +
@@ -67,7 +68,10 @@ const Offers = () => {
           },
         }
       )
-      .then((res) => {    setLoading(false); setOffers(res.data)})
+      .then((res) => {
+        setLoading(false);
+        setOffers(res.data);
+      })
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 401) {

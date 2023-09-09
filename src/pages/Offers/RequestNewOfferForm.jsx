@@ -6,7 +6,6 @@ import { Col, Header, Row } from "../../components/Shared";
 import Layout from "../../components/Layout";
 import { BsChevronLeft, BsCamera } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import offerImage from "../../assets/offerImage.png";
 import ModalContainer from "../../components/Modal";
 import {
   Form,
@@ -34,34 +33,38 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { v4 } from "uuid";
+import {
+  applicabilityEnum,
+  discountTypeEnum,
+  offerTypeEnum,
+} from "./constants";
 const offerTypes = [
   {
-    value: "discount",
+    value: offerTypeEnum.discount,
     label: "Discount",
   },
   {
-    value: "gift",
+    value: offerTypeEnum.gift,
     label: "Gift",
   },
   {
-    value: "giftCard",
+    value: offerTypeEnum.giftCard,
     label: "Gift Card",
   },
 ];
 
 const DiscountTypes = [
   {
-    value: "percent",
+    value: discountTypeEnum.percentage,
     label: "Percentage",
   },
   {
-    value: "flat",
+    value: discountTypeEnum.flat,
     label: "Flat",
   },
 ];
 
 export default function RequestNewOfferForm() {
-  // const [offerType, setOfferType] = useState(offerTypes[0]);
   const [doneModal, setDoneModal] = useState(false);
   const nav = useNavigate();
   const [branches, setBranches] = useState([]);
@@ -69,27 +72,25 @@ export default function RequestNewOfferForm() {
   const [user, setUser] = useAtom(userAtom);
 
   const [selectedImageURL, setSelectedImageURL] = useState();
-  const [selectedDate, setSelectedDate] = useState({
-    fromDate: moment().date(-90).format("YYYY-MM-DD"),
-    toDate: moment().format("YYYY-MM-DD"),
-  });
+  const [selectedDate, setSelectedDate] = useState();
   const [name, setName] = useState(null);
   const [offerCap, setOfferCap] = useState(null);
-  const [discountValue, setDiscountValue] = useState(null);
+  const [discountValue, setDiscountValue] = useState("");
   const [discountType, setDiscountType] = useState(DiscountTypes[0]);
   const [originalPrice, setOriginalPrice] = useState(null);
   const [offerType, setOfferType] = useState(offerTypes[0]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedBranches, setSelectedBranches] = useState(null);
   const [description, setDescription] = useState(null);
   const [applicability, setApplicability] = useState(null);
   ///
   const [mainProductName, setMainProductName] = useState(null);
   const [selectedGiftValue, setSelectedGiftValue] = useState(null);
   const [giftCardValue, setGiftCardValue] = useState(null);
-  const [stage, setStage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [imageName, setImageName] = useState(null);
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
 
   const onSelectFile = (event) => {
     const selectedFiles = event.target.files;
@@ -122,31 +123,40 @@ export default function RequestNewOfferForm() {
     setLoading(true);
     let data = {
       name: name,
-      offerType: offerType.value,
+      offerType: offerType?.value,
       description: description,
       applicability: applicability,
-      discountType: discountType.value,
-      discountValue: discountValue,
-      originalPrice: originalPrice,
-      offerCap: offerCap,
       offerImage: selectedImageURL,
-      applicableBranches: [selectedBranch.value],
-      startDate: selectedDate.fromDate,
-      endDate: selectedDate.toDate,
+      applicableBranches: selectedBranches?.map((item) => item.value),
+      startDate: selectedDate?.fromDate,
+      endDate: selectedDate?.toDate,
     };
-    if (offerType.value === "gift") {
+    if (discountType.value === discountTypeEnum.percentage) {
+      data["offerCap"] = +offerCap;
+    }
+    if (applicability === applicabilityEnum.for_partner) {
+      data["minInvoice"] = +minAmount;
+      data["maxInvoice"] = +maxAmount;
+    }
+    if (offerType.value === offerTypeEnum.discount) {
+      data = {
+        ...data,
+        discountType: discountType.value,
+        discountValue: +discountValue,
+        originalPrice: +originalPrice,
+      };
+    } else if (offerType.value === offerTypeEnum.gift) {
+      data = {
+        ...data,
+        mainProductName: mainProductName,
+        giftValue: +selectedGiftValue,
+      };
+    } else if (offerType.value === offerTypeEnum.giftCard) {
       data = {
         name: name,
-        offerType: offerType,
-        description: description,
-        applicability: applicability,
-        mainProductName: mainProductName,
-        giftValue: giftValue,
+        offerType: offerType.value,
+        giftValue: +giftCardValue,
         offerImage: selectedImageURL,
-        redeemDuration: 30,
-        applicableBranches: [selectedBranch.value],
-        startDate: "2023-05-23T23:00:00",
-        endDate: "2023-05-30T23:00:00",
       };
     }
 
@@ -177,16 +187,13 @@ export default function RequestNewOfferForm() {
   const getBranches = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        "https://qoodz-api.herokuapp.com/api/branches",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            apiKey: "63cad87c3207fce093f8c08388e5a805",
-            Authorization: `Bearer ${token.accessToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${APIsConstants.BASE_URL}/branches`, {
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "63cad87c3207fce093f8c08388e5a805",
+          Authorization: `Bearer ${token.accessToken}`,
+        },
+      });
       setLoading(false);
       return res.data;
     } catch (error) {
@@ -206,11 +213,6 @@ export default function RequestNewOfferForm() {
     return options;
   };
 
-  const onBranchChange = (e) => {
-    console.log("e: ", e);
-    setSelectedBranch(e);
-  };
-
   useEffect(() => {
     getBranches().then((res) => {
       setBranches(createOptions(res));
@@ -226,43 +228,48 @@ export default function RequestNewOfferForm() {
     nav(-1);
   };
   const isDisabled = () => {
-    if (offerType.value === "discount") {
-      if (
-        name &&
-        offerCap &&
-        discountValue &&
-        discountType &&
-        originalPrice &&
-        offerType &&
-        selectedBranch &&
-        description &&
-        applicability &&
-        selectedDate
-      ) {
-        return false;
+    if (!name || !selectedImageURL) {
+      return true;
+    } else {
+      if (offerType.value === offerTypeEnum.giftCard) {
+        if (!giftCardValue) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
-        return true;
-      }
-    } else if (offerType.value === "gift") {
-      if (
-        name &&
-        selectedImageURL &&
-        discountType &&
-        description &&
-        mainProductName &&
-        selectedDate &&
-        offerType &&
-        applicability
-      ) {
-        return false;
-      } else {
-        return true;
-      }
-    } else if (offerType.value === "giftCard") {
-      if (name && selectedImageURL && giftCardValue) {
-        return false;
-      } else {
-        return true;
+        if (
+          !offerType ||
+          !selectedBranches ||
+          !description ||
+          !applicability ||
+          !selectedDate?.fromDate ||
+          !selectedDate?.toDate ||
+          (applicability === applicabilityEnum.for_partner &&
+            !(maxAmount || minAmount)) ||
+          !description
+        ) {
+          return true;
+        } else {
+          if (offerType.value === offerTypeEnum.discount) {
+            if (
+              !discountValue ||
+              !discountType ||
+              !originalPrice ||
+              (discountType.value === discountTypeEnum.percentage && !offerCap)
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (offerType.value === offerTypeEnum.gift) {
+            if (!mainProductName || !selectedGiftValue) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
       }
     }
   };
@@ -311,6 +318,7 @@ export default function RequestNewOfferForm() {
               className="select-filter"
               classNamePrefix="filter-opt"
               options={offerTypes}
+              defaultValue={offerTypes[0]}
               onChange={(value) => setOfferType(value)}
             />
           </InputGrp>
@@ -319,8 +327,14 @@ export default function RequestNewOfferForm() {
         <InputGrp>
           <Label>Gift Card Value</Label>
           <Input
-            type={"number"}
-            onChange={(e) => setGiftCardValue(e.target.value)}
+            type={"text"}
+            onChange={(e) => {
+              if (isNaN(e.target.value) && e.target.value !== "") {
+                return;
+              }
+              setGiftCardValue(e.target.value.trim());
+            }}
+            value={giftCardValue}
           />
         </InputGrp>
 
@@ -350,7 +364,7 @@ export default function RequestNewOfferForm() {
         >
           <BsChevronLeft /> Offers
         </Header>
-        {offerType.value == "giftCard" ? (
+        {offerType.value == offerTypeEnum.giftCard ? (
           renderGiftCardForm()
         ) : (
           <Form style={{ padding: "16px", maxWidth: "520px" }}>
@@ -419,31 +433,84 @@ export default function RequestNewOfferForm() {
               <CheckBoxInputGrp>
                 <Checkbox
                   type="checkbox"
-                  onChange={(e) => setApplicability("for_you")}
+                  onChange={(e) => {
+                    setApplicability(applicabilityEnum.for_partner);
+                    setMinAmount("");
+                    setMaxAmount("");
+                  }}
+                  id={applicabilityEnum.for_partner}
+                  checked={applicability == applicabilityEnum.for_partner}
                 />
-                <Label>For you</Label>
-              </CheckBoxInputGrp>
-              <CheckBoxInputGrp>
+                <Label htmlFor={applicabilityEnum.for_partner}>For you</Label>
                 <Checkbox
                   type="checkbox"
-                  onChange={(e) => setApplicability("for_partner")}
+                  onChange={(e) =>
+                    setApplicability(applicabilityEnum.for_partnership)
+                  }
+                  id={applicabilityEnum.for_partnership}
+                  checked={applicability == applicabilityEnum.for_partnership}
                 />
-                <Label>For Others</Label>
+                <Label htmlFor={applicabilityEnum.for_partnership}>
+                  For Others
+                </Label>
               </CheckBoxInputGrp>
             </Row>
-            {offerType.value === "discount" ? (
+            {applicability == applicabilityEnum.for_partner && (
               <>
-                <InputGrp>
-                  <Label>Applicable branches</Label>
-                  <SSelect
-                    fullWidth
-                    className="select-filter"
-                    classNamePrefix="filter-opt"
-                    placeholder="Select Branches"
-                    options={branches}
-                    onChange={(value) => setSelectedBranch(value)}
-                  />
-                </InputGrp>
+                <Row style={{ justifyContent: "flex-start" }} gap="16px">
+                  <InputGrp>
+                    <Label>Min. Amount</Label>
+                    <Input
+                      type={"text"}
+                      onChange={(e) => {
+                        if (isNaN(e.target.value) && e.target.value !== "") {
+                          return;
+                        }
+                        setMinAmount(e.target.value.trim());
+                      }}
+                      value={minAmount}
+                      placeholder="min. amount"
+                    />
+                  </InputGrp>
+                  <InputGrp>
+                    <Label>Max. Amount</Label>
+                    <Input
+                      type={"text"}
+                      onChange={(e) => {
+                        if (isNaN(e.target.value) && e.target.value !== "") {
+                          return;
+                        }
+                        setMaxAmount(e.target.value.trim());
+                      }}
+                      value={maxAmount}
+                      placeholder="max. amount"
+                    />
+                  </InputGrp>
+                </Row>
+                {minAmount && maxAmount && +minAmount > +maxAmount && (
+                  <Error>Min Amount must be less than Max Amount</Error>
+                )}
+              </>
+            )}
+            {(offerType.value === offerTypeEnum.discount ||
+              offerType.value === offerTypeEnum.gift) && (
+              <InputGrp>
+                <Label>Applicable branches</Label>
+                <SSelect
+                  fullWidth
+                  className="select-filter"
+                  classNamePrefix="filter-opt"
+                  placeholder="Select Branches"
+                  options={branches}
+                  onChange={(value) => setSelectedBranches(value)}
+                  value={selectedBranches}
+                  isMulti={true}
+                  closeMenuOnSelect={false}
+                />
+              </InputGrp>
+            )}
+            {offerType.value === offerTypeEnum.discount ? (
+              <>
                 <InputGrp>
                   <Label>Discount Type</Label>
                   <SSelect
@@ -452,6 +519,7 @@ export default function RequestNewOfferForm() {
                     classNamePrefix="filter-opt"
                     placeholder="Select Discount Type"
                     options={DiscountTypes}
+                    defaultValue={DiscountTypes[0]}
                     onChange={(value) => setDiscountType(value)}
                   />
                 </InputGrp>
@@ -459,8 +527,14 @@ export default function RequestNewOfferForm() {
                   <InputGrp gap="38px">
                     <Label>Discount Value</Label>
                     <Input
-                      type={"number"}
-                      onChange={(e) => setDiscountValue(e.target.value)}
+                      type={"text"}
+                      onChange={(e) => {
+                        if (isNaN(e.target.value) && e.target.value !== "") {
+                          return;
+                        }
+                        setDiscountValue(e.target.value.trim());
+                      }}
+                      value={discountValue}
                     />
                   </InputGrp>
                 </Row>
@@ -469,27 +543,64 @@ export default function RequestNewOfferForm() {
                   <InputGrp>
                     <Label>Original Price</Label>
                     <Input
-                      type={"number"}
-                      onChange={(e) => setOriginalPrice(e.target.value)}
+                      type={"text"}
+                      onChange={(e) => {
+                        if (isNaN(e.target.value) && e.target.value !== "") {
+                          return;
+                        }
+                        setOriginalPrice(e.target.value.trim());
+                      }}
+                      value={originalPrice}
                     />
                   </InputGrp>
-                  <InputGrp>
-                    <Label>Offer cap</Label>
-                    <Input
-                      disabled={discountType.value === "value" ? true : false}
-                      onChange={(e) => setOfferCap(e.target.value)}
-                      type={"number"}
-                    />
-                  </InputGrp>
+                  {discountType.value === discountTypeEnum.percentage && (
+                    <InputGrp>
+                      <Label>Offer cap</Label>
+                      <Input
+                        onChange={(e) => {
+                          if (isNaN(e.target.value) && e.target.value !== "") {
+                            return;
+                          }
+                          setOfferCap(e.target.value.trim());
+                        }}
+                        type={"text"}
+                        value={offerCap}
+                      />
+                    </InputGrp>
+                  )}
                 </Row>
 
                 <InputGrp>
                   <Label>Redeem Duration</Label>
-                  <DateRangePickerV2 setSelectedDate={setSelectedDate} />
+                  <DateRangePickerV2
+                    maxStart={
+                      selectedDate?.toDate
+                        ? new Date(
+                            moment(selectedDate?.toDate).format("YYYY/MM/DD")
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : undefined
+                    }
+                    minStart={new Date().toISOString().split("T")[0]}
+                    minEnd={
+                      selectedDate?.fromDate
+                        ? new Date(
+                            moment(selectedDate?.fromDate)
+                              .add({ days: 1 })
+                              .format("YYYY/MM/DD")
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : undefined
+                    }
+                    setselectedDate={setSelectedDate}
+                    selectedDate={selectedDate}
+                  />
                 </InputGrp>
               </>
             ) : null}
-            {offerType.value === "gift" ? (
+            {offerType.value === offerTypeEnum.gift ? (
               <>
                 <InputGrp>
                   <Label>Main Produt Name</Label>
@@ -498,15 +609,43 @@ export default function RequestNewOfferForm() {
                 <InputGrp>
                   <Label>Gift Value</Label>
                   <Input
-                    // fullWidth
-                    // className="select-filter"
-                    // classNamePrefix="filter-opt"
-                    onChange={(e) => setSelectedGiftValue(e.target.value)}
+                    value={selectedGiftValue}
+                    onChange={(e) => {
+                      if (isNaN(e.target.value) && e.target.value !== "") {
+                        return;
+                      }
+                      setSelectedGiftValue(e.target.value.trim());
+                    }}
+                    type="text"
                   />
                 </InputGrp>
                 <InputGrp>
                   <Label>Offer Duration</Label>
-                  <DateRangePickerV2 setSelectedDate={setSelectedDate} />
+                  <DateRangePickerV2
+                    maxStart={
+                      selectedDate?.toDate
+                        ? new Date(
+                            moment(selectedDate?.toDate).format("YYYY/MM/DD")
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : undefined
+                    }
+                    minStart={new Date().toISOString().split("T")[0]}
+                    minEnd={
+                      selectedDate?.fromDate
+                        ? new Date(
+                            moment(selectedDate?.fromDate)
+                              .add({ days: 1 })
+                              .format("YYYY/MM/DD")
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : undefined
+                    }
+                    setselectedDate={setSelectedDate}
+                    selectedDate={selectedDate}
+                  />
                 </InputGrp>
               </>
             ) : null}
@@ -591,10 +730,10 @@ const CheckBoxInputGrp = styled.div`
 `;
 
 const Checkbox = styled.input`
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border: solid 1px black;
-  border-radius: 10px;
+  border-radius: 28px;
 `;
 
 const UploadImageBadege = styled.div`

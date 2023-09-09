@@ -31,7 +31,7 @@ export const InputGrp = styled.div`
   box-sizing: border-box;
 `;
 
-export const Label = styled.span`
+export const Label = styled.label`
   color: rgb(40, 42, 55);
   text-overflow: ellipsis;
   font-size: 16px;

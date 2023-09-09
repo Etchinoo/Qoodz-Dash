@@ -561,7 +561,7 @@ export default function EditOffer() {
                   <InputGrp>
                     <Label>Redeem Duration</Label>
                     <DateRangePickerV2
-                      setSelectedDate={setSelectedDate}
+                      setselectedDate={setSelectedDate}
                       selectedDate={selectedDate}
                     />
                   </InputGrp>
